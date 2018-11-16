@@ -25,8 +25,8 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.eclipse.jetty.server.session.HashSessionIdManager;
-import org.eclipse.jetty.server.session.HashSessionManager;
+import org.eclipse.jetty.server.session.DefaultSessionIdManager;
+import org.eclipse.jetty.server.session.SessionHandler;
  
 public class HellloWorld extends AbstractHandler
 {
@@ -34,23 +34,30 @@ public class HellloWorld extends AbstractHandler
 	private AtomicInteger count = new AtomicInteger(10);
 	private boolean create = false;
 	private HttpSession session;
+	private Server loc_server;
+	
+	public HellloWorld(Server server) {
+		loc_server = server; 
+	}
+	
     public void handle(String target,
                        Request baseRequest,
                        HttpServletRequest request,
                        HttpServletResponse response) 
         throws IOException, ServletException
     {
+
+        DefaultSessionIdManager sessionIdManager = new DefaultSessionIdManager(loc_server);
+        SessionHandler sessionHandler = new SessionHandler();
+        sessionHandler.setSessionIdManager(sessionIdManager);
+
+    	
     	//new SoutMap().printMap(baseRequest);
     	response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         if(baseRequest.getParameterMap().containsKey("id")!=false) 
         {
         	id=baseRequest.getParameter("id").toString();
-        	create = (id != null);
-        	HttpSession session = baseRequest.getSession(true);
-        	if (create) {
-                session.setAttribute("created", new Date());
-            };
         } 
         else 
         {
@@ -74,12 +81,11 @@ public class HellloWorld extends AbstractHandler
     {
         Server server = new Server(8080);
         
-        HashSessionIdManager idmanager = new HashSessionIdManager();
-        
         ContextHandler context = new ContextHandler();
         context.setContextPath( "/hello" );
-        context.setHandler( new HellloWorld() );
+        context.setHandler( new HellloWorld(server) );
         context.setWelcomeFiles(new String[] { "index.html", "index.htm", "index.jsp" });
+        
 
         WebAppContext webAppContext = new WebAppContext();
         webAppContext.setResourceBase("src/jcgresources");
