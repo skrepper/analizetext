@@ -23,6 +23,7 @@ import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
@@ -50,7 +51,8 @@ public class HellloWorld extends AbstractHandler
         DefaultSessionIdManager sessionIdManager = new DefaultSessionIdManager(loc_server);
         SessionHandler sessionHandler = new SessionHandler();
         sessionHandler.setSessionIdManager(sessionIdManager);
-
+        baseRequest.setSessionHandler(sessionHandler);
+        session = baseRequest.getSession(true);
     	
     	//new SoutMap().printMap(baseRequest);
     	response.setContentType("text/html;charset=utf-8");
