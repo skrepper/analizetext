@@ -10,6 +10,7 @@ public class Main {
    
    public static void main(String[] args) {
 	   System.out.println(String.format(WITH_DELIMITER, expr));
+	   System.out.println("ssss");
 	   System.out.println(Arrays.toString(INPUT.split(String.format(WITH_DELIMITER, expr))));
    }
 }
