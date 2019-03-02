@@ -26,6 +26,8 @@ public class CONSTANT {
 		};
 	};
 	
+	
+	//эту функцию написал в тот момент, когда еще не знал про то, что в определение enum можно вставлять функции 
 	public static final Map<TokenEnum, Integer> TokenToPriority;
 	static {
 		Map<TokenEnum, Integer> aMap = new HashMap<TokenEnum, Integer>();

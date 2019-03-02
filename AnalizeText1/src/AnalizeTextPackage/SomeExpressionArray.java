@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SomeExpressionArray {
+	
+	//это строка
 	public ArrayList<Lexema> ops = new ArrayList<>();
 
 	// программа не учитывает круглые скобки!
@@ -68,6 +70,7 @@ public class SomeExpressionArray {
 
 	public Boolean GetDefined() {
 		Boolean res = false;
+		//идем по всем выражениям строки - хотя на самом деле это цикл из одного выражения - так как в MakeAnaliz вся левая часть превратилась в одно выражение
 		for (Lexema i:ops.stream().limit(ops.size() - 2).collect(Collectors.toList())) {
 			if (!i.seeDefined()) {
 				//System.out.println("-------------"); // оставил для точки останова

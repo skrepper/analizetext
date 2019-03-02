@@ -39,7 +39,7 @@ public class Expression implements Operand, Lexema {
 	    default: 
 	    	res = false;
         	break;		}
-		this.dfn = res;
+		this.dfn = res; //запомнить и не идти сюда при последующем анализе. ћожет стать не нужным, если рассматривать конфликты определений
 		return res;
 	}
 
