@@ -12,7 +12,7 @@ public class CONSTANT {
 		EQ;
 		
 		public String getVal() {
-			if (this == AND) return "&&";
+			if (this == AND) return "&&"; 
 			if (this == OR) return "||";
 			if (this == EQ) return "->";
 			return "";
