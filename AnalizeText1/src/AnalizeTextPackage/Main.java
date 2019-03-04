@@ -12,6 +12,7 @@ public class Main {
 	public static void main(String[] arg) {
 		
 		Pattern pattern;
+		
 		Matcher matcher;
 		AllExpressionArrays allExprArrays = new AllExpressionArrays(); 
 		
