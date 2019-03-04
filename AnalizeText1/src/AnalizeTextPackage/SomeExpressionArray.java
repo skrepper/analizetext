@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+п»їpackage AnalizeTextPackage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,24 +9,24 @@ import java.util.stream.Collectors;
 
 public class SomeExpressionArray {
 	
-	//это строка
+	//СЌС‚Рѕ СЃС‚СЂРѕРєР°
 	public ArrayList<Lexema> ops = new ArrayList<>();
 
-	// программа не учитывает круглые скобки!
+	// РїСЂРѕРіСЂР°РјРјР° РЅРµ СѓС‡РёС‚С‹РІР°РµС‚ РєСЂСѓРіР»С‹Рµ СЃРєРѕР±РєРё!
 	public void MakeAnaliz() {
 
 		String sl = null;
 		if (ops.get(0) instanceof Slovo) {
 			sl = ((Slovo) ops.get(0)).getSlovo();
 		} else {
-			new RuntimeException("Ошибка массива");
+			new RuntimeException("РћС€РёР±РєР° РјР°СЃСЃРёРІР°");
 		}
 
 		String expr = "(" + CONSTANT.GetAllTokensRegExpr() + ")"; //"(&&|\\|\\|)";
 		String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
 		String[] res = sl.split(String.format(WITH_DELIMITER, expr));
 		Pattern token_pattern = Pattern.compile(expr);
-		int indexOfAdd = 0; // массив res должен заместить первый элемент ops
+		int indexOfAdd = 0; // РјР°СЃСЃРёРІ res РґРѕР»Р¶РµРЅ Р·Р°РјРµСЃС‚РёС‚СЊ РїРµСЂРІС‹Р№ СЌР»РµРјРµРЅС‚ ops
 		for (String i:res){
 			if (token_pattern.matcher(i).matches()) {
 				ops.add(++indexOfAdd, new Token(i.trim()));				
@@ -39,13 +39,13 @@ public class SomeExpressionArray {
 			}
 		}
 
-		//System.out.println("------"); // оставил для точки останова
+		//System.out.println("------"); // РѕСЃС‚Р°РІРёР» РґР»СЏ С‚РѕС‡РєРё РѕСЃС‚Р°РЅРѕРІР°
 		
-		//цикл по всем операторам в порядке приоритета
+		//С†РёРєР» РїРѕ РІСЃРµРј РѕРїРµСЂР°С‚РѕСЂР°Рј РІ РїРѕСЂСЏРґРєРµ РїСЂРёРѕСЂРёС‚РµС‚Р°
 		for (Integer i:CONSTANT.TokenToPriority.values().stream().sorted(Comparator.reverseOrder()).distinct().collect(Collectors.toList())) {
 			boolean fnd = true;
-			while (fnd) { // масссив меняется, соответственно, нужен while
-				for (int j=0; j<ops.size()-2; j++) { // ops.size()-2 - справа стоят знак -> и результат
+			while (fnd) { // РјР°СЃСЃСЃРёРІ РјРµРЅСЏРµС‚СЃСЏ, СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ, РЅСѓР¶РµРЅ while
+				for (int j=0; j<ops.size()-2; j++) { // ops.size()-2 - СЃРїСЂР°РІР° СЃС‚РѕСЏС‚ Р·РЅР°Рє -> Рё СЂРµР·СѓР»СЊС‚Р°С‚
 					if ((ops.get(j) instanceof Token) && CONSTANT.TokenToPriority.get(((Token) ops.get(j) ).token)==i) {
 						Expression expression = new Expression();
 						fnd = true;
@@ -70,10 +70,10 @@ public class SomeExpressionArray {
 
 	public Boolean GetDefined() {
 		Boolean res = false;
-		//идем по всем выражениям строки - хотя на самом деле это цикл из одного выражения - так как в MakeAnaliz вся левая часть превратилась в одно выражение
+		//РёРґРµРј РїРѕ РІСЃРµРј РІС‹СЂР°Р¶РµРЅРёСЏРј СЃС‚СЂРѕРєРё - С…РѕС‚СЏ РЅР° СЃР°РјРѕРј РґРµР»Рµ СЌС‚Рѕ С†РёРєР» РёР· РѕРґРЅРѕРіРѕ РІС‹СЂР°Р¶РµРЅРёСЏ - С‚Р°Рє РєР°Рє РІ MakeAnaliz РІСЃСЏ Р»РµРІР°СЏ С‡Р°СЃС‚СЊ РїСЂРµРІСЂР°С‚РёР»Р°СЃСЊ РІ РѕРґРЅРѕ РІС‹СЂР°Р¶РµРЅРёРµ
 		for (Lexema i:ops.stream().limit(ops.size() - 2).collect(Collectors.toList())) {
 			if (!i.seeDefined()) {
-				//System.out.println("-------------"); // оставил для точки останова
+				//System.out.println("-------------"); // РѕСЃС‚Р°РІРёР» РґР»СЏ С‚РѕС‡РєРё РѕСЃС‚Р°РЅРѕРІР°
 				if (i.getDefined()) {
 					GlobArrs.DefinedArray.add(((Slovo) ops.get(ops.size()-1)).slovo);
 					GlobArrs.NonDefinedArray.remove(((Slovo) ops.get(ops.size()-1)).slovo);

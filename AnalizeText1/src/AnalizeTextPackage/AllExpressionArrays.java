@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+﻿package AnalizeTextPackage;
 
 import java.util.ArrayList;
 

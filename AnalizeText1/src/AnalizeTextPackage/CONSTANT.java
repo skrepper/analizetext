@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+п»їpackage AnalizeTextPackage;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class CONSTANT {
 	};
 	
 	
-	//эту функцию написал в тот момент, когда еще не знал про то, что в определение enum можно вставлять функции 
+	//СЌС‚Сѓ С„СѓРЅРєС†РёСЋ РЅР°РїРёСЃР°Р» РІ С‚РѕС‚ РјРѕРјРµРЅС‚, РєРѕРіРґР° РµС‰Рµ РЅРµ Р·РЅР°Р» РїСЂРѕ С‚Рѕ, С‡С‚Рѕ РІ РѕРїСЂРµРґРµР»РµРЅРёРµ enum РјРѕР¶РЅРѕ РІСЃС‚Р°РІР»СЏС‚СЊ С„СѓРЅРєС†РёРё 
 	public static final Map<TokenEnum, Integer> TokenToPriority;
 	static {
 		Map<TokenEnum, Integer> aMap = new HashMap<TokenEnum, Integer>();
@@ -45,7 +45,7 @@ public class CONSTANT {
 			return result; 
 	}
 	
-	public static final int BIGSTRLEN = 1000000; // такой длины строки не бывает??
+	public static final int BIGSTRLEN = 1000000; // С‚Р°РєРѕР№ РґР»РёРЅС‹ СЃС‚СЂРѕРєРё РЅРµ Р±С‹РІР°РµС‚??
 	
 	public static final String FILE_END_DELIMITER = "----------------------------";
 

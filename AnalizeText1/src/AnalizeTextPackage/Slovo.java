@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+﻿package AnalizeTextPackage;
 
 public class Slovo implements Operand, Lexema {
 	String slovo;

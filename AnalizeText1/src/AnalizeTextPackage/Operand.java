@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+﻿package AnalizeTextPackage;
 
 public interface Operand {
 	public Boolean getDefined();

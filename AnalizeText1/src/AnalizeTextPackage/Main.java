@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+п»їpackage AnalizeTextPackage;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -17,11 +17,11 @@ public class Main {
 		
 		String filePathName;
 		if ((arg == null) || (arg.length == 0)) {
-			System.out.println("Введите полное имя файла");
+			System.out.println("В¬РІРµРґРёС‚Рµ РїРѕР»РЅРѕРµ РёРјВ¤ С„Р°Р№Р»Р°");
 			return;
 		} else {
 			if (arg[0]==null || arg[0].length()==0) {
-				System.out.println("Введите полное имя файла");
+				System.out.println("В¬РІРµРґРёС‚Рµ РїРѕР»РЅРѕРµ РёРјВ¤ С„Р°Р№Р»Р°");
 				return;
 			} else {
 				filePathName = arg[0];
@@ -40,52 +40,52 @@ public class Main {
 					if (strLine.equals(CONSTANT.FILE_END_DELIMITER)) {
 						beforeDelim = false;
 					} else {
-						// -> - символ EQ
+						// -> - СЃРёРјРІРѕР» EQ
 						String[] strArr = strLine.split(CONSTANT.TokenEnum.EQ.getVal());
-						// пара валидаций
-						if (strArr.length !=2) {throw new RuntimeException("Ошибка валидации файла - неверное построение функции");}
+						// РїР°СЂР° РІР°Р»РёРґР°С†РёР№
+						if (strArr.length !=2) {throw new RuntimeException("СњС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р° - РЅРµРІРµСЂРЅРѕРµ РїРѕСЃС‚СЂРѕРµРЅРёРµ С„СѓРЅРєС†РёРё");}
 						pattern = Pattern.compile(CONSTANT.GetAllTokensRegExpr()); 
 						matcher = pattern.matcher(strArr[1]);
 						if(matcher.find()){
-							throw new RuntimeException("Ошибка валидации файла - в правой части операторы");
+							throw new RuntimeException("СњС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р° - РІ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё РѕРїРµСЂР°С‚РѕСЂС‹");
 						}
-						//все что справа от EQ - в массив неопределенных слов
+						//РІСЃРµ С‡С‚Рѕ СЃРїСЂР°РІР° РѕС‚ EQ - РІ РјР°СЃСЃРёРІ РЅРµРѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃР»РѕРІ
 						GlobArrs.NonDefinedArray.add(strArr[1].trim());
 						String[] strArrLeft = strArr[0].split(CONSTANT.GetAllTokensRegExpr());
-						//все что слева от EQ - в массив неопределенных слов
+						//РІСЃРµ С‡С‚Рѕ СЃР»РµРІР° РѕС‚ EQ - РІ РјР°СЃСЃРёРІ РЅРµРѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃР»РѕРІ
 						for (String i:strArrLeft) GlobArrs.NonDefinedArray.add(i.trim());
-						//бессмыслено, так как MakeAnaliz не работает с массивом определенных слов 
-						//все, что определено, удалить из массива неопределенных слов
+						//Р±РµСЃСЃРјС‹СЃР»РµРЅРѕ, С‚Р°Рє РєР°Рє MakeAnaliz РЅРµ СЂР°Р±РѕС‚Р°РµС‚ СЃ РјР°СЃСЃРёРІРѕРј РѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃР»РѕРІ 
+						//РІСЃРµ, С‡С‚Рѕ РѕРїСЂРµРґРµР»РµРЅРѕ, СѓРґР°Р»РёС‚СЊ РёР· РјР°СЃСЃРёРІР° РЅРµРѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃР»РѕРІ
 						//for (String i:GlobArrs.DefinedArray) GlobArrs.NonDefinedArray.remove(i);
 
-						//анализ заново
+						//Р°РЅР°Р»РёР· Р·Р°РЅРѕРІРѕ
 						SomeExpressionArray stroka = new SomeExpressionArray();
 						stroka.ops.add(new Slovo(strArr[0].trim()));
 						stroka.ops.add(new Token(CONSTANT.TokenEnum.EQ.getVal()));
 						stroka.ops.add(new Slovo(strArr[1].trim()));
-						stroka.MakeAnaliz(); //превращаем строку в объекты выражений
+						stroka.MakeAnaliz(); //РїСЂРµРІСЂР°С‰Р°РµРј СЃС‚СЂРѕРєСѓ РІ РѕР±СЉРµРєС‚С‹ РІС‹СЂР°Р¶РµРЅРёР№
 						allExprArrays.AllStrArrays.add(stroka);
 					}
 				} else {
-					//последняя строка файла
+					//РїРѕСЃР»РµРґРЅВ¤В¤ СЃС‚СЂРѕРєР° С„Р°Р№Р»Р°
 					String[] strArr = strLine.split(",");
-					if (strArr.length<1) {throw new RuntimeException("Ошибка валидации файла");}
+					if (strArr.length<1) {throw new RuntimeException("СњС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р°");}
 					for (String i:strArr) GlobArrs.DefinedArray.add(i.trim());
-					break; // только одна строка после разделителя!
+					break; // С‚РѕР»СЊРєРѕ РѕРґРЅР° СЃС‚СЂРѕРєР° РїРѕСЃР»Рµ СЂР°Р·РґРµР»РёС‚РµР»В¤!
 				}
 			}
-			br.close(); //необязательно, так как используется новая конструкция try () {}
+			br.close(); //РЅРµРѕР±В¤Р·Р°С‚РµР»СЊРЅРѕ, С‚Р°Рє РєР°Рє РёСЃРїРѕР»СЊР·СѓРµС‚СЃВ¤ РЅРѕРІР°В¤ РєРѕРЅСЃС‚СЂСѓРєС†РёВ¤ try () {}
 		}catch (IOException e){
-			System.out.println("Ошибка чтения файла");
+			System.out.println("СњС€РёР±РєР° С‡С‚РµРЅРёВ¤ С„Р°Р№Р»Р°");
 			System.exit(0);;
 		}
 		
-		//в нижележащих функциях GetDefined для выражения зашита булева логика
-		//вышележащая функция
+		//РІ РЅРёР¶РµР»РµР¶Р°С‰РёС… С„СѓРЅРєС†РёВ¤С… GetDefined РґР»В¤ РІС‹СЂР°Р¶РµРЅРёВ¤ Р·Р°С€РёС‚Р° Р±СѓР»РµРІР° Р»РѕРіРёРєР°
+		//РІС‹С€РµР»РµР¶Р°С‰Р°В¤ С„СѓРЅРєС†РёВ¤
 		GlobArrs.tempChangedArrs = true;
 		while (GlobArrs.tempChangedArrs) {
 			GlobArrs.tempChangedArrs = false;
-			//идем по строкам
+			//РёРґРµРј РїРѕ СЃС‚СЂРѕРєР°Рј
 			for (SomeExpressionArray str: allExprArrays.AllStrArrays) {
 				str.GetDefined(); 
 			}

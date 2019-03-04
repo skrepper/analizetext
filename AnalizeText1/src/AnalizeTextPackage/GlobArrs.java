@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+п»їpackage AnalizeTextPackage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,7 +7,7 @@ public class GlobArrs {
 	
 	static Set<String> DefinedArray = new HashSet<String>();  
 	static Set<String> NonDefinedArray = new HashSet<String>();
-	//признак конца программы - используется в бесконечном цикле
+	//РїСЂРёР·РЅР°Рє РєРѕРЅС†Р° РїСЂРѕРіСЂР°РјРјС‹ - РёСЃРїРѕР»СЊР·СѓРµС‚СЃВ¤ РІ Р±РµСЃРєРѕРЅРµС‡РЅРѕРј С†РёРєР»Рµ
 	public static Boolean tempChangedArrs = false;
 
 }

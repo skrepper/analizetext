@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+п»їpackage AnalizeTextPackage;
 
 public class Token implements Lexema {
 	CONSTANT.TokenEnum token;
@@ -21,13 +21,13 @@ public class Token implements Lexema {
 	@Override
 	public Boolean getDefined() {
 		// TODO Auto-generated method stub
-		return true; //токен всегда определен
+		return true; //С‚РѕРєРµРЅ РІСЃРµРіРґР° РѕРїСЂРµРґРµР»РµРЅ
 	}
 
 	@Override
 	public Boolean seeDefined() {
 		// TODO Auto-generated method stub
-		return true; //токен всегда определен
+		return true; //С‚РѕРєРµРЅ РІСЃРµРіРґР° РѕРїСЂРµРґРµР»РµРЅ
 	}
 
 
