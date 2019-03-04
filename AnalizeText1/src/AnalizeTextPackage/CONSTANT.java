@@ -19,7 +19,7 @@ public class CONSTANT {
 		};
 
 		public String getRegExp() {
-			if (this == AND) return "&&";
+			if (this == AND) return "&&"; 
 			if (this == OR) return "\\|\\|";
 			if (this == EQ) return "->";
 			return "";
@@ -27,7 +27,7 @@ public class CONSTANT {
 	};
 	
 	
-	//эту функцию написал в тот момент, когда еще не знал про то, что в определение enum можно вставлять функции 
+	//эту функцию написал в тот момент, когда еще не знал про то, что в определение enum можно вставлять функции, например getVal
 	public static final Map<TokenEnum, Integer> TokenToPriority;
 	static {
 		Map<TokenEnum, Integer> aMap = new HashMap<TokenEnum, Integer>();
