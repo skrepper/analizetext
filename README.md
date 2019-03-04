@@ -1,6 +1,7 @@
 # analizetext
 
  Дан файл, например
+ 
  summer -> autumn
  
  summer && winter -> rain
