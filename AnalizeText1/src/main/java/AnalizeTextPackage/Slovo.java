@@ -16,20 +16,20 @@ public class Slovo implements Operand, Lexema {
 		return slovo;
 	}
 
-	@Override
+//	@Override
 	public Boolean getDefined() {
 		// TODO Auto-generated method stub
 		this.dfn = GlobArrs.DefinedArray.contains(slovo);
 		return this.dfn;
 	}
 
-	@Override
+//	@Override
 	public void setDefined(Boolean p_dfn) {
 		// TODO Auto-generated method stub
 		dfn = p_dfn;
 	}
 
-	@Override
+//	@Override
 	public Boolean seeDefined() {
 		// TODO Auto-generated method stub
 		return dfn;
