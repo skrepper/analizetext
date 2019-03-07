@@ -16,8 +16,10 @@ import java.util.regex.Pattern;
 
 public class Main {
 	public static void main(String[] arg) {
+		String result;
 		MainProc mainproc = new MainProc(); 
-		mainproc.startmainproc(arg);
+		result = mainproc.startmainproc(arg);
+		System.out.println(result);
 	}
 }
 

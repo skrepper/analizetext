@@ -9,20 +9,21 @@ import java.util.regex.Pattern;
 
 public class MainProc {
 
-	public void startmainproc(String[] arg) {
+	public String startmainproc(String[] arg) {
 		
+		String result;
 		Pattern pattern;
 		Matcher matcher;
 		AllExpressionArrays allExprArrays = new AllExpressionArrays(); 
 		
 		String filePathName;
 		if ((arg == null) || (arg.length == 0)) {
-			System.out.println("¬ведите полное им¤ файла");
-			return;
+			result = "¬ведите полное им¤ файла";
+			return result;
 		} else {
 			if (arg[0]==null || arg[0].length()==0) {
-				System.out.println("¬ведите полное им¤ файла");
-				return;
+				result = "¬ведите полное им¤ файла";
+				return result;
 			} else {
 				filePathName = arg[0];
 			}
@@ -47,7 +48,8 @@ public class MainProc {
 						pattern = Pattern.compile(CONSTANT.GetAllTokensRegExpr()); 
 						matcher = pattern.matcher(strArr[1]);
 						if(matcher.find()){
-							throw new RuntimeException("ќшибка валидации файла - в правой части операторы");
+							result = "ќшибка валидации файла - в правой части операторы";
+							return result;
 						}
 						//все что справа от EQ - в массив неопределенных слов
 						GlobArrs.NonDefinedArray.add(strArr[1].trim());
@@ -76,8 +78,8 @@ public class MainProc {
 			}
 			br.close(); //необ¤зательно, так как используетс¤ нова¤ конструкци¤ try () {}
 		}catch (IOException e){
-			System.out.println("ќшибка чтени¤ файла");
-			System.exit(0);;
+			result = "ќшибка чтени¤ файла";
+			return result;
 		}
 		
 		//в нижележащих функци¤х GetDefined дл¤ выражени¤ зашита булева логика
@@ -91,7 +93,8 @@ public class MainProc {
 			}
 		}
 		
-		System.out.println(String.join(", ", GlobArrs.DefinedArray));
+		result = String.join(", ", GlobArrs.DefinedArray);
+		return result;
 
 	}	
 	
