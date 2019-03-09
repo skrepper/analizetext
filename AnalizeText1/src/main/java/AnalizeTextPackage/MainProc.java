@@ -18,11 +18,11 @@ public class MainProc {
 		
 		String filePathName;
 		if ((arg == null) || (arg.length == 0)) {
-			result = "¬ведите полное им¤ файла";
+			result = "Введите полное имя файла";
 			return result;
 		} else {
 			if (arg[0]==null || arg[0].length()==0) {
-				result = "¬ведите полное им¤ файла";
+				result = "Введите полное имя файла";
 				return result;
 			} else {
 				filePathName = arg[0];
@@ -44,11 +44,11 @@ public class MainProc {
 						// -> - символ EQ
 						String[] strArr = strLine.split(CONSTANT.TokenEnum.EQ.getVal());
 						// пара валидаций
-						if (strArr.length !=2) {throw new RuntimeException("ќшибка валидации файла - неверное построение функции");}
+						if (strArr.length !=2) {throw new RuntimeException("Ошибка валидации файла - неверное построение функции");}
 						pattern = Pattern.compile(CONSTANT.GetAllTokensRegExpr()); 
 						matcher = pattern.matcher(strArr[1]);
 						if(matcher.find()){
-							result = "ќшибка валидации файла - в правой части операторы";
+							result = "Ошибка валидации файла - в правой части операторы";
 							return result;
 						}
 						//все что справа от EQ - в массив неопределенных слов
@@ -69,21 +69,21 @@ public class MainProc {
 						allExprArrays.AllStrArrays.add(stroka);
 					}
 				} else {
-					//последн¤¤ строка файла
+					//последняя строка файла
 					String[] strArr = strLine.split(",");
 					if (strArr.length<1) {throw new RuntimeException("ќшибка валидации файла");}
 					for (String i:strArr) GlobArrs.DefinedArray.add(i.trim());
-					break; // только одна строка после разделител¤!
+					break; // только одна строка после разделителя!
 				}
 			}
-			br.close(); //необ¤зательно, так как используетс¤ нова¤ конструкци¤ try () {}
+			br.close(); //необязательно, так как используется новая конструкция try () {}
 		}catch (IOException e){
-			result = "ќшибка чтени¤ файла";
+			result = "Ошибка чтения файла";
 			return result;
 		}
 		
-		//в нижележащих функци¤х GetDefined дл¤ выражени¤ зашита булева логика
-		//вышележаща¤ функци¤
+		//в нижележащих функциях GetDefined для выражения зашита булева логика
+		//вышележащая функция
 		GlobArrs.tempChangedArrs = true;
 		while (GlobArrs.tempChangedArrs) {
 			GlobArrs.tempChangedArrs = false;
