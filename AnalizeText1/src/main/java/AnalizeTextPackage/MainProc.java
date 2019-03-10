@@ -18,11 +18,11 @@ public class MainProc {
 		
 		String filePathName;
 		if ((arg == null) || (arg.length == 0)) {
-			result = "Введите полное имя файла";
+			result = Error.ENTER_FILE_NAME.getDescription();
 			return result;
 		} else {
 			if (arg[0]==null || arg[0].length()==0) {
-				result = "Введите полное имя файла";
+				result = Error.ENTER_FILE_NAME.getDescription();
 				return result;
 			} else {
 				filePathName = arg[0];
@@ -42,13 +42,13 @@ public class MainProc {
 						beforeDelim = false;
 					} else {
 						// -> - символ EQ
-						String[] strArr = strLine.split(CONSTANT.TokenEnum.EQ.getVal());
-						// пара валидаций
+						String[] strArr = strLine.split(TokenEnum.EQ.getVal());
+// Нельзя оставлять throw необработанным 
 						if (strArr.length !=2) {throw new RuntimeException("Ошибка валидации файла - неверное построение функции");}
 						pattern = Pattern.compile(CONSTANT.GetAllTokensRegExpr()); 
 						matcher = pattern.matcher(strArr[1]);
 						if(matcher.find()){
-							result = "Ошибка валидации файла - в правой части операторы";
+							result = Error.WRONG_RIGHT_OPERATOR.getDescription();
 							return result;
 						}
 						//все что справа от EQ - в массив неопределенных слов
@@ -56,14 +56,11 @@ public class MainProc {
 						String[] strArrLeft = strArr[0].split(CONSTANT.GetAllTokensRegExpr());
 						//все что слева от EQ - в массив неопределенных слов
 						for (String i:strArrLeft) GlobArrs.NonDefinedArray.add(i.trim());
-						//бессмыслено, так как MakeAnaliz не работает с массивом определенных слов 
-						//все, что определено, удалить из массива неопределенных слов
-						//for (String i:GlobArrs.DefinedArray) GlobArrs.NonDefinedArray.remove(i);
 
 						//анализ заново
 						SomeExpressionArray stroka = new SomeExpressionArray();
 						stroka.ops.add(new Slovo(strArr[0].trim()));
-						stroka.ops.add(new Token(CONSTANT.TokenEnum.EQ.getVal()));
+						stroka.ops.add(new Token(TokenEnum.EQ.getVal()));
 						stroka.ops.add(new Slovo(strArr[1].trim()));
 						stroka.MakeAnaliz(); //превращаем строку в объекты выражений
 						allExprArrays.AllStrArrays.add(stroka);
@@ -71,14 +68,15 @@ public class MainProc {
 				} else {
 					//последняя строка файла
 					String[] strArr = strLine.split(",");
-					if (strArr.length<1) {throw new RuntimeException("ќшибка валидации файла");}
+// Нельзя оставлять throw необработанным 
+					if (strArr.length<1) {throw new RuntimeException("Ошибка валидации файла");}
 					for (String i:strArr) GlobArrs.DefinedArray.add(i.trim());
 					break; // только одна строка после разделителя!
 				}
 			}
 			br.close(); //необязательно, так как используется новая конструкция try () {}
 		}catch (IOException e){
-			result = "Ошибка чтения файла";
+			result = Error.WRONG_READ_FILE.getDescription();
 			return result;
 		}
 		

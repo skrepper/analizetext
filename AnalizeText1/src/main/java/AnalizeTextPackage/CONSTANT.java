@@ -6,27 +6,6 @@ import java.util.Map;
 
 public class CONSTANT {
 	
-	public static enum TokenEnum {
-		AND, 
-		OR,
-		EQ;
-		
-		public String getVal() {
-			if (this == AND) return "&&"; 
-			if (this == OR) return "||";
-			if (this == EQ) return "->";
-			return "";
-		};
-
-		public String getRegExp() {
-			if (this == AND) return "&&"; 
-			if (this == OR) return "\\|\\|";
-			if (this == EQ) return "->";
-			return "";
-		};
-	};
-	
-	
 	//эту функцию написал в тот момент, когда еще не знал про то, что в определение enum можно вставлять функции, например getVal
 	public static final Map<TokenEnum, Integer> TokenToPriority;
 	static {
@@ -39,7 +18,7 @@ public class CONSTANT {
 	
 	public static final String GetAllTokensRegExpr() {
 		String result = "";
-		for (TokenEnum i:CONSTANT.TokenEnum.values()) {
+		for (TokenEnum i:TokenEnum.values()) {
 			result = result + ((result.length()==0)?i.getRegExp():"|"+i.getRegExp());
 		}
 			return result; 
@@ -48,5 +27,4 @@ public class CONSTANT {
 	public static final int BIGSTRLEN = 1000000; // такой длины строки не бывает??
 	
 	public static final String FILE_END_DELIMITER = "----------------------------";
-
 }

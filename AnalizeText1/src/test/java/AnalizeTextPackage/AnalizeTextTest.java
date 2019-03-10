@@ -39,10 +39,27 @@ public class AnalizeTextTest {
 	}
 
 	@Test
-	public void testSum() throws UnsupportedEncodingException {
-		String textURL = URLDecoder.decode(this.getClass().getResource("../func_text.txt").toString(), "UTF-8").replace("file:/", "");
+	public void testContent() throws UnsupportedEncodingException {
+		//проверка слов внизу и 1 простое определение
+		String textURL = URLDecoder.decode(this.getClass().getResource("../func_text_1.txt").toString(), "UTF-8").replace("file:/", "");
 		String actual = mainproc.startmainproc(new String[] {textURL});
-		assertThat(actual, anyOf(containsString("autumn"), containsString("winter")));
+		assertThat(actual, allOf(containsString("autumn"), containsString("winter"),
+				containsString("rain"), containsString("summer"), containsString("not_in_upper_text")));
+		//проверка на ошибку - оператор справа
+		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_2.txt").toString(), "UTF-8").replace("file:/", "");
+		actual = mainproc.startmainproc(new String[] {textURL});
+		assertThat(actual, allOf(containsString(Error.WRONG_RIGHT_OPERATOR.getDescription())));
+	
+	}
+	
+	@Test
+	public void testArgs() {
+		//проверка на отсутствие имени файла
+		String actual = mainproc.startmainproc(new String[] {""});
+		assertThat(actual, anyOf(containsString(Error.ENTER_FILE_NAME.getDescription())));
+		//проверка на ошибку в имени файла
+		actual = mainproc.startmainproc(new String[] {"wrong name"});
+		assertThat(actual, anyOf(containsString(Error.WRONG_READ_FILE.getDescription())));
 	}
 }
 
