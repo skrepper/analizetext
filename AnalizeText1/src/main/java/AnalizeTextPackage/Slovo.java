@@ -1,5 +1,7 @@
 ﻿package AnalizeTextPackage;
 
+import java.util.regex.Pattern;
+
 public class Slovo implements Operand, Lexema {
 	String slovo;
 	Boolean dfn = false;
@@ -19,6 +21,14 @@ public class Slovo implements Operand, Lexema {
 //	@Override
 	public Boolean getDefined() {
 		// TODO Auto-generated method stub
+		// \.[]{}()<>*+-=!?^$|
+		// "(&&|\\|\\|)"
+		// "(&|\\|\\\\|.|\\[|\\]|\\{|\\}|\\(|\\)|\\<|\\>|\\*|\\+|\\-|\\=|\\!|\\?|\\^|\\$|\\))"
+		String expr = "(&|\\|)";
+		Pattern halftoken_pattern = Pattern.compile(expr);
+		if (halftoken_pattern.matcher(slovo).find()) {
+			throw new RuntimeException(Error.WRONG_SPECIAL_SYMBOL.getDescription());
+		}
 		this.dfn = GlobArrs.DefinedArray.contains(slovo);
 		return this.dfn;
 	}

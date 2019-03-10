@@ -19,7 +19,8 @@ public class SomeExpressionArray {
 		if (ops.get(0) instanceof Slovo) {
 			sl = ((Slovo) ops.get(0)).getSlovo();
 		} else {
-			throw new RuntimeException("Ошибка массива"); // непонятно как обработать это исключение
+// обработать это исключение
+			throw new RuntimeException("Ошибка массива"); 
 		}
 
 		String expr = "(" + CONSTANT.GetAllTokensRegExpr() + ")"; //"(&&|\\|\\|)";

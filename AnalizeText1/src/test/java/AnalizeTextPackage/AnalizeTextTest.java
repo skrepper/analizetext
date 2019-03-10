@@ -40,16 +40,38 @@ public class AnalizeTextTest {
 
 	@Test
 	public void testContent() throws UnsupportedEncodingException {
+		
+		String textURL;
+		String actual;
+		
+		
 		//проверка слов внизу и 1 простое определение
-		String textURL = URLDecoder.decode(this.getClass().getResource("../func_text_1.txt").toString(), "UTF-8").replace("file:/", "");
-		String actual = mainproc.startmainproc(new String[] {textURL});
+		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_1.txt").toString(), "UTF-8").replace("file:/", "");
+		actual = mainproc.startmainproc(new String[] {textURL});
 		assertThat(actual, allOf(containsString("autumn"), containsString("winter"),
 				containsString("rain"), containsString("summer"), containsString("not_in_upper_text")));
+
 		//проверка на ошибку - оператор справа
 		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_2.txt").toString(), "UTF-8").replace("file:/", "");
 		actual = mainproc.startmainproc(new String[] {textURL});
 		assertThat(actual, allOf(containsString(Error.WRONG_RIGHT_OPERATOR.getDescription())));
-	
+
+		//проверка на ошибку - оператор EQ справа
+		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_3.txt").toString(), "UTF-8").replace("file:/", "");
+		actual = mainproc.startmainproc(new String[] {textURL});
+		assertThat(actual, allOf(containsString(Error.WRONG_FILE_VALIDATION1.getDescription())));
+
+		//проверка на ошибку - оператор EQ справа
+		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_4.txt").toString(), "UTF-8").replace("file:/", "");
+		actual = mainproc.startmainproc(new String[] {textURL});
+		assertThat(actual, allOf(containsString(Error.WRONG_FILE_VALIDATION2.getDescription())));
+
+		//проверка слов на спецсимволы
+		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_5.txt").toString(), "UTF-8").replace("file:/", "");
+		actual = mainproc.startmainproc(new String[] {textURL});
+		assertThat(actual, allOf(containsString(Error.WRONG_SPECIAL_SYMBOL.getDescription())));
+		
+		
 	}
 	
 	@Test

@@ -10,12 +10,12 @@ import java.util.regex.Pattern;
 public class MainProc {
 
 	public String startmainproc(String[] arg) {
-		
+
 		String result;
 		Pattern pattern;
 		Matcher matcher;
 		AllExpressionArrays allExprArrays = new AllExpressionArrays(); 
-		
+
 		String filePathName;
 		if ((arg == null) || (arg.length == 0)) {
 			result = Error.ENTER_FILE_NAME.getDescription();
@@ -29,7 +29,7 @@ public class MainProc {
 			}
 		}
 
-		
+
 		Boolean beforeDelim = true;
 		try (	FileInputStream fstream = new FileInputStream(filePathName);
 				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));) 
@@ -43,8 +43,7 @@ public class MainProc {
 					} else {
 						// -> - символ EQ
 						String[] strArr = strLine.split(TokenEnum.EQ.getVal());
-// Нельзя оставлять throw необработанным 
-						if (strArr.length !=2) {throw new RuntimeException("Ошибка валидации файла - неверное построение функции");}
+						if (strArr.length !=2) {throw new RuntimeException(Error.WRONG_FILE_VALIDATION1.getDescription());}
 						pattern = Pattern.compile(CONSTANT.GetAllTokensRegExpr()); 
 						matcher = pattern.matcher(strArr[1]);
 						if(matcher.find()){
@@ -68,8 +67,7 @@ public class MainProc {
 				} else {
 					//последняя строка файла
 					String[] strArr = strLine.split(",");
-// Нельзя оставлять throw необработанным 
-					if (strArr.length<1) {throw new RuntimeException("Ошибка валидации файла");}
+					if (strLine.length()<1) {throw new RuntimeException(Error.WRONG_FILE_VALIDATION2.getDescription());}
 					for (String i:strArr) GlobArrs.DefinedArray.add(i.trim());
 					break; // только одна строка после разделителя!
 				}
@@ -78,8 +76,11 @@ public class MainProc {
 		}catch (IOException e){
 			result = Error.WRONG_READ_FILE.getDescription();
 			return result;
+		}catch (RuntimeException e){
+			result = e.getMessage();
+			return result;
 		}
-		
+
 		//в нижележащих функциях GetDefined для выражения зашита булева логика
 		//вышележащая функция
 		GlobArrs.tempChangedArrs = true;
@@ -87,13 +88,18 @@ public class MainProc {
 			GlobArrs.tempChangedArrs = false;
 			//идем по строкам
 			for (SomeExpressionArray str: allExprArrays.AllStrArrays) {
-				str.GetDefined(); 
+				try {
+					str.GetDefined();
+				} catch (RuntimeException e){
+					result = e.getMessage();
+					return result;
+				}
 			}
 		}
-		
+
 		result = String.join(", ", GlobArrs.DefinedArray);
 		return result;
 
 	}	
-	
+
 }
