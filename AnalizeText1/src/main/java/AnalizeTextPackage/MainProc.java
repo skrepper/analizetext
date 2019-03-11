@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+package AnalizeTextPackage; 
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -11,7 +11,7 @@ public class MainProc {
 
 	public String startmainproc(String[] arg) {
 
-		String result;
+		String result; 
 		Pattern pattern;
 		Matcher matcher;
 		AllExpressionArrays allExprArrays = new AllExpressionArrays(); 
@@ -41,7 +41,7 @@ public class MainProc {
 					if (strLine.equals(CONSTANT.FILE_END_DELIMITER)) {
 						beforeDelim = false;
 					} else {
-						// -> - СЃРёРјРІРѕР» EQ
+						// -> - символ EQ
 						String[] strArr = strLine.split(TokenEnum.EQ.getVal());
 						if (strArr.length !=2) {throw new RuntimeException(Error.WRONG_FILE_VALIDATION1.getDescription());}
 						pattern = Pattern.compile(CONSTANT.GetAllTokensRegExpr()); 
@@ -50,29 +50,29 @@ public class MainProc {
 							result = Error.WRONG_RIGHT_OPERATOR.getDescription();
 							return result;
 						}
-						//РІСЃРµ С‡С‚Рѕ СЃРїСЂР°РІР° РѕС‚ EQ - РІ РјР°СЃСЃРёРІ РЅРµРѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃР»РѕРІ
+						//все что справа от EQ - в массив неопределенных слов
 						GlobArrs.NonDefinedArray.add(strArr[1].trim());
 						String[] strArrLeft = strArr[0].split(CONSTANT.GetAllTokensRegExpr());
-						//РІСЃРµ С‡С‚Рѕ СЃР»РµРІР° РѕС‚ EQ - РІ РјР°СЃСЃРёРІ РЅРµРѕРїСЂРµРґРµР»РµРЅРЅС‹С… СЃР»РѕРІ
+						//все что слева от EQ - в массив неопределенных слов
 						for (String i:strArrLeft) GlobArrs.NonDefinedArray.add(i.trim());
 
-						//Р°РЅР°Р»РёР· Р·Р°РЅРѕРІРѕ
+						//анализ заново
 						SomeExpressionArray stroka = new SomeExpressionArray();
 						stroka.ops.add(new Slovo(strArr[0].trim()));
 						stroka.ops.add(new Token(TokenEnum.EQ.getVal()));
 						stroka.ops.add(new Slovo(strArr[1].trim()));
-						stroka.MakeAnaliz(); //РїСЂРµРІСЂР°С‰Р°РµРј СЃС‚СЂРѕРєСѓ РІ РѕР±СЉРµРєС‚С‹ РІС‹СЂР°Р¶РµРЅРёР№
+						stroka.MakeAnaliz(); //превращаем строку в объекты выражений
 						allExprArrays.AllStrArrays.add(stroka);
 					}
 				} else {
-					//РїРѕСЃР»РµРґРЅСЏСЏ СЃС‚СЂРѕРєР° С„Р°Р№Р»Р°
+					//последняя строка файла
 					String[] strArr = strLine.split(",");
 					if (strLine.length()<1) {throw new RuntimeException(Error.WRONG_FILE_VALIDATION2.getDescription());}
 					for (String i:strArr) GlobArrs.DefinedArray.add(i.trim());
-					break; // С‚РѕР»СЊРєРѕ РѕРґРЅР° СЃС‚СЂРѕРєР° РїРѕСЃР»Рµ СЂР°Р·РґРµР»РёС‚РµР»СЏ!
+					break; // только одна строка после разделителя!
 				}
 			}
-			br.close(); //РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ, С‚Р°Рє РєР°Рє РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РЅРѕРІР°СЏ РєРѕРЅСЃС‚СЂСѓРєС†РёСЏ try () {}
+			br.close(); //необязательно, так как используется новая конструкция try () {}
 		}catch (IOException e){
 			result = Error.WRONG_READ_FILE.getDescription();
 			return result;
@@ -81,12 +81,12 @@ public class MainProc {
 			return result;
 		}
 
-		//РІ РЅРёР¶РµР»РµР¶Р°С‰РёС… С„СѓРЅРєС†РёСЏС… GetDefined РґР»СЏ РІС‹СЂР°Р¶РµРЅРёСЏ Р·Р°С€РёС‚Р° Р±СѓР»РµРІР° Р»РѕРіРёРєР°
-		//РІС‹С€РµР»РµР¶Р°С‰Р°СЏ С„СѓРЅРєС†РёСЏ
+		//в нижележащих функциях GetDefined для выражения зашита булева логика
+		//вышележащая функция
 		GlobArrs.tempChangedArrs = true;
 		while (GlobArrs.tempChangedArrs) {
 			GlobArrs.tempChangedArrs = false;
-			//РёРґРµРј РїРѕ СЃС‚СЂРѕРєР°Рј
+			//идем по строкам
 			for (SomeExpressionArray str: allExprArrays.AllStrArrays) {
 				try {
 					str.GetDefined();

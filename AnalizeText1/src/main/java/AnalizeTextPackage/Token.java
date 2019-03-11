@@ -1,9 +1,9 @@
-п»їpackage AnalizeTextPackage;
+package AnalizeTextPackage;
 
-public class Token implements Lexema {
+public class Token implements Lexema { 
 	TokenEnum token;
 	
-	public Token(String token) {
+	public Token(String token) { 
 		setToken(token);
 		if (this.token==null) throw new NullPointerException("token is null");
 	}
@@ -21,13 +21,13 @@ public class Token implements Lexema {
 	@Override
 	public Boolean getDefined() {
 		// TODO Auto-generated method stub
-		return true; //С‚РѕРєРµРЅ РІСЃРµРіРґР° РѕРїСЂРµРґРµР»РµРЅ
+		return true; //токен всегда определен
 	}
 
 	@Override
 	public Boolean seeDefined() {
 		// TODO Auto-generated method stub
-		return true; //С‚РѕРєРµРЅ РІСЃРµРіРґР° РѕРїСЂРµРґРµР»РµРЅ
+		return true; //токен всегда определен
 	}
 
 

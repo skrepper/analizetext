@@ -1,13 +1,13 @@
-п»їpackage AnalizeTextPackage;
+package AnalizeTextPackage;
 
-import java.util.HashSet;
+import java.util.HashSet; 
 import java.util.Set;
 
-public class GlobArrs {
+public class GlobArrs { 
 	
 	static Set<String> DefinedArray = new HashSet<String>();  
 	static Set<String> NonDefinedArray = new HashSet<String>();
-	//РїСЂРёР·РЅР°Рє РєРѕРЅС†Р° РїСЂРѕРіСЂР°РјРјС‹ - РёСЃРїРѕР»СЊР·СѓРµС‚СЃВ¤ РІ Р±РµСЃРєРѕРЅРµС‡РЅРѕРј С†РёРєР»Рµ
+	//признак конца программы - используетс¤ в бесконечном цикле
 	public static Boolean tempChangedArrs = false;
 
 }

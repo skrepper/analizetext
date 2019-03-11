@@ -1,10 +1,10 @@
-﻿package AnalizeTextPackage;
+package AnalizeTextPackage;
 
 import java.util.regex.Pattern;
 
 public class Slovo implements Operand, Lexema {
 	String slovo;
-	Boolean dfn = false;
+	Boolean dfn = false; 
 	
 	public Slovo(String sl) {
 		this.setSlovo(sl);
@@ -15,7 +15,7 @@ public class Slovo implements Operand, Lexema {
 	}
 	
 	public String getSlovo() {
-		return slovo;
+		return slovo; 
 	}
 
 //	@Override

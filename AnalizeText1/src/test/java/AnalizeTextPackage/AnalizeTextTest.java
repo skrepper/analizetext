@@ -56,7 +56,7 @@ public class AnalizeTextTest {
 		actual = mainproc.startmainproc(new String[] {textURL});
 		assertThat(actual, allOf(containsString(Error.WRONG_RIGHT_OPERATOR.getDescription())));
 
-		//проверка на ошибку - оператор EQ справа
+		//проверка на ошибку - оператор EQ справа 
 		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_3.txt").toString(), "UTF-8").replace("file:/", "");
 		actual = mainproc.startmainproc(new String[] {textURL});
 		assertThat(actual, allOf(containsString(Error.WRONG_FILE_VALIDATION1.getDescription())));

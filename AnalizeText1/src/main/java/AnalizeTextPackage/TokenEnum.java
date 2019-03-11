@@ -1,11 +1,11 @@
 package AnalizeTextPackage;
 
-public enum TokenEnum {
+public enum TokenEnum { 
 	AND, 
 	OR,
 	EQ;
 	
-	public String getVal() {
+	public String getVal() { 
 		if (this == AND) return "&&"; 
 		if (this == OR) return "||";
 		if (this == EQ) return "->";

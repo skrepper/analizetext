@@ -1,6 +1,6 @@
-п»їpackage AnalizeTextPackage;
+package AnalizeTextPackage;
 
-public class Expression implements Operand, Lexema {
+public class Expression implements Operand, Lexema { 
 	Operand operand1;
 	Operand operand2;
 	Token token;
@@ -39,7 +39,7 @@ public class Expression implements Operand, Lexema {
 	    default: 
 	    	res = false;
         	break;		}
-		this.dfn = res; //Р·Р°РїРѕРјРЅРёС‚СЊ Рё РЅРµ РёРґС‚Рё СЃСЋРґР° РїСЂРё РїРѕСЃР»РµРґСѓСЋС‰РµРј Р°РЅР°Р»РёР·Рµ. РњРѕР¶РµС‚ СЃС‚Р°С‚СЊ РЅРµ РЅСѓР¶РЅС‹Рј, РµСЃР»Рё СЂР°СЃСЃРјР°С‚СЂРёРІР°С‚СЊ РєРѕРЅС„Р»РёРєС‚С‹ РѕРїСЂРµРґРµР»РµРЅРёР№
+		this.dfn = res; //запомнить и не идти сюда при последующем анализе. Может стать не нужным, если рассматривать конфликты определений
 		return res;
 	}
 
