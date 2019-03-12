@@ -38,8 +38,6 @@ public class SomeExpressionArray {
 				}
 			}
 		}
-
-		//System.out.println("------"); // оставил для точки останова
 		
 		//цикл по всем операторам в порядке приоритета
 		for (Integer i:CONSTANT.TokenToPriority.values().stream().sorted(Comparator.reverseOrder()).distinct().collect(Collectors.toList())) {
@@ -70,11 +68,8 @@ public class SomeExpressionArray {
 
 	public Boolean GetDefined() {
 		Boolean res = false;
-		//идем по всем выражениям строки - хот€ на самом деле это цикл из одного выражени€ 
-		// - так как в MakeAnaliz вс€ левая часть превратилась в одно выражение
-		for (Lexema i:ops.stream().limit(ops.size() - 2).collect(Collectors.toList())) {
+		for (Lexema i:ops.stream().limit(ops.size()).collect(Collectors.toList())) {
 			if (!i.seeDefined()) {
-				//System.out.println("-------------"); // оставил дл€ точки останова
 				if (i.getDefined()) {
 					GlobArrs.DefinedArray.add(((Slovo) ops.get(ops.size()-1)).slovo);
 					GlobArrs.NonDefinedArray.remove(((Slovo) ops.get(ops.size()-1)).slovo);

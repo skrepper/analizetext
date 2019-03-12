@@ -28,13 +28,19 @@ public class Expression implements Operand, Lexema {
 	public Boolean getDefined() {
 		// TODO Auto-generated method stub
 		Boolean res = false;
+		Boolean res1;
+		Boolean res2;
 		switch (token.getToken()) 
 		{
 		case AND:
-			res = this.operand1.getDefined() && this.operand2.getDefined();
+			res1 = this.operand1.getDefined();
+			res2 = this.operand2.getDefined();
+			res = res1 && res2;
 			break;
 		case OR:
-			res = this.operand1.getDefined() || this.operand2.getDefined();
+			res1 = this.operand1.getDefined();
+			res2 = this.operand2.getDefined();
+			res = res1 || res2;
 			break;
 	    default: 
 	    	res = false;
