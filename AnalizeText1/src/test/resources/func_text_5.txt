@@ -1,6 +1,6 @@
 summer -> winter
 sum|mer -> winter
-----------------------------
+----------------------------------------------------------------
 summer, autumn, rain, not_in_upper_text
 
 

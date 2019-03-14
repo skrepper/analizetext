@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+package analizetextpackage;
 
 public class Expression implements Operand, Lexema { 
 	Operand operand1;
@@ -49,11 +49,6 @@ public class Expression implements Operand, Lexema {
 		return res;
 	}
 
-	@Override
-	public void setDefined(Boolean p_dfn) {
-		// TODO Auto-generated method stub
-		dfn = p_dfn;
-	}
 	@Override
 	public Boolean seeDefined() {
 		// TODO Auto-generated method stub

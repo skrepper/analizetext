@@ -1,0 +1,6 @@
+summer rain -> 
+spring || winter -> spring - dump 
+summer || rain -> snow
+dump || rain -> mud
+----------------------------------------------------------------
+summer, autumn, winter, not_in_upper_text1

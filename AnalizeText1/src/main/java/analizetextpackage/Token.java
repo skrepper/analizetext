@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+package analizetextpackage;
 
 public class Token implements Lexema { 
 	TokenEnum token;
@@ -14,7 +14,7 @@ public class Token implements Lexema {
 	
 	public void setToken(String token) {
 		for (TokenEnum i:TokenEnum.values()) {
-			if (i.getVal().equals(token)) this.token = i;
+			if (i.getVal().equals(token)) this.token = i; 
 		};
 	}
 
@@ -30,5 +30,15 @@ public class Token implements Lexema {
 		return true; //токен всегда определен
 	}
 
+	
+	public static final String GetAllTokensRegExpr() {
+		String result = "";
+		for (TokenEnum i:TokenEnum.values()) {
+			result = result + ((result.length()==0)?i.getRegExp():"|"+i.getRegExp());
+		}
+			return result; 
+	}
+
+	
 
 }

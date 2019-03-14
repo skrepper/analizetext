@@ -1,4 +1,4 @@
-package AnalizeTextPackage;
+package analizetextpackage;
 
 public enum TokenEnum { 
 	AND, 
@@ -14,7 +14,7 @@ public enum TokenEnum {
 
 	public String getRegExp() {
 		if (this == AND) return "&&"; 
-		if (this == OR) return "\\|\\|";
+		if (this == OR) return "\\|\\|"; 
 		if (this == EQ) return "->";
 		return "";
 	};

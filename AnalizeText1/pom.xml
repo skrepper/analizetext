@@ -32,7 +32,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>AnalizeTextPackage.Main</mainClass>
+							<mainClass>analizetextpackage.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
