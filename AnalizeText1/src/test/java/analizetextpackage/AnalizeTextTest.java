@@ -99,20 +99,34 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent7() throws UnsupportedEncodingException {
 
-		// проверка слов на пустоту
-		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_7.txt").toString(), "UTF-8")
-				.replace("file:/", "");
+		// проверка на правильную длину разделителя в 64 черточки
+		textURL = getUrl("../func_text_7.txt");
 		actual = mainproc.startMainpProc(new String[] { textURL });
 		assertThat(actual, allOf(containsString(Error.WRONG_FILE_VALIDATION1.getDescription())));
 	}
 
 	@Test
+	public void testContent8() throws UnsupportedEncodingException {
+
+		// проверка на пробелы
+		textURL = getUrl("../func_text_8.txt");
+		actual = mainproc.startMainpProc(new String[] { textURL });
+		assertThat(actual, allOf(containsString("В имени переменных встречаются пробелы")));
+	}
+	
+	
+	@Test
 	public void testArgs() {
-		// проверка на правильную длину разделителя в 64 черточки
+		// на отсутствие имени файла
 		String actual = mainproc.startMainpProc(new String[] { "" });
 		assertThat(actual, anyOf(containsString(Error.ENTER_FILE_NAME.getDescription())));
 		// проверка на ошибку в имени файла
 		actual = mainproc.startMainpProc(new String[] { "wrong name" });
 		assertThat(actual, anyOf(containsString(Error.WRONG_READ_FILE.getDescription())));
+	}
+	
+	private String getUrl(String relativeNameOfFile) throws UnsupportedEncodingException {
+		return URLDecoder.decode(this.getClass().getResource(relativeNameOfFile).toString(), "UTF-8").replace("file:/", "");
+//		return this.getClass().getResource(relativeNameOfFile).toString().replace("file:/", ""); непонятно почему так не работает
 	}
 }
