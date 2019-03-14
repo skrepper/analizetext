@@ -92,7 +92,7 @@ public class AnalizeTextTest {
 		// проверка слов на пустоту
 		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_6.txt").toString(), "UTF-8")
 				.replace("file:/", "");
-		actual = mainproc.startMainpProc(new String[] { textURL });
+		actual = mainproc.startMainpProc(new String[] { textURL }); 
 		assertThat(actual, allOf(equalTo(Error.EMPTY_SLOVO.getDescription())));
 	}
 

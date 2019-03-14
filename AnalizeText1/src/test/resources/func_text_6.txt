@@ -1,4 +1,4 @@
-summer rain -> 
+summer || rain -> 
 spring || winter -> spring - dump 
 summer || rain -> snow
 dump || rain -> mud
