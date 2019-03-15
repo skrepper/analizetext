@@ -26,15 +26,18 @@ public class Main {
 		final String FILE_END_DELIMITER = String.join("", IntStream.range(0, 64).mapToObj(i->"-").collect(Collectors.toList()));
 
 		String filePathName;
-
+		try {
 		if (arg.length == 0 || arg[0].length() == 0) {
 			throw new RuntimeException("Введите имя файла.");
 		} else {
 			filePathName = arg[0];
-		}
+		};
+
 
 		Boolean beforeDelim = true;
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)))) {
+		try (
+				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)
+						))) {
 
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
@@ -98,15 +101,18 @@ public class Main {
 				}
 			}
 
-			System.out.println(String.join(", ", GlobArrs.DefinedArray));
+			System.out.print(String.join(", ", GlobArrs.DefinedArray));
 			
 		
 		} catch (IOException e) {
-			System.out.println("Файл не найден");
+			throw new IOException("Файл не найден");
 		} catch (RuntimeException e) {
-			System.out.println(e.getMessage());
+			throw e;
 		}
-
+		} catch (Exception e) {
+			System.out.print(e.getMessage());
+		}
+		
 		
 	}
 }
