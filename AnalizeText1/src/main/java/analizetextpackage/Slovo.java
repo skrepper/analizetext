@@ -23,7 +23,7 @@ public class Slovo implements Operand, Lexema {
 		if (Pattern.compile("(&|\\||>)").matcher(slovo).find()) {
 			throw new RuntimeException(Error.WRONG_SPECIAL_SYMBOL.getDescription());
 		}
-		if (Pattern.compile("$_\\d").matcher(slovo).find()) {
+		if (Pattern.compile("^_\\d").matcher(slovo).find()) {
 			throw new RuntimeException("В имени переменных встречаются цифры вначале");
 		}
 		if (slovo.length()==0) {

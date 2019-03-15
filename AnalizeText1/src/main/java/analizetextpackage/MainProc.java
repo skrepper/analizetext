@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class MainProc {
 
-	public String startMainpProc(String[] arg) {
+	public String startMainProc(String[] arg) throws IOException {
 
 		String result;
 		Pattern pattern;
@@ -27,7 +27,7 @@ public class MainProc {
 		String filePathName;
 
 		if (arg.length == 0 || arg[0].length() == 0) {
-			return Error.ENTER_FILE_NAME.getDescription();
+			throw new RuntimeException("Введите имя файла.");
 		} else {
 			filePathName = arg[0];
 		}
@@ -44,16 +44,15 @@ public class MainProc {
 						// -> - символ EQ
 						String[] strArr = strLine.split(TokenEnum.EQ.getVal());
 						if (strArr.length < 2) {
-							throw new RuntimeException(Error.WRONG_FILE_VALIDATION1.getDescription());
+							throw new RuntimeException("Ошибка валидации файла - неверное построение функции.");
 						}
 						if (strArr.length > 2) {
-							throw new RuntimeException(Error.WRONG_FILE_VALIDATION3.getDescription());
+							throw new RuntimeException("Ошибка валидации файла - слишком много ->.");
 						}
 						pattern = Pattern.compile(Token.GetAllTokensRegExpr());
 						matcher = pattern.matcher(strArr[1]);
 						if (matcher.find()) {
-							result = Error.WRONG_RIGHT_OPERATOR.getDescription();
-							return result;
+							throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
 						}
 						// все что справа от EQ - в массив неопределенных слов
 						GlobArrs.NonDefinedArray.add(strArr[1].trim());
@@ -74,7 +73,7 @@ public class MainProc {
 					// последняя строка файла
 					String[] strArr = strLine.split(",");
 					if (strLine.length() < 1) {
-						throw new RuntimeException(Error.WRONG_FILE_VALIDATION2.getDescription());
+						throw new RuntimeException("Ошибка валидации файла - неверная строка в конце файла.");
 					}
 					for (String i : strArr)
 						GlobArrs.DefinedArray.add(i.trim());
@@ -83,11 +82,9 @@ public class MainProc {
 			}
 			br.close(); // необязательно, так как используется новая конструкция try () {}
 		} catch (IOException e) {
-			result = Error.WRONG_READ_FILE.getDescription();
-			return result;
+			throw e;
 		} catch (RuntimeException e) {
-			result = e.getMessage();
-			return result;
+			throw new RuntimeException(e.getMessage());
 		}
 
 		// в нижележащих функциях GetDefined для выражения зашита булева логика
@@ -100,8 +97,7 @@ public class MainProc {
 				try {
 					str.getDefined();
 				} catch (RuntimeException e) {
-					result = e.getMessage();
-					return result;
+					throw new RuntimeException(e.getMessage());
 				}
 			}
 		}

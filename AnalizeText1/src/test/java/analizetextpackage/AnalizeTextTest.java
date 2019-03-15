@@ -1,132 +1,146 @@
 package analizetextpackage;
 
-import static org.hamcrest.Matchers. *;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.Arrays;
+
+import java.io.*;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import analizetextpackage.Error;
-import analizetextpackage.MainProc;
 
 public class AnalizeTextTest {
 
-	private static MainProc mainproc;
 	private String textURL;
-	private String actual;
 	private String[] actualArray;
 
-	@BeforeClass
-	public static void initAnalize() {
-		mainproc = new MainProc();
-	}
+    private final InputStream systemIn = System.in;
+    private final PrintStream systemOut = System.out;
 
-	@Before
-	public void beforeEachTest() {
-		System.out.println("This is executed before each Test");
-	}
+    private ByteArrayInputStream testIn;
+    private ByteArrayOutputStream testOut;
+	
+    @Before
+    public void setUpOutput() {
+        testOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(testOut));
+    }
 
-	@After
-	public void afterEachTest() {
-		System.out.println("This is excecuted after each Test");
-	}
-
+    @After
+    public void restoreSystemInputOutput() {
+        System.setIn(systemIn);
+        System.setOut(systemOut);
+    }
+    
 	@Test
-	public void testContent1() throws UnsupportedEncodingException {
+	public void testContent1() throws IOException {
 		// проверка слов внизу и 1 простое определение
-		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_1.txt").toString(), "UTF-8")
-				.replace("file:/", "");
-		actualArray = mainproc.startMainpProc(new String[] { textURL }).split(", ");
-		assertThat(Arrays.asList(actualArray), containsInAnyOrder(Arrays.asList(equalTo("autumn"), equalTo("winter"), equalTo("rain"),
-				equalTo("summer"), equalTo("not_in_upper_text"))));
-		assertThat(actualArray.length, equalTo(5));
+		textURL = getUrl("../func_text_1.txt");
+		
+		Main.main(new String[] { textURL });
+		actualArray = getOutput().split(", ");
+		assertThat(Arrays.asList(actualArray), 
+				containsInAnyOrder(
+						Arrays.asList(
+								equalTo("autumn"), 
+						        equalTo("winter"), 
+						        equalTo("rain"),
+				                equalTo("summer"))));
+		assertThat(actualArray.length, equalTo(4)); 
 	}
 
-	@Test
-	public void testContent2() throws UnsupportedEncodingException {
+	@Test(expected = RuntimeException.class)
+	public void testContent2() throws IOException {
 		// проверка на ошибку - оператор справа
-		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_2.txt").toString(), "UTF-8")
-				.replace("file:/", "");
-		actual = mainproc.startMainpProc(new String[] { textURL });
-		assertThat(actual, allOf(equalTo(Error.WRONG_RIGHT_OPERATOR.getDescription())));
+		textURL = getUrl("../func_text_2.txt");
+		Main.main(new String[] { textURL });
 	}
 
-	@Test
-	public void testContent3() throws UnsupportedEncodingException {
+	@Test(expected = RuntimeException.class)
+	public void testContent3() throws IOException {
 		// проверка на ошибку - оператор EQ справа
-		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_3.txt").toString(), "UTF-8")
-				.replace("file:/", "");
-		actual = mainproc.startMainpProc(new String[] { textURL });
-		assertThat(actual, allOf(equalTo(Error.WRONG_FILE_VALIDATION3.getDescription())));
+		textURL = getUrl("../func_text_3.txt");
+		Main.main(new String[] { textURL });
 	}
 
-	@Test
-	public void testContent4() throws UnsupportedEncodingException {
+	@Test(expected = RuntimeException.class)
+	public void testContent4() throws IOException {
 
 		// проверка на ошибку - оператор EQ справа
-		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_4.txt").toString(), "UTF-8")
-				.replace("file:/", "");
-		actual = mainproc.startMainpProc(new String[] { textURL });
-		assertThat(actual, allOf(equalTo(Error.WRONG_FILE_VALIDATION2.getDescription())));
+		textURL = getUrl("../func_text_4.txt");
+		Main.main(new String[] { textURL });
 	}
 
-	@Test
-	public void testContent5() throws UnsupportedEncodingException {
+	@Test(expected = RuntimeException.class)
+	public void testContent5() throws IOException {
 
 		// проверка слов на спецсимволы
-		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_5.txt").toString(), "UTF-8")
-				.replace("file:/", "");
-		actual = mainproc.startMainpProc(new String[] { textURL });
-		assertThat(actual, allOf(equalTo(Error.WRONG_SPECIAL_SYMBOL.getDescription())));
+		textURL = getUrl("../func_text_5.txt");
+		Main.main(new String[] { textURL });
 	}
 
-	@Test
-	public void testContent6() throws UnsupportedEncodingException {
+	@Test(expected = RuntimeException.class)
+	public void testContent6() throws IOException {
 
 		// проверка слов на пустоту
-		textURL = URLDecoder.decode(this.getClass().getResource("../func_text_6.txt").toString(), "UTF-8")
-				.replace("file:/", "");
-		actual = mainproc.startMainpProc(new String[] { textURL }); 
-		assertThat(actual, allOf(equalTo(Error.EMPTY_SLOVO.getDescription())));
+		textURL = getUrl("../func_text_6.txt");
+		Main.main(new String[] { textURL }); 
 	}
 
-	@Test
-	public void testContent7() throws UnsupportedEncodingException {
+	@Test(expected = RuntimeException.class)
+	public void testContent7() throws IOException {
 
 		// проверка на правильную длину разделителя в 64 черточки
 		textURL = getUrl("../func_text_7.txt");
-		actual = mainproc.startMainpProc(new String[] { textURL });
-		assertThat(actual, allOf(containsString(Error.WRONG_FILE_VALIDATION1.getDescription())));
+		Main.main(new String[] { textURL });
 	}
 
-	@Test
-	public void testContent8() throws UnsupportedEncodingException {
+	@Test(expected = RuntimeException.class)
+	public void testContent8() throws IOException {
 
 		// проверка на пробелы
 		textURL = getUrl("../func_text_8.txt");
-		actual = mainproc.startMainpProc(new String[] { textURL });
-		assertThat(actual, allOf(containsString("В имени переменных встречаются пробелы")));
+		Main.main(new String[] { textURL });
+	}
+	
+
+	@Test(expected = RuntimeException.class)
+	public void testContent9() throws IOException {
+
+		// проверка на пробелы
+		textURL = getUrl("../func_text_9.txt");
+		Main.main(new String[] { textURL });
 	}
 	
 	
-	@Test
-	public void testArgs() {
+	@Test(expected = RuntimeException.class)
+	public void testArgs1() throws IOException {
 		// на отсутствие имени файла
-		String actual = mainproc.startMainpProc(new String[] { "" });
-		assertThat(actual, anyOf(containsString(Error.ENTER_FILE_NAME.getDescription())));
+		Main.main(new String[] { "" });
+	}
+	
+	@Test(expected = IOException.class)
+	public void testArgs2() throws IOException {
 		// проверка на ошибку в имени файла
-		actual = mainproc.startMainpProc(new String[] { "wrong name" });
-		assertThat(actual, anyOf(containsString(Error.WRONG_READ_FILE.getDescription())));
+		Main.main(new String[] { "wrong name" });
 	}
 	
 	private String getUrl(String relativeNameOfFile) throws UnsupportedEncodingException {
 		return URLDecoder.decode(this.getClass().getResource(relativeNameOfFile).toString(), "UTF-8").replace("file:/", "");
-//		return this.getClass().getResource(relativeNameOfFile).toString().replace("file:/", ""); непонятно почему так не работает
 	}
+	
+    private void provideInput(String data) {
+        testIn = new ByteArrayInputStream(data.getBytes());
+        System.setIn(testIn);
+    }
+
+    private String getOutput() {
+        return testOut.toString();
+    }
+    
 }
