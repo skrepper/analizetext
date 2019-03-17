@@ -27,6 +27,7 @@ public class Main {
 
 		String filePathName;
 		try {
+			
 		if (arg.length == 0 || arg[0].length() == 0) {
 			throw new RuntimeException("Введите имя файла.");
 		} else {
@@ -57,6 +58,9 @@ public class Main {
 						matcher = pattern.matcher(strArr[1]);
 						if (matcher.find()) {
 							throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
+						}
+						if (strArr[1].trim().length()==0) {
+							throw new RuntimeException("Ошибка валидации файла - в правой части пусто.");
 						}
 						// все что справа от EQ - в массив неопределенных слов
 						GlobArrs.NonDefinedArray.add(strArr[1].trim());

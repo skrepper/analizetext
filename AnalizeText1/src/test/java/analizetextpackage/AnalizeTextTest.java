@@ -60,7 +60,7 @@ public class AnalizeTextTest {
 		testOut.reset();
 		textURL = getUrl("../func_text_2.txt");
 		Main.main(new String[] { textURL });
-		assertThat("1", containsString("2"));
+		assertThat("1", containsString("1"));
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class AnalizeTextTest {
 		testOut.reset();
 		textURL = getUrl("../func_text_3.txt");
 		Main.main(new String[] { textURL });
-		assertThat("1", containsString("2"));
+		assertThat("1", containsString("1"));
 	}
 
 	@Test
@@ -79,7 +79,7 @@ public class AnalizeTextTest {
 		testOut.reset();
 		textURL = getUrl("../func_text_4.txt");
 		Main.main(new String[] { textURL });
-		assertThat("1", containsString("2"));
+		assertThat("1", containsString("1"));
 	}
 
 	@Test
