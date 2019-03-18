@@ -41,6 +41,8 @@ public class SomeExpressionArray {
 				if (prevElementIsSlovo) {
 					ops.add(++indexOfAdd, new Token(i.trim()));
 					prevElementIsSlovo = false;
+				} 	else {
+					throw new RuntimeException("¬ левой части выражени€ сто€т 2 оператора подр€д.");
 				}
 			} else {
 				if (!prevElementIsSlovo) {

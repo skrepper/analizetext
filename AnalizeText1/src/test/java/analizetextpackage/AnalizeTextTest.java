@@ -124,6 +124,16 @@ public class AnalizeTextTest {
 		assertThat(testOut.toString(), equalTo("В имени переменных встречаются пробелы"));
 	}
 	
+
+	@Test
+	public void testContent10() throws IOException {
+
+		// проверка на пробелы внизу
+		testOut.reset();
+		Main.main(new String[] { getUrl("../func_text_10.txt") });
+		assertThat(testOut.toString(), equalTo("В левой части выражения стоят 2 оператора подряд."));
+	}
+	
 	
 	@Test
 	public void testArgs1() throws IOException {
