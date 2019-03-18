@@ -1,4 +1,4 @@
-summer -> winter -> rock
+summer -> winter || rock
 ----------------------------------------------------------------
 summer, autumn, rain, not_in_upper_text
 

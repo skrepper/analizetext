@@ -28,14 +28,14 @@ public class Main {
 		String filePathName;
 		try {
 			
-		if (arg.length == 0 || arg[0].length() == 0) {
+		if (arg.length == 0 ) { /* уберем || arg[0].length() == 0 - тогда сработает ошибка файл не найден*/
 			throw new RuntimeException("Введите имя файла.");
 		} else {
 			filePathName = arg[0];
 		};
 
 
-		Boolean beforeDelim = true;
+		boolean beforeDelim = true;
 		try (
 				BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)
 						))) {
@@ -54,13 +54,13 @@ public class Main {
 						if (strArr.length > 2) {
 							throw new RuntimeException("Ошибка валидации файла - слишком много ->.");
 						}
+						if (strArr[1].trim().length()==0) {
+							throw new RuntimeException("Ошибка валидации файла - в правой части пусто.");
+						}
 						pattern = Pattern.compile(Token.GetAllTokensRegExpr());
 						matcher = pattern.matcher(strArr[1]);
 						if (matcher.find()) {
 							throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
-						}
-						if (strArr[1].trim().length()==0) {
-							throw new RuntimeException("Ошибка валидации файла - в правой части пусто.");
 						}
 						// все что справа от EQ - в массив неопределенных слов
 						GlobArrs.NonDefinedArray.add(strArr[1].trim());
@@ -83,8 +83,10 @@ public class Main {
 					if (strLine.length() < 1) {
 						throw new RuntimeException("Ошибка валидации файла - неверная строка в конце файла.");
 					}
-					for (String i : strArr)
+					for (String i : strArr) {
+						Slovo.checkSlovo(i.trim());
 						GlobArrs.DefinedArray.add(i.trim());
+					}
 					break; // только одна строка после разделителя!
 				}
 			}
@@ -110,9 +112,7 @@ public class Main {
 		
 		} catch (IOException e) {
 			throw new IOException("Файл не найден");
-		} catch (RuntimeException e) {
-			throw e;
-		}
+		} 
 		} catch (Exception e) {
 			System.out.print(e.getMessage());
 		}

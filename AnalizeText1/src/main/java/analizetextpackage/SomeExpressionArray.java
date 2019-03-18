@@ -31,15 +31,26 @@ public class SomeExpressionArray {
 		String expr = "(" + Token.GetAllTokensRegExpr() + ")"; //"(&&|\\|\\|)";
 		String[] res = splitPreserveDelimiter(sl, expr);
 		Pattern token_pattern = Pattern.compile(expr);
-		int indexOfAdd = 0; // массив res должен заместить первый элемент ops
+		if (token_pattern.matcher(res[0]).matches() || token_pattern.matcher(res[res.length-1]).matches()) {
+			throw new RuntimeException("По краям левой части выражения стоят операторы");
+		}
+		int indexOfAdd = -1; // массив res должен заместить первый (0 - index) элемент ops
+		boolean prevElementIsSlovo = false; //проверка чередований операторов и операндов  
 		for (String i:res){
 			if (token_pattern.matcher(i).matches()) {
-				ops.add(++indexOfAdd, new Token(i.trim()));				
+				if (prevElementIsSlovo) {
+					ops.add(++indexOfAdd, new Token(i.trim()));
+					prevElementIsSlovo = false;
+				}
 			} else {
-				if (indexOfAdd!=0) {
-					ops.add(++indexOfAdd, new Slovo(i.trim()));
-				} else {
-					ops.set(0, new Slovo(i.trim()));
+				if (!prevElementIsSlovo) {
+					if (indexOfAdd!=-1) {
+						ops.add(++indexOfAdd, new Slovo(i.trim()));
+					} else {
+						ops.set(0, new Slovo(i.trim()));
+						++indexOfAdd;
+					}
+					prevElementIsSlovo = true;
 				}
 			}
 		}
@@ -71,8 +82,8 @@ public class SomeExpressionArray {
 		}
 	};
 
-	public Boolean getDefined() {
-		Boolean res = false;
+	public boolean getDefined() {
+		boolean res = false;
 		for (Lexema i:ops.stream().limit(ops.size()).collect(Collectors.toList())) {
 			if (!i.seeDefined()) {
 				if (i.getDefined()) {

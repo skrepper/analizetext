@@ -19,13 +19,13 @@ public class Token implements Lexema {
 	}
 
 	@Override
-	public Boolean getDefined() {
+	public boolean getDefined() {
 		// TODO Auto-generated method stub
 		return true; //токен всегда определен
 	}
 
 	@Override
-	public Boolean seeDefined() {
+	public boolean seeDefined() {
 		// TODO Auto-generated method stub
 		return true; //токен всегда определен
 	}

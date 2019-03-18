@@ -8,6 +8,6 @@ public class GlobArrs {
 	static Set<String> DefinedArray = new HashSet<String>();  
 	static Set<String> NonDefinedArray = new HashSet<String>();
 	//признак конца программы - используется в бесконечном цикле
-	public static Boolean tempChangedArrs = false; 
+	public static boolean tempChangedArrs = false; 
 
 }

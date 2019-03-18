@@ -4,7 +4,7 @@ public class Expression implements Operand, Lexema {
 	Operand operand1;
 	Operand operand2;
 	Token token;
-	Boolean dfn = false;
+	boolean dfn = false;
 	
 	public Operand getOperand1() {
 		return operand1;
@@ -25,11 +25,11 @@ public class Expression implements Operand, Lexema {
 		this.token = token;
 	}
 	@Override
-	public Boolean getDefined() {
+	public boolean getDefined() {
 		// TODO Auto-generated method stub
-		Boolean res = false;
-		Boolean res1;
-		Boolean res2;
+		boolean res = false;
+		boolean res1;
+		boolean res2;
 		switch (token.getToken()) 
 		{
 		case AND:
@@ -50,7 +50,7 @@ public class Expression implements Operand, Lexema {
 	}
 
 	@Override
-	public Boolean seeDefined() {
+	public boolean seeDefined() {
 		// TODO Auto-generated method stub
 		return dfn;
 	}

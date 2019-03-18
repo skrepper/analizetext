@@ -41,8 +41,7 @@ public class AnalizeTextTest {
 	public void testContent1() throws IOException {
 		// проверка слов внизу и 1 простое определение
 		testOut.reset();
-		textURL = getUrl("../func_text_1.txt");
-		Main.main(new String[] { textURL });
+		Main.main(new String[] { getUrl("../func_text_1.txt") });
 		actualArray = getOutput().split(", ");
 		assertThat(Arrays.asList(actualArray), 
 				containsInAnyOrder(
@@ -58,18 +57,16 @@ public class AnalizeTextTest {
 	public void testContent2() throws IOException {
 		// проверка на ошибку - оператор справа
 		testOut.reset();
-		textURL = getUrl("../func_text_2.txt");
-		Main.main(new String[] { textURL });
-		assertThat("1", containsString("1"));
+		Main.main(new String[] { getUrl("../func_text_2.txt") });
+		assertThat("1", equalTo("1"));
 	}
 
 	@Test
 	public void testContent3() throws IOException {
 		// проверка на ошибку - оператор EQ справа
 		testOut.reset();
-		textURL = getUrl("../func_text_3.txt");
-		Main.main(new String[] { textURL });
-		assertThat("1", containsString("1"));
+		Main.main(new String[] { getUrl("../func_text_3.txt") });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - в правой части операторы."));
 	}
 
 	@Test
@@ -77,9 +74,8 @@ public class AnalizeTextTest {
 
 		// проверка на ошибку - оператор EQ справа
 		testOut.reset();
-		textURL = getUrl("../func_text_4.txt");
-		Main.main(new String[] { textURL });
-		assertThat("1", containsString("1"));
+		Main.main(new String[] { getUrl("../func_text_4.txt") });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - неверная строка в конце файла."));
 	}
 
 	@Test
@@ -87,9 +83,8 @@ public class AnalizeTextTest {
 
 		// проверка слов на спецсимволы
 		testOut.reset();
-		textURL = getUrl("../func_text_5.txt");
-		Main.main(new String[] { textURL });
-		assertThat("1", containsString("1"));
+		Main.main(new String[] { getUrl("../func_text_5.txt") });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - в словах встречаются спецсимволы."));
 	}
 
 	@Test
@@ -97,9 +92,8 @@ public class AnalizeTextTest {
 
 		// проверка слов на пустоту
 		testOut.reset();
-		textURL = getUrl("../func_text_6.txt");
-		Main.main(new String[] { textURL }); 
-		assertThat("1", containsString("1"));
+		Main.main(new String[] { getUrl("../func_text_6.txt") }); 
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - в правой части пусто."));
 	}
 
 	@Test
@@ -107,29 +101,27 @@ public class AnalizeTextTest {
 
 		// проверка на правильную длину разделителя в 64 черточки
 		testOut.reset();
-		textURL = getUrl("../func_text_7.txt");
-		Main.main(new String[] { textURL });
-		assertThat("1", containsString("1"));
+		Main.main(new String[] { getUrl("../func_text_7.txt") });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - неверное построение функции."));
 	}
 
 	@Test
 	public void testContent8() throws IOException {
 
-		// проверка на пробелы
+		// проверка на пробелы вверху
 		testOut.reset();
-		textURL = getUrl("../func_text_8.txt");
-		Main.main(new String[] { textURL });
+		Main.main(new String[] { getUrl("../func_text_8.txt") });
+		assertThat(testOut.toString(), equalTo("В имени переменных встречаются пробелы"));
 	}
 	
 
 	@Test
 	public void testContent9() throws IOException {
 
-		// проверка на пробелы
+		// проверка на пробелы внизу
 		testOut.reset();
-		textURL = getUrl("../func_text_9.txt");
-		Main.main(new String[] { textURL });
-		assertThat("1", containsString("1"));
+		Main.main(new String[] { getUrl("../func_text_9.txt") });
+		assertThat(testOut.toString(), equalTo("В имени переменных встречаются пробелы"));
 	}
 	
 	
@@ -137,8 +129,8 @@ public class AnalizeTextTest {
 	public void testArgs1() throws IOException {
 		// на отсутствие имени файла
 		testOut.reset();
-		Main.main(new String[] { "" });
-		assertThat("1", containsString("1"));
+		Main.main(new String[] {  });
+		assertThat(testOut.toString(), equalTo("Введите имя файла."));
 	}
 	
 	@Test
@@ -146,7 +138,7 @@ public class AnalizeTextTest {
 		// проверка на ошибку в имени файла
 		testOut.reset();
 		Main.main(new String[] { "wrong name" });
-		assertThat("1", containsString("1"));
+		assertThat(testOut.toString(), equalTo("Файл не найден"));
 	}
 	
 	private String getUrl(String relativeNameOfFile) throws UnsupportedEncodingException {
