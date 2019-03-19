@@ -19,7 +19,7 @@ public class Token implements Lexema {
 	}
 
 	@Override
-	public boolean getDefined() {
+	public boolean getDefinedOperand() {
 		// TODO Auto-generated method stub
 		return true; //токен всегда определен
 	}

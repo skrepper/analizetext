@@ -33,13 +33,13 @@ public class Expression implements Operand, Lexema {
 		switch (token.getToken()) 
 		{
 		case AND:
-			res1 = this.operand1.getDefined();
-			res2 = this.operand2.getDefined();
+			res1 = this.operand1.getDefinedOperand();
+			res2 = this.operand2.getDefinedOperand();
 			res = res1 && res2;
 			break;
 		case OR:
-			res1 = this.operand1.getDefined();
-			res2 = this.operand2.getDefined();
+			res1 = this.operand1.getDefinedOperand();
+			res2 = this.operand2.getDefinedOperand();
 			res = res1 || res2;
 			break;
 	    default: 

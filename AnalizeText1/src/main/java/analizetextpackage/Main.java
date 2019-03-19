@@ -19,14 +19,14 @@ import javax.management.RuntimeErrorException;
 
 public class Main {
 
-	private Set<String> DefinedArray = new HashSet<String>();  
-	private Set<String> NonDefinedArray = new HashSet<String>();
 	//признак конца программы - используется в бесконечном цикле
 	private static boolean tempChangedArrs = false; 
 	
 	
 	public static void main(String[] arg) throws IOException {
-		ParsingStroki parser = new ParsingStroki();
+		DefinedArrayClass definedArrayObject = new DefinedArrayClass(); 
+		NonDefinedArrayClass nonDefinedArrayObject = new NonDefinedArrayClass(); 
+		ParsingStroki parser = new ParsingStroki(definedArrayObject, nonDefinedArrayObject);
 
 		final String FILE_END_DELIMITER = String.join("",
 				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
@@ -38,8 +38,6 @@ public class Main {
 			return;
 		}
 		filePathName = arg[0];
-		GlobArrs.DefinedArray.clear();
-		GlobArrs.NonDefinedArray.clear();
 		boolean beforeDelim = true;
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)))) {
 
@@ -58,19 +56,15 @@ public class Main {
 			br.close(); // необязательно, так как используется конструкция try ()
 			
 			// в нижележащих функциях GetDefined для выражения зашита булева логика
-			GlobArrs.tempChangedArrs = true;
-			while (GlobArrs.tempChangedArrs) {
-				GlobArrs.tempChangedArrs = false;
+			tempChangedArrs = true;
+			while (tempChangedArrs) {
+				tempChangedArrs = false;
 				// идем по строкам
 				for (SomeExpressionArray str : AllExpressionArrays.allStrArrays) {
-					//try {
 						str.getDefined();
-					/*} catch (RuntimeException e) {
-						throw new RuntimeException(e.getMessage());
-					}*/
 				}
 			}
-			System.out.print(String.join(", ", GlobArrs.DefinedArray));
+			System.out.print(String.join(", ", definedArrayObject.definedArray));
 		} catch (IOException e) {
 			System.err.print("Файл не найден");
 		} catch (Exception e) {

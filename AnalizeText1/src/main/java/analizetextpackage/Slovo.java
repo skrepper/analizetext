@@ -21,7 +21,7 @@ public class Slovo implements Operand, Lexema {
 	@Override
 	public boolean getDefined() {
 		checkSlovo(slovo);
-		this.dfn = GlobArrs.DefinedArray.contains(slovo);
+		this.dfn = GlobArrs.DefinedArrayClass.contains(slovo);
 		return this.dfn;
 	}
 

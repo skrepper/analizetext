@@ -18,8 +18,13 @@ public class SomeExpressionArray {
 	public ArrayList<Lexema> ops = new ArrayList<>();
 
 	// программа не учитывает круглые скобки!
-	public void makeAnaliz() {
+	public void makeAnaliz(String [] strArr) {
 
+		ops.add(new Slovo(strArr[0].trim()));
+		ops.add(new Token(TokenEnum.EQ.getVal()));
+		ops.add(new Slovo(strArr[1].trim()));
+		
+		
 		String sl = null;
 		if (ops.get(0) instanceof Slovo) {
 			sl = ((Slovo) ops.get(0)).getSlovo();
@@ -90,9 +95,9 @@ public class SomeExpressionArray {
 		boolean res = false;
 		for (Lexema i : ops.stream().limit(ops.size()).collect(Collectors.toList())) {
 			if (!i.seeDefined()) {
-				if (i.getDefined()) {
-					GlobArrs.DefinedArray.add(((Slovo) ops.get(ops.size() - 1)).getSlovo());
-					GlobArrs.NonDefinedArray.remove(((Slovo) ops.get(ops.size() - 1)).getSlovo());
+				if (i.getDefinedOperand()) {
+					GlobArrs.DefinedArrayClass.add(((Slovo) ops.get(ops.size() - 1)).getSlovo());
+					GlobArrs.NonDefinedArrayClass.remove(((Slovo) ops.get(ops.size() - 1)).getSlovo());
 					GlobArrs.tempChangedArrs = true;
 				}
 			}

@@ -1,6 +1,6 @@
 package analizetextpackage;
 
 public interface Operand {  
-	public boolean getDefined(); // set property and see descendants
+	public boolean getDefinedOperand(); // set property and see descendants
 
 }
