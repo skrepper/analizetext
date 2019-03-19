@@ -15,7 +15,7 @@ public class Token implements Lexema {
 	public void setToken(String token) {
 		for (TokenEnum i:TokenEnum.values()) {
 			if (i.getVal().equals(token)) this.token = i; 
-		};
+		}
 	}
 
 	@Override
@@ -39,6 +39,5 @@ public class Token implements Lexema {
 			return result; 
 	}
 
-	
 
 }

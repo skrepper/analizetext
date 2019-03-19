@@ -19,30 +19,29 @@ public class AnalizeTextTest {
 	private String textURL;
 	private String[] actualArray;
 
-    private final InputStream systemIn = System.in;
-    private final PrintStream systemOut = System.out;
+    private final PrintStream systemOut = System.out, systemErr = System.err;
 
-    private ByteArrayInputStream testIn;
-    private ByteArrayOutputStream testOut;
+    private ByteArrayOutputStream testOut, errOut;
 	
     @Before
     public void setUpOutput() {
         testOut = new ByteArrayOutputStream();
+//        errOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(testOut));
+        System.setErr(new PrintStream(testOut));
     }
 
     @After
     public void restoreSystemInputOutput() {
-        System.setIn(systemIn);
         System.setOut(systemOut);
+        System.setErr(systemErr);
     }
     
 	@Test
 	public void testContent1() throws IOException {
-		// РїСЂРѕРІРµСЂРєР° СЃР»РѕРІ РІРЅРёР·Сѓ Рё 1 РїСЂРѕСЃС‚РѕРµ РѕРїСЂРµРґРµР»РµРЅРёРµ
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_1.txt") });
-		actualArray = getOutput().split(", ");
+		// проверка слов внизу и 1 простое определение
+		Main.main(new String[] { "target/test-classes/func_text_1.txt" });
+		actualArray = testOut.toString().split(", ");
 		assertThat(Arrays.asList(actualArray), 
 				containsInAnyOrder(
 						Arrays.asList(
@@ -55,113 +54,97 @@ public class AnalizeTextTest {
 
 	@Test
 	public void testContent2() throws IOException {
-		// РїСЂРѕРІРµСЂРєР° РЅР° РѕС€РёР±РєСѓ - РѕРїРµСЂР°С‚РѕСЂ СЃРїСЂР°РІР°
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_2.txt") });
-		assertThat("1", equalTo("1"));
+		// проверка на ошибку - оператор справа
+		Main.main(new String[] { "target/test-classes/func_text_2.txt" });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - в правой части операторы."));
 	}
 
 	@Test
 	public void testContent3() throws IOException {
-		// РїСЂРѕРІРµСЂРєР° РЅР° РѕС€РёР±РєСѓ - РѕРїРµСЂР°С‚РѕСЂ EQ СЃРїСЂР°РІР°
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_3.txt") });
-		assertThat(testOut.toString(), equalTo("РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р° - РІ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё РѕРїРµСЂР°С‚РѕСЂС‹."));
+		// проверка на ошибку - оператор EQ справа
+		Main.main(new String[] { "target/test-classes/func_text_3.txt" });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - в правой части операторы."));
 	}
 
 	@Test
 	public void testContent4() throws IOException {
 
-		// РїСЂРѕРІРµСЂРєР° РЅР° РѕС€РёР±РєСѓ - РѕРїРµСЂР°С‚РѕСЂ EQ СЃРїСЂР°РІР°
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_4.txt") });
-		assertThat(testOut.toString(), equalTo("РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р° - РЅРµРІРµСЂРЅР°СЏ СЃС‚СЂРѕРєР° РІ РєРѕРЅС†Рµ С„Р°Р№Р»Р°."));
+		// проверка на ошибку - оператор EQ справа
+		Main.main(new String[] { "target/test-classes/func_text_4.txt" });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - неверная строка в конце файла."));
 	}
 
 	@Test
 	public void testContent5() throws IOException {
 
-		// РїСЂРѕРІРµСЂРєР° СЃР»РѕРІ РЅР° СЃРїРµС†СЃРёРјРІРѕР»С‹
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_5.txt") });
-		assertThat(testOut.toString(), equalTo("РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р° - РІ СЃР»РѕРІР°С… РІСЃС‚СЂРµС‡Р°СЋС‚СЃСЏ СЃРїРµС†СЃРёРјРІРѕР»С‹."));
+		// проверка слов на спецсимволы
+		Main.main(new String[] { "target/test-classes/func_text_5.txt" });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - в словах встречаются спецсимволы."));
 	}
 
 	@Test
 	public void testContent6() throws IOException {
 
-		// РїСЂРѕРІРµСЂРєР° СЃР»РѕРІ РЅР° РїСѓСЃС‚РѕС‚Сѓ
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_6.txt") }); 
-		assertThat(testOut.toString(), equalTo("РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р° - РІ РїСЂР°РІРѕР№ С‡Р°СЃС‚Рё РїСѓСЃС‚Рѕ."));
+		// проверка слов на пустоту
+		Main.main(new String[] { "target/test-classes/func_text_6.txt" }); 
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - в правой части пусто."));
 	}
 
 	@Test
 	public void testContent7() throws IOException {
 
-		// РїСЂРѕРІРµСЂРєР° РЅР° РїСЂР°РІРёР»СЊРЅСѓСЋ РґР»РёРЅСѓ СЂР°Р·РґРµР»РёС‚РµР»СЏ РІ 64 С‡РµСЂС‚РѕС‡РєРё
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_7.txt") });
-		assertThat(testOut.toString(), equalTo("РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё С„Р°Р№Р»Р° - РЅРµРІРµСЂРЅРѕРµ РїРѕСЃС‚СЂРѕРµРЅРёРµ С„СѓРЅРєС†РёРё."));
+		// проверка на правильную длину разделителя в 64 черточки
+		Main.main(new String[] { "target/test-classes/func_text_7.txt" });
+		assertThat(testOut.toString(), equalTo("Ошибка валидации файла - неверное построение функции."));
 	}
 
 	@Test
 	public void testContent8() throws IOException {
 
-		// РїСЂРѕРІРµСЂРєР° РЅР° РїСЂРѕР±РµР»С‹ РІРІРµСЂС…Сѓ
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_8.txt") });
-		assertThat(testOut.toString(), equalTo("Р’ РёРјРµРЅРё РїРµСЂРµРјРµРЅРЅС‹С… РІСЃС‚СЂРµС‡Р°СЋС‚СЃСЏ РїСЂРѕР±РµР»С‹"));
+		// проверка на пробелы вверху
+		Main.main(new String[] { "target/test-classes/func_text_8.txt" });
+		assertThat(testOut.toString(), equalTo("В имени переменных встречаются пробелы"));
 	}
 	
 
 	@Test
 	public void testContent9() throws IOException {
 
-		// РїСЂРѕРІРµСЂРєР° РЅР° РїСЂРѕР±РµР»С‹ РІРЅРёР·Сѓ
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_9.txt") });
-		assertThat(testOut.toString(), equalTo("Р’ РёРјРµРЅРё РїРµСЂРµРјРµРЅРЅС‹С… РІСЃС‚СЂРµС‡Р°СЋС‚СЃСЏ РїСЂРѕР±РµР»С‹"));
+		// проверка на пробелы внизу
+		Main.main(new String[] { "target/test-classes/func_text_9.txt" });
+		assertThat(testOut.toString(), equalTo("В имени переменных встречаются пробелы"));
 	}
 	
 
 	@Test
 	public void testContent10() throws IOException {
 
-		// РїСЂРѕРІРµСЂРєР° РЅР° РїСЂРѕР±РµР»С‹ РІРЅРёР·Сѓ
-		testOut.reset();
-		Main.main(new String[] { getUrl("../func_text_10.txt") });
-		assertThat(testOut.toString(), equalTo("Р’ Р»РµРІРѕР№ С‡Р°СЃС‚Рё РІС‹СЂР°Р¶РµРЅРёСЏ СЃС‚РѕСЏС‚ 2 РѕРїРµСЂР°С‚РѕСЂР° РїРѕРґСЂСЏРґ."));
+		// проверка на пробелы внизу
+		Main.main(new String[] { "target/test-classes/func_text_10.txt" });
+		assertThat(testOut.toString(), equalTo("В левой части выражения стоят 2 оператора подряд."));
+	}
+	
+	@Test
+	public void testContent11() throws IOException {
+
+		// проверка на пробелы внизу
+		Main.main(new String[] { "target/test-classes/func_text_11.txt" });
+		assertThat(testOut.toString(), equalTo("В последней строке файла есть пустые переменные."));
 	}
 	
 	
 	@Test
 	public void testArgs1() throws IOException {
-		// РЅР° РѕС‚СЃСѓС‚СЃС‚РІРёРµ РёРјРµРЅРё С„Р°Р№Р»Р°
-		testOut.reset();
+		// на отсутствие имени файла
 		Main.main(new String[] {  });
-		assertThat(testOut.toString(), equalTo("Р’РІРµРґРёС‚Рµ РёРјСЏ С„Р°Р№Р»Р°."));
+		assertThat(testOut.toString(), equalTo("Введите имя файла."));
 	}
 	
 	@Test
 	public void testArgs2() throws IOException {
-		// РїСЂРѕРІРµСЂРєР° РЅР° РѕС€РёР±РєСѓ РІ РёРјРµРЅРё С„Р°Р№Р»Р°
-		testOut.reset();
+		// проверка на ошибку в имени файла
 		Main.main(new String[] { "wrong name" });
-		assertThat(testOut.toString(), equalTo("Р¤Р°Р№Р» РЅРµ РЅР°Р№РґРµРЅ"));
+		assertThat(testOut.toString(), equalTo("Файл не найден"));
 	}
 	
-	private String getUrl(String relativeNameOfFile) throws UnsupportedEncodingException {
-		return URLDecoder.decode(this.getClass().getResource(relativeNameOfFile).toString(), "UTF-8").replace("file:/", "");
-	}
-	
-    private void provideInput(String data) {
-        testIn = new ByteArrayInputStream(data.getBytes());
-        System.setIn(testIn);
-    }
-
-    private String getOutput() {
-        return testOut.toString();
-    }
-    
 }

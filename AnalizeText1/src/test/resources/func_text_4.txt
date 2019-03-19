@@ -2,5 +2,3 @@ summer -> winter
 ----------------------------------------------------------------
 
 summer, autumn, rain, not_in_upper_text
-
-

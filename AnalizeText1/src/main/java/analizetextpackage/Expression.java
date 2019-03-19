@@ -1,10 +1,10 @@
 package analizetextpackage;
 
 public class Expression implements Operand, Lexema { 
-	Operand operand1;
-	Operand operand2;
-	Token token;
-	boolean dfn = false;
+	private Operand operand1;
+	private Operand operand2;
+	private Token token;
+	private boolean dfn = false;
 	
 	public Operand getOperand1() {
 		return operand1;
