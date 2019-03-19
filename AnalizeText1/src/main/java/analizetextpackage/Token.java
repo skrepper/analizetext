@@ -1,7 +1,7 @@
 package analizetextpackage;
 
 public class Token implements Lexema { 
-	TokenEnum token;
+	private TokenEnum token;
 	
 	public Token(String token) { 
 		setToken(token);
@@ -19,7 +19,7 @@ public class Token implements Lexema {
 	}
 
 	@Override
-	public boolean getDefinedOperand() {
+	public boolean getDefined() {
 		// TODO Auto-generated method stub
 		return true; //токен всегда определен
 	}

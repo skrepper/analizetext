@@ -5,9 +5,11 @@ import java.util.regex.Pattern;
 public class Slovo implements Operand, Lexema {
 	private String slovo;
 	private boolean dfn = false; 
+	private DefinedArrayClass definedArrayObject;
 	
-	public Slovo(String sl) {
+	public Slovo(String sl, DefinedArrayClass p_definedArrayObject) {
 		this.setSlovo(sl);
+		this.definedArrayObject = p_definedArrayObject;
 	}
 	
 	public void setSlovo(String p_slovo) {
@@ -21,7 +23,7 @@ public class Slovo implements Operand, Lexema {
 	@Override
 	public boolean getDefined() {
 		checkSlovo(slovo);
-		this.dfn = GlobArrs.DefinedArrayClass.contains(slovo);
+		this.dfn = definedArrayObject.definedArray.contains(slovo);
 		return this.dfn;
 	}
 
@@ -44,6 +46,12 @@ public class Slovo implements Operand, Lexema {
 		if (Pattern.compile("\\s").matcher(slovo).find()) {
 			throw new RuntimeException("¬ имени переменных встречаютс€ пробелы");
 		}
+	}
+
+	@Override
+	public boolean getDefinedOperand() {
+		// TODO Auto-generated method stub
+		return getDefined();
 	}
 
 }

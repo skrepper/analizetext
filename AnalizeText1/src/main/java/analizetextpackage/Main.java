@@ -19,10 +19,6 @@ import javax.management.RuntimeErrorException;
 
 public class Main {
 
-	//признак конца программы - используется в бесконечном цикле
-	private static boolean tempChangedArrs = false; 
-	
-	
 	public static void main(String[] arg) throws IOException {
 		DefinedArrayClass definedArrayObject = new DefinedArrayClass(); 
 		NonDefinedArrayClass nonDefinedArrayObject = new NonDefinedArrayClass(); 
@@ -55,12 +51,10 @@ public class Main {
 			}
 			br.close(); // необязательно, так как используется конструкция try ()
 			
-			// в нижележащих функциях GetDefined для выражения зашита булева логика
-			tempChangedArrs = true;
-			while (tempChangedArrs) {
-				tempChangedArrs = false;
-				// идем по строкам
-				for (SomeExpressionArray str : AllExpressionArrays.allStrArrays) {
+			definedArrayObject.tempChangedArrs = true; //признак конца программы 
+			while (definedArrayObject.tempChangedArrs) {
+				definedArrayObject.tempChangedArrs = false;
+				for (SomeExpressionArray str : AllExpressionArrays.allStrArrays) { // идем по строкам
 						str.getDefined();
 				}
 			}

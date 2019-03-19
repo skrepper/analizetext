@@ -14,15 +14,23 @@ import java.util.stream.Collectors;
 
 public class SomeExpressionArray {
 
+	private DefinedArrayClass definedArrayObject; 
+	private NonDefinedArrayClass nonDefinedArrayObject;
+	
+	public SomeExpressionArray(DefinedArrayClass p_definedArrayObject, NonDefinedArrayClass p_nonDefinedArrayObject) {
+		definedArrayObject = p_definedArrayObject; 
+		nonDefinedArrayObject = p_nonDefinedArrayObject; 
+	}
+
 	// это строка
 	public ArrayList<Lexema> ops = new ArrayList<>();
 
 	// программа не учитывает круглые скобки!
 	public void makeAnaliz(String [] strArr) {
 
-		ops.add(new Slovo(strArr[0].trim()));
+		ops.add(new Slovo(strArr[0].trim(), definedArrayObject));
 		ops.add(new Token(TokenEnum.EQ.getVal()));
-		ops.add(new Slovo(strArr[1].trim()));
+		ops.add(new Slovo(strArr[1].trim(), definedArrayObject));
 		
 		
 		String sl = null;
@@ -52,9 +60,9 @@ public class SomeExpressionArray {
 			} else {
 				if (!prevElementIsSlovo) {
 					if (indexOfAdd != -1) {
-						ops.add(++indexOfAdd, new Slovo(i.trim()));
+						ops.add(++indexOfAdd, new Slovo(i.trim(), definedArrayObject));
 					} else {
-						ops.set(0, new Slovo(i.trim()));
+						ops.set(0, new Slovo(i.trim(), definedArrayObject));
 						++indexOfAdd;
 					}
 					prevElementIsSlovo = true;
@@ -68,7 +76,7 @@ public class SomeExpressionArray {
 			boolean fnd = true;
 			while (fnd) { // масссив меняется, соответственно, нужен while
 				for (int j = 0; j < ops.size() - 2; j++) { // ops.size()-2 - справа сто€т знак -> и результат
-					if ((ops.get(j) instanceof Token) && TokenEnum.TokenToPriority.get(((Token) ops.get(j)).token) == i) {
+					if ((ops.get(j) instanceof Token) && TokenEnum.TokenToPriority.get(((Token) ops.get(j)).getToken()) == i) {
 						Expression expression = new Expression();
 						fnd = true;
 						if (j > 0 && (ops.get(j - 1) instanceof Operand) && j < (ops.size() - 1)
@@ -95,10 +103,10 @@ public class SomeExpressionArray {
 		boolean res = false;
 		for (Lexema i : ops.stream().limit(ops.size()).collect(Collectors.toList())) {
 			if (!i.seeDefined()) {
-				if (i.getDefinedOperand()) {
-					GlobArrs.DefinedArrayClass.add(((Slovo) ops.get(ops.size() - 1)).getSlovo());
-					GlobArrs.NonDefinedArrayClass.remove(((Slovo) ops.get(ops.size() - 1)).getSlovo());
-					GlobArrs.tempChangedArrs = true;
+				if (i.getDefined()) {
+					definedArrayObject.definedArray.add(((Slovo) ops.get(ops.size() - 1)).getSlovo());
+					nonDefinedArrayObject.nonDefinedArray.remove(((Slovo) ops.get(ops.size() - 1)).getSlovo());
+					definedArrayObject.tempChangedArrs = true;
 				}
 			}
 		}

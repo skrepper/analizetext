@@ -54,5 +54,10 @@ public class Expression implements Operand, Lexema {
 		// TODO Auto-generated method stub
 		return dfn;
 	}
+	@Override
+	public boolean getDefinedOperand() {
+		// TODO Auto-generated method stub
+		return getDefined();
+	}
 
 }

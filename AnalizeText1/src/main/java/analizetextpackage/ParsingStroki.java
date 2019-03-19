@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 
 public class ParsingStroki {
 
-	DefinedArrayClass definedArrayObject = new DefinedArrayClass(); 
-	NonDefinedArrayClass nonDefinedArrayObject = new NonDefinedArrayClass(); 
+	private DefinedArrayClass definedArrayObject; 
+	private NonDefinedArrayClass nonDefinedArrayObject; 
 	
 	public ParsingStroki(DefinedArrayClass p_definedArrayObject, NonDefinedArrayClass p_nonDefinedArrayObject) {
 		definedArrayObject = p_definedArrayObject; 
@@ -41,7 +41,7 @@ public class ParsingStroki {
 			nonDefinedArrayObject.nonDefinedArray.add(i.trim());
 
 		// анализ заново
-		SomeExpressionArray stroka = new SomeExpressionArray();
+		SomeExpressionArray stroka = new SomeExpressionArray(definedArrayObject, nonDefinedArrayObject); 
 		stroka.makeAnaliz(strArr); // превращаем строку в объекты выражений
 		AllExpressionArrays.allStrArrays.add(stroka);
 

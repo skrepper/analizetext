@@ -124,13 +124,13 @@ public class AnalizeTextTest {
 		assertThat(testOut.toString(), equalTo("¬ левой части выражени€ сто€т 2 оператора подр€д."));
 	}
 	
-	@Test
+/*	@Test
 	public void testContent11() throws IOException {
 
 		// проверка на пробелы внизу
 		Main.main(new String[] { "target/test-classes/func_text_11.txt" });
 		assertThat(testOut.toString(), equalTo("¬ последней строке файла есть пустые переменные."));
-	}
+	}*/
 	
 	
 	@Test
