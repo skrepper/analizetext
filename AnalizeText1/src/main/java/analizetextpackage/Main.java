@@ -21,46 +21,48 @@ import javax.management.RuntimeErrorException;
 public class Main {
 
 	public static void main(String[] arg) throws IOException {
-		DefinedArrayClass definedArrayObject = new DefinedArrayClass(); 
-		NonDefinedArrayClass nonDefinedArrayObject = new NonDefinedArrayClass(); 
-		ArrayList<SomeExpressionArray> allStrArrays = new ArrayList<SomeExpressionArray>();
-		ParsingStroki parser = new ParsingStroki(definedArrayObject, nonDefinedArrayObject, allStrArrays);
+		Set<String> knownFacts = new HashSet<String>();
+		Set<String> unknownFacts = new HashSet<String>();
+		ArrayList<RuleAnalysis> allRules = new ArrayList<RuleAnalysis>();
+		RuleParsing parser = new RuleParsing(knownFacts, unknownFacts, allRules);
 
 		final String FILE_END_DELIMITER = String.join("",
 				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
 
 		String filePathName;
 
-		if (arg.length == 0) { 
+		if (arg.length == 0) {
 			System.err.print("Введите имя файла.");
 			return;
 		}
 		filePathName = arg[0];
-		boolean beforeDelim = true;
+		boolean beforeDelimiter = true;
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)))) {
 
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				if (beforeDelim) {
+				if (beforeDelimiter) {
 					if (strLine.equals(FILE_END_DELIMITER)) {
-						beforeDelim = false;
+						beforeDelimiter = false;
 					} else {
-						parser.parseStroka(strLine);
+						parser.parseRule(strLine);
 					}
 				} else {
-						parser.parseLastStroka(strLine);
+					if (knownFacts.size() > 0)
+						throw new RuntimeException("В конце файла после разделителя много строк.");
+					parser.parseKnownFacts(strLine);
 				}
 			}
-			br.close(); // необязательно, так как используется конструкция try ()
-			
-			definedArrayObject.tempChangedArrs = true; //признак конца программы 
-			while (definedArrayObject.tempChangedArrs) {
-				definedArrayObject.tempChangedArrs = false;
-				for (SomeExpressionArray str : allStrArrays) { // идем по строкам
-						str.getDefined();
+			br.close(); // необязательно
+
+			boolean knownFactsNotChanged; 
+			do  {
+				knownFactsNotChanged = true;
+				for (RuleAnalysis str : allRules) { 
+					knownFactsNotChanged = knownFactsNotChanged && str.checkAllExpressionsInLineDeduced();
 				}
-			}
-			System.out.print(String.join(", ", definedArrayObject.definedArray));
+			} while (!knownFactsNotChanged);
+			System.out.print(String.join(", ", knownFacts));
 		} catch (IOException e) {
 			System.err.print("Файл не найден");
 		} catch (Exception e) {

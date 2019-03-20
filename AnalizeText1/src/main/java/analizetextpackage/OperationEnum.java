@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum TokenEnum { 
+public enum OperationEnum { 
 	AND, 
 	OR,
 	EQ;
@@ -23,13 +23,13 @@ public enum TokenEnum {
 		return "";
 	}
 	
-	public static final Map<TokenEnum, Integer> TokenToPriority;
+	public static final Map<OperationEnum, Integer> OperationPriority;
 	static {
-		Map<TokenEnum, Integer> aMap = new HashMap<TokenEnum, Integer>();
-		aMap.put(TokenEnum.AND, 45);
-		aMap.put(TokenEnum.OR, 25);
-		aMap.put(TokenEnum.EQ, 125);
-		TokenToPriority = Collections.unmodifiableMap(aMap);
+		Map<OperationEnum, Integer> aMap = new HashMap<OperationEnum, Integer>();
+		aMap.put(OperationEnum.AND, 45);
+		aMap.put(OperationEnum.OR, 25);
+		aMap.put(OperationEnum.EQ, 125);
+		OperationPriority = Collections.unmodifiableMap(aMap);
 	}
 
 }

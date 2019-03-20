@@ -1,9 +1,9 @@
 package analizetextpackage;
 
-public class Expression implements Operand, Lexema { 
+public class Expression implements Operand, WordOrExpression { 
 	private Operand operand1;
 	private Operand operand2;
-	private Token token;
+	private Operation token;
 	private boolean dfn = false;
 	
 	public Operand getOperand1() {
@@ -18,14 +18,14 @@ public class Expression implements Operand, Lexema {
 	public void setOperand2(Operand operand2) {
 		this.operand2 = operand2;
 	}
-	public Token getToken() {
+	public Operation getToken() {
 		return token;
 	}
-	public void setToken(Token token) {
+	public void setToken(Operation token) {
 		this.token = token;
 	}
 	@Override
-	public boolean getDefined() {
+	public boolean deduceAndGetIsDefined() {
 		// TODO Auto-generated method stub
 		boolean res = false;
 		boolean res1;
@@ -45,19 +45,19 @@ public class Expression implements Operand, Lexema {
 	    default: 
 	    	res = false;
         	break;		}
-		this.dfn = res; //запомнить и не идти сюда при последующем анализе. ћожет стать не нужным, если рассматривать конфликты определений
+		this.dfn = res; 
 		return res;
 	}
 
 	@Override
-	public boolean seeDefined() {
+	public boolean getIsDefined() {
 		// TODO Auto-generated method stub
 		return dfn;
 	}
 	@Override
 	public boolean getDefinedOperand() {
 		// TODO Auto-generated method stub
-		return getDefined();
+		return deduceAndGetIsDefined();
 	}
 
 }
