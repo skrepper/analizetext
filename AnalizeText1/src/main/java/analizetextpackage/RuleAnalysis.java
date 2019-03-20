@@ -17,7 +17,7 @@ public class RuleAnalysis {
 	private Set<String> knownFacts;
 	private Set<String> unknownFacts = new HashSet<String>();
 	// это строка
-	public ArrayList<WordOrExpression> lineOfExpressions = new ArrayList<>();
+	public ArrayList<FactOrOperationOrExpression> line = new ArrayList<>();
 	
 	public RuleAnalysis(Set<String> knownFacts, Set<String> unknownFacts) {
 		this.knownFacts = knownFacts; 
@@ -27,70 +27,70 @@ public class RuleAnalysis {
 	/*
 	 * Анализ строки
 	 */
-	public void makeAnaliz(String [] strArr) {
+	public void makeRuleAnalisys(String [] strArr) {
 
-		lineOfExpressions.add(new Fact(strArr[0].trim(), knownFacts));
-		lineOfExpressions.add(new Operation(OperationEnum.EQ.getVal()));
-		lineOfExpressions.add(new Fact(strArr[1].trim(), knownFacts));
+		line.add(new Fact(strArr[0].trim(), knownFacts));
+		line.add(new Operation(OperationEnum.EQ.getVal()));
+		line.add(new Fact(strArr[1].trim(), knownFacts));
 		
 		
 		String sl = null;
-		if (lineOfExpressions.get(0) instanceof Fact) {
-			sl = ((Fact) lineOfExpressions.get(0)).getFact();
+		if (line.get(0) instanceof Fact) {
+			sl = ((Fact) line.get(0)).getFact();
 		} else {
 			// нет теста на это исключение, так как не придумал как вызвать ошибку
 			throw new RuntimeException("Ошибка массива");
 		}
 
-		String expr = "(" + Operation.GetAllTokensRegExpr() + ")"; // "(&&|\\|\\|)";
-		String[] res = splitPreserveDelimiter(sl, expr);
-		Pattern token_pattern = Pattern.compile(expr);
+		String allOperationsRegularExpression = "(" + OperationEnum.GET_ALL_OPERATIONS_REGULAR_EXPRESSION() + ")"; // "(&&|\\|\\|)";
+		String[] res = splitPreserveDelimiter(sl, allOperationsRegularExpression);
+		Pattern token_pattern = Pattern.compile(allOperationsRegularExpression);
 		if (token_pattern.matcher(res[0]).matches() || token_pattern.matcher(res[res.length - 1]).matches()) {
 			throw new RuntimeException("По краям левой части выражения стоят операторы");
 		}
 		int indexOfAdd = -1; // массив res должен заместить первый (0 - index) элемент ops
-		boolean prevElementIsSlovo = false; // проверка чередований операторов и операндов
+		boolean prevElementIsNotOperator = false; // проверка чередований операторов и операндов
 		for (String i : res) {
 			if (token_pattern.matcher(i).matches()) {
-				if (prevElementIsSlovo) {
-					lineOfExpressions.add(++indexOfAdd, new Operation(i.trim()));
-					prevElementIsSlovo = false;
+				if (prevElementIsNotOperator) {
+					line.add(++indexOfAdd, new Operation(i.trim()));
+					prevElementIsNotOperator = false;
 				} else {
 					throw new RuntimeException("В левой части выражения стоят 2 оператора подряд.");
 				}
 			} else {
-				if (!prevElementIsSlovo) {
+				if (!prevElementIsNotOperator) {
 					if (indexOfAdd != -1) {
-						lineOfExpressions.add(++indexOfAdd, new Fact(i.trim(), knownFacts));
+						line.add(++indexOfAdd, new Fact(i.trim(), knownFacts));
 					} else {
-						lineOfExpressions.set(0, new Fact(i.trim(), knownFacts));
+						line.set(0, new Fact(i.trim(), knownFacts));
 						++indexOfAdd;
 					}
-					prevElementIsSlovo = true;
+					prevElementIsNotOperator = true;
 				}
 			}
 		}
 
 		
 		// цикл по всем логическим действиям в порядке приоритета 
-		for (Integer i : OperationEnum.OperationPriority.values().stream().sorted(Comparator.reverseOrder()).distinct()
+		for (Integer i : OperationEnum.OPERATION_PRIORITY.values().stream().sorted(Comparator.reverseOrder()).distinct()
 				.collect(Collectors.toList())) {
 			boolean fnd = true;
 			while (fnd) { // масссив менЯетсЯ, соответственно, нужен while
-				for (int j = 0; j < lineOfExpressions.size() - 2; j++) { // ops.size()-2 - справа стоят знак -> и результат
-					if ((lineOfExpressions.get(j) instanceof Operation) && OperationEnum.OperationPriority.get(((Operation) lineOfExpressions.get(j)).getToken()) == i) {
+				for (int j = 0; j < line.size() - 2; j++) { // ops.size()-2 - справа стоят знак -> и результат
+					if ((line.get(j) instanceof Operation) && OperationEnum.OPERATION_PRIORITY.get(((Operation) line.get(j)).getOperation()) == i) {
 						Expression expression = new Expression();
 						fnd = true;
-						if (j > 0 && (lineOfExpressions.get(j - 1) instanceof Operand) && j < (lineOfExpressions.size() - 1)
-								&& (lineOfExpressions.get(j + 1) instanceof Operand)) {
-							expression.setOperand1((Operand) lineOfExpressions.get(j - 1));
-							expression.setOperand2((Operand) lineOfExpressions.get(j + 1));
-							expression.setToken((Operation) lineOfExpressions.get(j));
-							lineOfExpressions.set(j, expression);
-							Set<WordOrExpression> remove = new HashSet<WordOrExpression>();
-							remove.add(lineOfExpressions.get(j - 1));
-							remove.add(lineOfExpressions.get(j + 1));
-							lineOfExpressions.removeAll(remove);
+						if (j > 0 && (line.get(j - 1) instanceof FactOrExpression) && j < (line.size() - 1)
+								&& (line.get(j + 1) instanceof FactOrExpression)) {
+							expression.setOperand1((FactOrExpression) line.get(j - 1));
+							expression.setOperand2((FactOrExpression) line.get(j + 1));
+							expression.setToken((Operation) line.get(j));
+							line.set(j, expression);
+							Set<FactOrOperationOrExpression> remove = new HashSet<FactOrOperationOrExpression>();
+							remove.add(line.get(j - 1));
+							remove.add(line.get(j + 1));
+							line.removeAll(remove);
 						}
 						break;
 					} else {
@@ -105,14 +105,14 @@ public class RuleAnalysis {
 	 * Функция возвращает true, если не было вычислений в строке
 	 * Если же было хотя бы одно вычисление в строке, то возращается false  
 	 */
-	public boolean checkAllExpressionsInLineDeduced() {
+	public boolean checkAllLineExpressionsDeduced() {
 		boolean result = true; 
-		for (WordOrExpression i : lineOfExpressions.stream().collect(Collectors.toList())) {
+		for (FactOrOperationOrExpression i : line.stream().collect(Collectors.toList())) {
 			if (!i.getIsDefined()) {
 				if (i.deduceAndGetIsDefined()) { 
 					//сюда можно попасть если isDefined было false, а стало true, то есть произошло вычисление    
-					knownFacts.add(((Fact) lineOfExpressions.get(lineOfExpressions.size() - 1)).getFact());
-					unknownFacts.remove(((Fact) lineOfExpressions.get(lineOfExpressions.size() - 1)).getFact());
+					knownFacts.add(((Fact) line.get(line.size() - 1)).getFact());
+					unknownFacts.remove(((Fact) line.get(line.size() - 1)).getFact());
 					result = false;
 				}
 			}

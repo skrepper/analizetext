@@ -1,28 +1,28 @@
 package analizetextpackage;
 
-public class Expression implements Operand, WordOrExpression { 
-	private Operand operand1;
-	private Operand operand2;
-	private Operation token;
+public class Expression implements FactOrExpression, FactOrOperationOrExpression { 
+	private FactOrExpression operand1;
+	private FactOrExpression operand2;
+	private Operation operation;
 	private boolean dfn = false;
 	
-	public Operand getOperand1() {
+	public FactOrExpression getOperand1() {
 		return operand1;
 	}
-	public void setOperand1(Operand operand1) {
+	public void setOperand1(FactOrExpression operand1) {
 		this.operand1 = operand1;
 	}
-	public Operand getOperand2() {
+	public FactOrExpression getOperand2() {
 		return operand2;
 	}
-	public void setOperand2(Operand operand2) {
+	public void setOperand2(FactOrExpression operand2) {
 		this.operand2 = operand2;
 	}
-	public Operation getToken() {
-		return token;
+	public Operation getOperation() {
+		return operation;
 	}
-	public void setToken(Operation token) {
-		this.token = token;
+	public void setToken(Operation operation) {
+		this.operation = operation;
 	}
 	@Override
 	public boolean deduceAndGetIsDefined() {
@@ -30,16 +30,16 @@ public class Expression implements Operand, WordOrExpression {
 		boolean res = false;
 		boolean res1;
 		boolean res2;
-		switch (token.getToken()) 
+		switch (operation.getOperation()) 
 		{
 		case AND:
-			res1 = this.operand1.getDefinedOperand();
-			res2 = this.operand2.getDefinedOperand();
+			res1 = this.operand1.getDefinedFactOrExpression();
+			res2 = this.operand2.getDefinedFactOrExpression();
 			res = res1 && res2;
 			break;
 		case OR:
-			res1 = this.operand1.getDefinedOperand();
-			res2 = this.operand2.getDefinedOperand();
+			res1 = this.operand1.getDefinedFactOrExpression();
+			res2 = this.operand2.getDefinedFactOrExpression();
 			res = res1 || res2;
 			break;
 	    default: 
@@ -55,7 +55,7 @@ public class Expression implements Operand, WordOrExpression {
 		return dfn;
 	}
 	@Override
-	public boolean getDefinedOperand() {
+	public boolean getDefinedFactOrExpression() {
 		// TODO Auto-generated method stub
 		return deduceAndGetIsDefined();
 	}

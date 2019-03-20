@@ -3,7 +3,7 @@ package analizetextpackage;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class Fact implements Operand, WordOrExpression {
+public class Fact implements FactOrExpression, FactOrOperationOrExpression {
 	private String fact;
 	private boolean isDefined = false; 
 	private Set<String> knownFacts;
@@ -34,7 +34,7 @@ public class Fact implements Operand, WordOrExpression {
 		return isDefined;
 	}
 	
-	public static void checkToErrorsFact(String fact) {
+	public void checkToErrorsFact(String fact) {
 		if (Pattern.compile("(&|\\||>)").matcher(fact).find()) {
 			throw new RuntimeException("Ошибка валидации файла - в словах встречаются спецсимволы.");
 		}
@@ -50,7 +50,7 @@ public class Fact implements Operand, WordOrExpression {
 	}
 
 	@Override
-	public boolean getDefinedOperand() {
+	public boolean getDefinedFactOrExpression() {
 		// TODO Auto-generated method stub
 		return deduceAndGetIsDefined();
 	}

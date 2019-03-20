@@ -58,8 +58,8 @@ public class Main {
 			boolean knownFactsNotChanged; 
 			do  {
 				knownFactsNotChanged = true;
-				for (RuleAnalysis str : allRules) { 
-					knownFactsNotChanged = knownFactsNotChanged && str.checkAllExpressionsInLineDeduced();
+				for (RuleAnalysis rule : allRules) { 
+					knownFactsNotChanged = knownFactsNotChanged && rule.checkAllLineExpressionsDeduced();
 				}
 			} while (!knownFactsNotChanged);
 			System.out.print(String.join(", ", knownFacts));

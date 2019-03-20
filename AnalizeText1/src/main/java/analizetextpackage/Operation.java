@@ -1,18 +1,18 @@
 package analizetextpackage;
 
-public class Operation implements WordOrExpression { 
+public class Operation implements FactOrOperationOrExpression { 
 	private OperationEnum operation;
 	
 	public Operation(String operation) { 
-		setToken(operation);
-		if (this.operation==null) throw new NullPointerException("Неверный вызов конструктора операции");
+		setOperation(operation);
+		if (this.operation==null) throw new RuntimeException("Неверный вызов конструктора операции");
 	}
 
-	public OperationEnum getToken() {
+	public OperationEnum getOperation() {
 		return operation;
 	}
 	
-	public void setToken(String operation) {
+	public void setOperation(String operation) {
 		for (OperationEnum i:OperationEnum.values()) {
 			if (i.getVal().equals(operation)) this.operation = i; 
 		}
@@ -27,15 +27,5 @@ public class Operation implements WordOrExpression {
 	public boolean getIsDefined() {
 		return true; //операция всегда определена
 	}
-
-	
-	public static final String GetAllTokensRegExpr() {
-		String result = "";
-		for (OperationEnum i:OperationEnum.values()) {
-			result = result + ((result.length()==0)?i.getRegExp():"|"+i.getRegExp());
-		}
-			return result; 
-	}
-
 
 }
