@@ -16,15 +16,18 @@ public class SomeExpressionArray {
 
 	private DefinedArrayClass definedArrayObject; 
 	private NonDefinedArrayClass nonDefinedArrayObject;
+	// это строка
+	public ArrayList<Lexema> ops = new ArrayList<>();
 	
+
+	
+	//конструктор
 	public SomeExpressionArray(DefinedArrayClass p_definedArrayObject, NonDefinedArrayClass p_nonDefinedArrayObject) {
 		definedArrayObject = p_definedArrayObject; 
 		nonDefinedArrayObject = p_nonDefinedArrayObject; 
 	}
-
-	// это строка
-	public ArrayList<Lexema> ops = new ArrayList<>();
-
+	
+	/*јнализ строки*/
 	// программа не учитывает круглые скобки!
 	public void makeAnaliz(String [] strArr) {
 
@@ -70,7 +73,8 @@ public class SomeExpressionArray {
 			}
 		}
 
-		// цикл по всем операторам в порядке приоритета
+		
+		// цикл по всем операторам в пор€дке приоритета 
 		for (Integer i : TokenEnum.TokenToPriority.values().stream().sorted(Comparator.reverseOrder()).distinct()
 				.collect(Collectors.toList())) {
 			boolean fnd = true;

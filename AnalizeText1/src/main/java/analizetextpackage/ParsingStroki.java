@@ -1,5 +1,6 @@
 package analizetextpackage;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,10 +8,15 @@ public class ParsingStroki {
 
 	private DefinedArrayClass definedArrayObject; 
 	private NonDefinedArrayClass nonDefinedArrayObject; 
+	private ArrayList<SomeExpressionArray> allStrArrays;
 	
-	public ParsingStroki(DefinedArrayClass p_definedArrayObject, NonDefinedArrayClass p_nonDefinedArrayObject) {
+	public ParsingStroki(
+			DefinedArrayClass p_definedArrayObject, 
+			NonDefinedArrayClass p_nonDefinedArrayObject, 
+			ArrayList<SomeExpressionArray> p_allStrArrays) {
 		definedArrayObject = p_definedArrayObject; 
-		nonDefinedArrayObject = p_nonDefinedArrayObject; 
+		nonDefinedArrayObject = p_nonDefinedArrayObject;
+		allStrArrays = p_allStrArrays;
 	}
 	
 
@@ -43,7 +49,7 @@ public class ParsingStroki {
 		// анализ заново
 		SomeExpressionArray stroka = new SomeExpressionArray(definedArrayObject, nonDefinedArrayObject); 
 		stroka.makeAnaliz(strArr); // превращаем строку в объекты выражений
-		AllExpressionArrays.allStrArrays.add(stroka);
+		allStrArrays.add(stroka);
 
 	}
 	

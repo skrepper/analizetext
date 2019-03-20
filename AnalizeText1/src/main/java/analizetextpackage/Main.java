@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -22,7 +23,8 @@ public class Main {
 	public static void main(String[] arg) throws IOException {
 		DefinedArrayClass definedArrayObject = new DefinedArrayClass(); 
 		NonDefinedArrayClass nonDefinedArrayObject = new NonDefinedArrayClass(); 
-		ParsingStroki parser = new ParsingStroki(definedArrayObject, nonDefinedArrayObject);
+		ArrayList<SomeExpressionArray> allStrArrays = new ArrayList<SomeExpressionArray>();
+		ParsingStroki parser = new ParsingStroki(definedArrayObject, nonDefinedArrayObject, allStrArrays);
 
 		final String FILE_END_DELIMITER = String.join("",
 				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
@@ -54,7 +56,7 @@ public class Main {
 			definedArrayObject.tempChangedArrs = true; //признак конца программы 
 			while (definedArrayObject.tempChangedArrs) {
 				definedArrayObject.tempChangedArrs = false;
-				for (SomeExpressionArray str : AllExpressionArrays.allStrArrays) { // идем по строкам
+				for (SomeExpressionArray str : allStrArrays) { // идем по строкам
 						str.getDefined();
 				}
 			}
