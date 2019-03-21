@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 
 public class RuleAnalysis {
 
-	private Set<String> knownFacts;
+	private Set<String> deducedFacts;
 	private Set<String> unknownFacts = new HashSet<String>();
-	// это строка
-	public ArrayList<FactOrOperationOrExpression> line = new ArrayList<>();
+	// это правило
+	public ArrayList<FactOrOperationOrExpression> rule = new ArrayList<>();
 	
-	public RuleAnalysis(Set<String> knownFacts, Set<String> unknownFacts) {
-		this.knownFacts = knownFacts; 
+	public RuleAnalysis(Set<String> deducedFacts, Set<String> unknownFacts) {
+		this.deducedFacts = deducedFacts; 
 		this.unknownFacts = unknownFacts; 
 	}
 	
@@ -29,72 +29,56 @@ public class RuleAnalysis {
 	 */
 	public void makeRuleAnalisys(String [] strArr) {
 
-		line.add(new Fact(strArr[0].trim(), knownFacts));
-		line.add(new Operation(OperationEnum.EQ.getVal()));
-		line.add(new Fact(strArr[1].trim(), knownFacts));
+		rule.add(new Fact(strArr[0].trim(), deducedFacts));
+		rule.add(new Operation(OperationEnum.EQ.getVal()));
+		rule.add(new Fact(strArr[1].trim(), deducedFacts));
 		
 		
-		String sl = null;
-		if (line.get(0) instanceof Fact) {
-			sl = ((Fact) line.get(0)).getFact();
-		} else {
-			// нет теста на это исключение, так как не придумал как вызвать ошибку
-			throw new RuntimeException("Ошибка массива");
-		}
-
-		String allOperationsRegularExpression = "(" + OperationEnum.GET_ALL_OPERATIONS_REGULAR_EXPRESSION() + ")"; // "(&&|\\|\\|)";
-		String[] res = splitPreserveDelimiter(sl, allOperationsRegularExpression);
-		Pattern token_pattern = Pattern.compile(allOperationsRegularExpression);
-		if (token_pattern.matcher(res[0]).matches() || token_pattern.matcher(res[res.length - 1]).matches()) {
-			throw new RuntimeException("По краям левой части выражения стоят операторы");
-		}
-		int indexOfAdd = -1; // массив res должен заместить первый (0 - index) элемент ops
-		boolean prevElementIsNotOperator = false; // проверка чередований операторов и операндов
-		for (String i : res) {
-			if (token_pattern.matcher(i).matches()) {
-				if (prevElementIsNotOperator) {
-					line.add(++indexOfAdd, new Operation(i.trim()));
-					prevElementIsNotOperator = false;
-				} else {
-					throw new RuntimeException("В левой части выражения стоят 2 оператора подряд.");
-				}
-			} else {
-				if (!prevElementIsNotOperator) {
-					if (indexOfAdd != -1) {
-						line.add(++indexOfAdd, new Fact(i.trim(), knownFacts));
-					} else {
-						line.set(0, new Fact(i.trim(), knownFacts));
-						++indexOfAdd;
-					}
-					prevElementIsNotOperator = true;
-				}
+		String allOperationsRegularExpression = "(" + OperationEnum.GET_ALL_OPERATIONS_REGULAR_EXPRESSION() + ")"; 
+		String[] leftFacts = splitPreserveDelimiter(strArr[0].trim(), allOperationsRegularExpression);
+		Pattern allOperationsPattern = Pattern.compile(allOperationsRegularExpression);
+		int indexOfAdd = -1; //номер массива правила куда вставлять новые факты или операции
+		AnalisysRuleState analisysRuleState = AnalisysRuleState.BEFORE_ANALISYS;
+		for (String i : leftFacts) {
+			analisysRuleState = analisysRuleState.nextState(allOperationsPattern.matcher(i).matches());
+			switch (analisysRuleState) {
+			case FIRST_FACT:
+				rule.set(++indexOfAdd, new Fact(i.trim(), deducedFacts));
+				break;
+			case FACT:
+				rule.add(++indexOfAdd, new Fact(i.trim(), deducedFacts));
+				break;
+			case OPERATION:
+				rule.add(++indexOfAdd, new Operation(i.trim()));
+				break;
 			}
 		}
+		if (analisysRuleState == AnalisysRuleState.OPERATION) throw new RuntimeException("В левой части справа оператор.");
 
 		
 		// цикл по всем логическим действиям в порядке приоритета 
 		for (Integer i : OperationEnum.OPERATION_PRIORITY.values().stream().sorted(Comparator.reverseOrder()).distinct()
 				.collect(Collectors.toList())) {
-			boolean fnd = true;
-			while (fnd) { // масссив менЯетсЯ, соответственно, нужен while
-				for (int j = 0; j < line.size() - 2; j++) { // ops.size()-2 - справа стоят знак -> и результат
-					if ((line.get(j) instanceof Operation) && OperationEnum.OPERATION_PRIORITY.get(((Operation) line.get(j)).getOperation()) == i) {
+			boolean foundOperation = true;
+			while (foundOperation) { // наращиваем дерево пока на первом уровне не исчезнут операторы
+				for (int j = 0; j < rule.size() - 2; j++) { // ops.size()-2 - справа стоят знак -> и результат
+					if ((rule.get(j) instanceof Operation) && OperationEnum.OPERATION_PRIORITY.get(((Operation) rule.get(j)).getOperation()) == i) {
 						Expression expression = new Expression();
-						fnd = true;
-						if (j > 0 && (line.get(j - 1) instanceof FactOrExpression) && j < (line.size() - 1)
-								&& (line.get(j + 1) instanceof FactOrExpression)) {
-							expression.setOperand1((FactOrExpression) line.get(j - 1));
-							expression.setOperand2((FactOrExpression) line.get(j + 1));
-							expression.setToken((Operation) line.get(j));
-							line.set(j, expression);
+						foundOperation = true;
+						if (j > 0 && (rule.get(j - 1) instanceof FactOrExpression) && j < (rule.size() - 1)
+								&& (rule.get(j + 1) instanceof FactOrExpression)) {
+							expression.setOperand1((FactOrExpression) rule.get(j - 1));
+							expression.setOperand2((FactOrExpression) rule.get(j + 1));
+							expression.setOperation((Operation) rule.get(j));
+							rule.set(j, expression);
 							Set<FactOrOperationOrExpression> remove = new HashSet<FactOrOperationOrExpression>();
-							remove.add(line.get(j - 1));
-							remove.add(line.get(j + 1));
-							line.removeAll(remove);
+							remove.add(rule.get(j - 1));
+							remove.add(rule.get(j + 1));
+							rule.removeAll(remove);
 						}
 						break;
 					} else {
-						fnd = false;
+						foundOperation = false;
 					}
 				}
 			}
@@ -107,12 +91,12 @@ public class RuleAnalysis {
 	 */
 	public boolean checkAllLineExpressionsDeduced() {
 		boolean result = true; 
-		for (FactOrOperationOrExpression i : line.stream().collect(Collectors.toList())) {
+		for (FactOrOperationOrExpression i : rule.stream().collect(Collectors.toList())) {
 			if (!i.getIsDefined()) {
 				if (i.deduceAndGetIsDefined()) { 
 					//сюда можно попасть если isDefined было false, а стало true, то есть произошло вычисление    
-					knownFacts.add(((Fact) line.get(line.size() - 1)).getFact());
-					unknownFacts.remove(((Fact) line.get(line.size() - 1)).getFact());
+					deducedFacts.add(((Fact) rule.get(rule.size() - 1)).getFact());
+					unknownFacts.remove(((Fact) rule.get(rule.size() - 1)).getFact());
 					result = false;
 				}
 			}

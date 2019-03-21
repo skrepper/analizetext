@@ -8,12 +8,12 @@ import java.util.regex.Pattern;
 
 public class RuleParsing {
 
-	private Set<String> knownFacts;
+	private Set<String> deducedFacts;
 	private Set<String> unknownFacts = new HashSet<String>();
 	private ArrayList<RuleAnalysis> allRules;
 
-	public RuleParsing(Set<String> knownFacts, Set<String> unknownFacts, ArrayList<RuleAnalysis> allRules) {
-		this.knownFacts = knownFacts;
+	public RuleParsing(Set<String> deducedFacts, Set<String> unknownFacts, ArrayList<RuleAnalysis> allRules) {
+		this.deducedFacts = deducedFacts;
 		this.unknownFacts = unknownFacts;
 		this.allRules = allRules; 
 	}
@@ -30,6 +30,9 @@ public class RuleParsing {
 		if (strArr[1].trim().length() == 0) {
 			throw new RuntimeException("Ошибка валидации файла - в правой части пусто.");
 		}
+		if (strArr[0].trim().length() == 0) {
+			throw new RuntimeException("Ошибка валидации файла - в левой части пусто.");
+		}
 		if (Pattern.compile(OperationEnum.GET_ALL_OPERATIONS_REGULAR_EXPRESSION()).matcher(strArr[1]).find()) {
 			throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
 		}
@@ -39,7 +42,7 @@ public class RuleParsing {
 		for (String i : strArrLeft) unknownFacts.add(i.trim());
 
 		// анализ массива слов
-		RuleAnalysis rule = new RuleAnalysis(knownFacts, unknownFacts);
+		RuleAnalysis rule = new RuleAnalysis(deducedFacts, unknownFacts);
 		rule.makeRuleAnalisys(strArr); // превращаем массив слов в объекты
 		allRules.add(rule);
 
@@ -54,8 +57,8 @@ public class RuleParsing {
 		for (String i : strArr) {
 			if (i.trim().length() == 0)
 				throw new RuntimeException("В последней строке файла есть пустые переменные.");
-			(new Fact(i.trim(), knownFacts)).checkToErrorsFact(i.trim()); 
-			knownFacts.add(i.trim());
+			(new Fact(i.trim(), deducedFacts)).checkToErrorsFact(i.trim()); 
+			deducedFacts.add(i.trim());
 		}
 	}
 

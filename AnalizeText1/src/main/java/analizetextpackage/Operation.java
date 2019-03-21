@@ -1,5 +1,7 @@
 package analizetextpackage;
 
+import java.util.Set;
+
 public class Operation implements FactOrOperationOrExpression { 
 	private OperationEnum operation;
 	

@@ -21,10 +21,11 @@ import javax.management.RuntimeErrorException;
 public class Main {
 
 	public static void main(String[] arg) throws IOException {
-		Set<String> knownFacts = new HashSet<String>();
+		Set<String> deducedFacts = new HashSet<String>();
 		Set<String> unknownFacts = new HashSet<String>();
 		ArrayList<RuleAnalysis> allRules = new ArrayList<RuleAnalysis>();
-		RuleParsing parser = new RuleParsing(knownFacts, unknownFacts, allRules);
+		RuleParsing parser = new RuleParsing(deducedFacts, unknownFacts, allRules);
+		ParseFileState parsingState = ParseFileState.FACTS; 
 
 		final String FILE_END_DELIMITER = String.join("",
 				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
@@ -38,22 +39,21 @@ public class Main {
 		filePathName = arg[0];
 		boolean beforeDelimiter = true;
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)))) {
-
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				if (beforeDelimiter) {
-					if (strLine.equals(FILE_END_DELIMITER)) {
-						beforeDelimiter = false;
-					} else {
+				parsingState = parsingState.nextState(strLine.equals(FILE_END_DELIMITER));
+				switch (parsingState) {
+					case FACTS: {
 						parser.parseRule(strLine);
+						break;
 					}
-				} else {
-					if (knownFacts.size() > 0)
-						throw new RuntimeException("В конце файла после разделителя много строк.");
-					parser.parseKnownFacts(strLine);
+					case KNOWN_FACTS: {
+						parser.parseKnownFacts(strLine);
+						break;
+					}
 				}
 			}
-			br.close(); // необязательно
+			br.close(); 
 
 			boolean knownFactsNotChanged; 
 			do  {
@@ -62,7 +62,9 @@ public class Main {
 					knownFactsNotChanged = knownFactsNotChanged && rule.checkAllLineExpressionsDeduced();
 				}
 			} while (!knownFactsNotChanged);
-			System.out.print(String.join(", ", knownFacts));
+		
+			System.out.print(String.join(", ", deducedFacts));
+
 		} catch (IOException e) {
 			System.err.print("Файл не найден");
 		} catch (Exception e) {

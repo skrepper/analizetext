@@ -128,6 +128,11 @@ public class AnalizeTextTest {
 		assertThat(actualArray.length, equalTo(6)); 
 	}
 	
+	@Test
+	public void testContent13() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_13.txt" });
+		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - в левой части пусто."));
+	}
 	
 	@Test
 	public void testArgs1() throws IOException {

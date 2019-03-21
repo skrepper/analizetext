@@ -6,13 +6,13 @@ import java.util.regex.Pattern;
 public class Fact implements FactOrExpression, FactOrOperationOrExpression {
 	private String fact;
 	private boolean isDefined = false; 
-	private Set<String> knownFacts;
+	private Set<String> deducedFacts;
 	
-	public Fact(String fact, Set<String> knownFacts) {
+	public Fact(String fact, Set<String> deducedFacts) {
 		this.setFact(fact);
-		this.knownFacts = knownFacts;
+		this.deducedFacts = deducedFacts;
 	}
-	
+
 	public void setFact(String fact) {
 		this.fact = fact;
 	}
@@ -24,7 +24,7 @@ public class Fact implements FactOrExpression, FactOrOperationOrExpression {
 	@Override
 	public boolean deduceAndGetIsDefined() {
 		checkToErrorsFact(fact);
-		this.isDefined = knownFacts.contains(fact);
+		this.isDefined = deducedFacts.contains(fact);
 		return this.isDefined;
 	}
 

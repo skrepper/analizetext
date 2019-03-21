@@ -21,12 +21,11 @@ public class Expression implements FactOrExpression, FactOrOperationOrExpression
 	public Operation getOperation() {
 		return operation;
 	}
-	public void setToken(Operation operation) {
+	public void setOperation(Operation operation) {
 		this.operation = operation;
 	}
 	@Override
 	public boolean deduceAndGetIsDefined() {
-		// TODO Auto-generated method stub
 		boolean res = false;
 		boolean res1;
 		boolean res2;
@@ -51,12 +50,10 @@ public class Expression implements FactOrExpression, FactOrOperationOrExpression
 
 	@Override
 	public boolean getIsDefined() {
-		// TODO Auto-generated method stub
 		return dfn;
 	}
 	@Override
 	public boolean getDefinedFactOrExpression() {
-		// TODO Auto-generated method stub
 		return deduceAndGetIsDefined();
 	}
 
