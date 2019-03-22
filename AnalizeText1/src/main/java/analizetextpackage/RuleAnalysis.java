@@ -32,7 +32,7 @@ public class RuleAnalysis {
 		rule.add(new Operation(OperationEnum.EQ.getVal()));
 		rule.add(new Fact(strArr[1].trim(), deducedFacts));
 
-		String allOperationsRegularExpression = "(" + String.join("|",
+		final String allOperationsRegularExpression = "(" + String.join("|",
 				EnumSet.allOf(OperationEnum.class).stream().map(i -> i.getRegExp()).collect(Collectors.toList())) + ")";
 		String[] leftFacts = splitPreserveDelimiter(strArr[0].trim(), allOperationsRegularExpression);
 		int indexOfAdd = -1; // номер массива правила куда вставлять новые факты или операции
@@ -60,7 +60,7 @@ public class RuleAnalysis {
 			throw new RuntimeException("В левой части справа оператор.");
 
 		// цикл по всем логическим действиям в порядке приоритета
-		Map<OperationEnum, Integer> OperationEnumPriority = EnumSet.allOf(OperationEnum.class).stream()
+		final Map<OperationEnum, Integer> OperationEnumPriority = EnumSet.allOf(OperationEnum.class).stream()
 				.collect(Collectors.toMap(enumVal -> enumVal, enumVal -> enumVal.getPriority()));
 		for (Integer i : OperationEnumPriority.values().stream().sorted(Comparator.reverseOrder()).distinct()
 				.collect(Collectors.toList())) {

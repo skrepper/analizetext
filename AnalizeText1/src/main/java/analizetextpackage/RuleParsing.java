@@ -33,7 +33,7 @@ public class RuleParsing {
 		if (strArr[0].trim().length() == 0) {
 			throw new RuntimeException("Ошибка валидации файла - в левой части пусто.");
 		}
-		String allOperationsRegularExpressions = String.join("|", EnumSet.allOf(OperationEnum.class).stream().map(i->i.getRegExp()).collect(Collectors.toList())); 
+		final String allOperationsRegularExpressions = String.join("|", EnumSet.allOf(OperationEnum.class).stream().map(i->i.getRegExp()).collect(Collectors.toList())); 
 		if (Pattern.compile(allOperationsRegularExpressions).matcher(strArr[1]).find()) {
 			throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
 		}
