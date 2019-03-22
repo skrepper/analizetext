@@ -1,33 +1,31 @@
 package analizetextpackage;
 
-import java.util.Set;
-
-public class Operation implements FactOrOperationOrExpression { 
+public class Operation implements FactOrOperationOrExpression {
 	private OperationEnum operation;
-	
-	public Operation(String operation) { 
+
+	public Operation(String operation) {
 		setOperation(operation);
-		if (this.operation==null) throw new RuntimeException("Неверный вызов конструктора операции");
 	}
 
 	public OperationEnum getOperation() {
 		return operation;
 	}
-	
+
 	public void setOperation(String operation) {
-		for (OperationEnum i:OperationEnum.values()) {
-			if (i.getVal().equals(operation)) this.operation = i; 
+		for (OperationEnum i : OperationEnum.values()) {
+			if (i.getVal().equals(operation))
+				this.operation = i;
 		}
 	}
 
 	@Override
 	public boolean deduceAndGetIsDefined() {
-		return true; //операция всегда определена
+		return true; // операция всегда определена
 	}
 
 	@Override
 	public boolean getIsDefined() {
-		return true; //операция всегда определена
+		return true; // операция всегда определена
 	}
 
 }

@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class RuleParsing {
 
 	private Set<String> deducedFacts;
-	private Set<String> unknownFacts = new HashSet<String>();
+	private Set<String> unknownFacts;
 	private ArrayList<RuleAnalysis> allRules;
 
 	public RuleParsing(Set<String> deducedFacts, Set<String> unknownFacts, ArrayList<RuleAnalysis> allRules) {
