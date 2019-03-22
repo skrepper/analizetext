@@ -25,10 +25,9 @@ public class Main {
 		Set<String> unknownFacts = new HashSet<String>();
 		ArrayList<RuleAnalysis> allRules = new ArrayList<RuleAnalysis>();
 		RuleParsing parser = new RuleParsing(deducedFacts, unknownFacts, allRules);
-		ParseFileState parsingState = ParseFileState.FACTS; 
+		ParseFileStateEnum parsingState = ParseFileStateEnum.FACTS; 
 
-		final String FILE_END_DELIMITER = String.join("",
-				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
+		final String FILE_END_DELIMITER = String.join("",IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
 
 		String filePathName;
 

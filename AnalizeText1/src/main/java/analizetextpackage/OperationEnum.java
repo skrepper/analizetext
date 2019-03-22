@@ -22,22 +22,12 @@ public enum OperationEnum {
 		if (this == EQ) return "->";
 		return "";
 	}
-	
-	public static final Map<OperationEnum, Integer> OPERATION_PRIORITY;
-	static {
-		Map<OperationEnum, Integer> aMap = new HashMap<OperationEnum, Integer>();
-		aMap.put(OperationEnum.AND, 45);
-		aMap.put(OperationEnum.OR, 25);
-		aMap.put(OperationEnum.EQ, 125);
-		OPERATION_PRIORITY = Collections.unmodifiableMap(aMap);
-	}
-	
-	public static final String GET_ALL_OPERATIONS_REGULAR_EXPRESSION() {
-		String result = "";
-		for (OperationEnum i:OperationEnum.values()) {
-			result = result + ((result.length()==0)?i.getRegExp():"|"+i.getRegExp());
-		}
-			return result; 
-	}
 
+	public int getPriority() {
+		if (this == AND) return 45; 
+		if (this == OR) return 25; 
+		if (this == EQ) return 125;
+		return 0;
+	}
+	
 }

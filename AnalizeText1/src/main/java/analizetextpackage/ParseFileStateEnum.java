@@ -1,11 +1,11 @@
 package analizetextpackage;
 
-public enum ParseFileState {
+public enum ParseFileStateEnum {
 	FACTS,
 	DELIMITER,
 	KNOWN_FACTS;
 	
-	public ParseFileState nextState(boolean delimiter) {
+	public ParseFileStateEnum nextState(boolean delimiter) {
 		switch (this) {
 		case FACTS:
 			return delimiter?DELIMITER:FACTS;

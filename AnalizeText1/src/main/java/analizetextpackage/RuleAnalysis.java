@@ -3,6 +3,7 @@ package analizetextpackage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -33,12 +34,11 @@ public class RuleAnalysis {
 		rule.add(new Operation(OperationEnum.EQ.getVal()));
 		rule.add(new Fact(strArr[1].trim(), deducedFacts));
 		
-		
-		String allOperationsRegularExpression = "(" + OperationEnum.GET_ALL_OPERATIONS_REGULAR_EXPRESSION() + ")"; 
+		String allOperationsRegularExpression = "(" + String.join("|", EnumSet.allOf(OperationEnum.class).stream().map(i->i.getRegExp()).collect(Collectors.toList())) + ")"; 
 		String[] leftFacts = splitPreserveDelimiter(strArr[0].trim(), allOperationsRegularExpression);
 		Pattern allOperationsPattern = Pattern.compile(allOperationsRegularExpression);
 		int indexOfAdd = -1; //номер массива правила куда вставлять новые факты или операции
-		AnalisysRuleState analisysRuleState = AnalisysRuleState.BEFORE_ANALISYS;
+		AnalisysRuleStateEnum analisysRuleState = AnalisysRuleStateEnum.BEFORE_ANALISYS;
 		for (String i : leftFacts) {
 			analisysRuleState = analisysRuleState.nextState(allOperationsPattern.matcher(i).matches());
 			switch (analisysRuleState) {
@@ -53,16 +53,17 @@ public class RuleAnalysis {
 				break;
 			}
 		}
-		if (analisysRuleState == AnalisysRuleState.OPERATION) throw new RuntimeException("В левой части справа оператор.");
+		if (analisysRuleState == AnalisysRuleStateEnum.OPERATION) throw new RuntimeException("В левой части справа оператор.");
 
 		
 		// цикл по всем логическим действиям в порядке приоритета 
-		for (Integer i : OperationEnum.OPERATION_PRIORITY.values().stream().sorted(Comparator.reverseOrder()).distinct()
-				.collect(Collectors.toList())) {
+		Map<OperationEnum, Integer> OperationEnumPriority = EnumSet.allOf(OperationEnum.class).stream().collect(Collectors.toMap(enumVal->enumVal, enumVal->enumVal.getPriority()));
+		for (Integer i : OperationEnumPriority.values().stream().sorted(Comparator.reverseOrder()).distinct().collect(Collectors.toList()))
+		{
 			boolean foundOperation = true;
 			while (foundOperation) { // наращиваем дерево пока на первом уровне не исчезнут операторы
 				for (int j = 0; j < rule.size() - 2; j++) { // ops.size()-2 - справа стоят знак -> и результат
-					if ((rule.get(j) instanceof Operation) && OperationEnum.OPERATION_PRIORITY.get(((Operation) rule.get(j)).getOperation()) == i) {
+					if ((rule.get(j) instanceof Operation) && OperationEnumPriority.get(((Operation) rule.get(j)).getOperation()) == i) {
 						Expression expression = new Expression();
 						foundOperation = true;
 						if (j > 0 && (rule.get(j - 1) instanceof FactOrExpression) && j < (rule.size() - 1)
@@ -113,15 +114,11 @@ public class RuleAnalysis {
 		int last_match = 0;
 		Matcher m = Pattern.compile(regexp).matcher(data);
 		while (m.find()) {
-			if (last_match < m.start()) {
-				splitted.add(data.substring(last_match, m.start()));
-			}
+			if (last_match < m.start()) splitted.add(data.substring(last_match, m.start()));
 			splitted.add(m.group());
 			last_match = m.end();
 		}
-		if (last_match < data.length()) {
-			splitted.add(data.substring(last_match));
-		}
+		if (last_match < data.length()) splitted.add(data.substring(last_match));
 		return splitted.toArray(new String[splitted.size()]);
 	}
 

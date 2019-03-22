@@ -1,10 +1,14 @@
 package analizetextpackage;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RuleParsing {
 
@@ -33,12 +37,13 @@ public class RuleParsing {
 		if (strArr[0].trim().length() == 0) {
 			throw new RuntimeException("Ошибка валидации файла - в левой части пусто.");
 		}
-		if (Pattern.compile(OperationEnum.GET_ALL_OPERATIONS_REGULAR_EXPRESSION()).matcher(strArr[1]).find()) {
+		String allOperationsRegularExpressions = String.join("|", EnumSet.allOf(OperationEnum.class).stream().map(i->i.getRegExp()).collect(Collectors.toList())); 
+		if (Pattern.compile(allOperationsRegularExpressions).matcher(strArr[1]).find()) {
 			throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
 		}
 		// все слова в массив неопределенных слов
 		unknownFacts.add(strArr[1].trim());
-		String[] strArrLeft = strArr[0].split(OperationEnum.GET_ALL_OPERATIONS_REGULAR_EXPRESSION());
+		String[] strArrLeft = strArr[0].split(allOperationsRegularExpressions);
 		for (String i : strArrLeft) unknownFacts.add(i.trim());
 
 		// анализ массива слов
