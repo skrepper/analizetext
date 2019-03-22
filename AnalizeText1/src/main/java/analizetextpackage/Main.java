@@ -1,22 +1,14 @@
 package analizetextpackage;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import javax.management.RuntimeErrorException;
 
 public class Main {
 
