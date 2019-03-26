@@ -29,9 +29,33 @@ public class RuleParser {
 		String[] leftFacts = splitPreserveDelimiter(strArr[0].trim(), allOperationsRegularExpression);
 		int indexOfAdd = -1; // номер массива правила куда вставл€ть новые факты или операции
 		AnalisysRuleStateEnum analisysRuleState = AnalisysRuleStateEnum.BEFORE_ANALISYS;
+		boolean isOperation;
+		String errorText = "";
 		for (String i : leftFacts) {
-			analisysRuleState = analisysRuleState
-					.nextState(Pattern.compile(allOperationsRegularExpression).matcher(i).matches());
+			isOperation = Pattern.compile(allOperationsRegularExpression).matcher(i).matches();
+			switch (analisysRuleState) {//вычисл€ем состо€ние по предыдущему состо€нию
+			case BEFORE_ANALISYS:
+				analisysRuleState = isOperation? AnalisysRuleStateEnum.ERROR: AnalisysRuleStateEnum.FIRST_FACT;
+				errorText = "— левого кра€ в левой части выражени€ сто€т операторы.";
+				break;
+			case FIRST_FACT:
+				analisysRuleState = !isOperation? AnalisysRuleStateEnum.ERROR: AnalisysRuleStateEnum.OPERATION;
+				errorText = "Ќевозможное состо€ние - два факта подр€д после split. -  ак это случилось?";
+				break;
+			case OPERATION:
+				analisysRuleState = isOperation? AnalisysRuleStateEnum.ERROR: AnalisysRuleStateEnum.FACT;
+				errorText = "¬ левой части выражени€ сто€т 2 оператора подр€д.";
+				break;
+			case FACT:
+				analisysRuleState = isOperation? AnalisysRuleStateEnum.ERROR:AnalisysRuleStateEnum.OPERATION;
+				errorText = "Ќевозможное состо€ние - два факта подр€д после split.";
+				break;
+			case ERROR:
+				throw new RuntimeException(errorText);
+			default:
+				throw new RuntimeException("Ќевозможное состо€ние");
+			}
+			
 			switch (analisysRuleState) {
 			case FIRST_FACT:
 				rule.set(++indexOfAdd, new Fact(i.trim(), deducedFacts));
@@ -44,6 +68,8 @@ public class RuleParser {
 				break;
 			case BEFORE_ANALISYS:
 				break;
+			case ERROR:
+				throw new RuntimeException(errorText);
 			default:
 				break;
 			}
