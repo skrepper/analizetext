@@ -4,6 +4,11 @@ import java.util.regex.Pattern;
 
 public class RuleValidator {
 	
+	public RuleValidator() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public void validate(String[] strArr, String allRegExps) {
 		if (strArr.length < 2) {
 			throw new RuntimeException("Ошибка валидации файла - неверное построение функции.");

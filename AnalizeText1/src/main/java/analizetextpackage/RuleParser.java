@@ -29,7 +29,7 @@ public class RuleParser {
 		String[] leftFacts = splitPreserveDelimiter(strArr[0].trim(), allOperationsRegularExpression);
 		int indexOfAdd = -1; // номер массива правила куда вставлять новые факты или операции
 		AnalisysRuleStateEnum analisysRuleState = AnalisysRuleStateEnum.BEFORE_ANALISYS;
-		boolean isOperation;
+		boolean isOperation; 
 		String errorText = "";
 		for (String i : leftFacts) {
 			isOperation = Pattern.compile(allOperationsRegularExpression).matcher(i).matches();
