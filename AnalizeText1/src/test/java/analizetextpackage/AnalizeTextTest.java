@@ -64,7 +64,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent4() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_4.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - неверная строка в конце файла."));
+		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - неверная строка фактов."));
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent11() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_11.txt" });
-		assertThat(errOut.toString(), equalTo("В последней строке файла есть пустые переменные."));
+		assertThat(errOut.toString(), equalTo("В строке фактов есть пустые переменные."));
 	}
 	
 	@Test
@@ -132,6 +132,12 @@ public class AnalizeTextTest {
 	public void testContent13() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_13.txt" });
 		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - в левой части пусто."));
+	}
+	
+	@Test
+	public void testContent14() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_14.txt" });
+		assertThat(errOut.toString(), equalTo("Ошибка структуры входного файла данных."));
 	}
 	
 	@Test

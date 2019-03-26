@@ -1,6 +1,6 @@
 package analizetextpackage;
 
-public class Operation implements FactOrOperationOrExpression {
+public class Operation implements Lexema {
 	private OperationEnum operation;
 
 	public Operation(String operation) {
@@ -19,12 +19,12 @@ public class Operation implements FactOrOperationOrExpression {
 	}
 
 	@Override
-	public boolean deduceAndGetIsDefined() {
+	public boolean deduceGetDefined() {
 		return true; // операция всегда определена
 	}
 
 	@Override
-	public boolean getIsDefined() {
+	public boolean getDefined() {
 		return true; // операция всегда определена
 	}
 

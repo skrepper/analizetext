@@ -1,6 +1,6 @@
 package analizetextpackage;
 
-public interface FactOrExpression {  
+public interface Operand {  
 	public boolean getDefinedFactOrExpression(); 
 
 }

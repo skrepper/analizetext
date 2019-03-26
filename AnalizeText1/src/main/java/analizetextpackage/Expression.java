@@ -1,21 +1,21 @@
 package analizetextpackage;
 
-public class Expression implements FactOrExpression, FactOrOperationOrExpression { 
-	private FactOrExpression operand1;
-	private FactOrExpression operand2;
+public class Expression implements Operand, Lexema { 
+	private Operand operand1;
+	private Operand operand2;
 	private Operation operation;
-	private boolean dfn = false;
+	private boolean defined = false;
 	
-	public FactOrExpression getOperand1() {
+	public Operand getOperand1() {
 		return operand1;
 	}
-	public void setOperand1(FactOrExpression operand1) {
+	public void setOperand1(Operand operand1) {
 		this.operand1 = operand1;
 	}
-	public FactOrExpression getOperand2() {
+	public Operand getOperand2() {
 		return operand2;
 	}
-	public void setOperand2(FactOrExpression operand2) {
+	public void setOperand2(Operand operand2) {
 		this.operand2 = operand2;
 	}
 	public Operation getOperation() {
@@ -25,7 +25,7 @@ public class Expression implements FactOrExpression, FactOrOperationOrExpression
 		this.operation = operation;
 	}
 	@Override
-	public boolean deduceAndGetIsDefined() {
+	public boolean deduceGetDefined() {
 		boolean res = false;
 		boolean res1;
 		boolean res2;
@@ -44,17 +44,17 @@ public class Expression implements FactOrExpression, FactOrOperationOrExpression
 	    default: 
 	    	res = false;
         	break;		}
-		this.dfn = res; 
+		this.defined = res; 
 		return res;
 	}
 
 	@Override
-	public boolean getIsDefined() {
-		return dfn;
+	public boolean getDefined() {
+		return defined;
 	}
 	@Override
 	public boolean getDefinedFactOrExpression() {
-		return deduceAndGetIsDefined();
+		return deduceGetDefined();
 	}
 
 }

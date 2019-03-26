@@ -15,8 +15,9 @@ public class Main {
 	public static void main(String[] arg) throws IOException {
 		Set<String> deducedFacts = new HashSet<String>();
 		Set<String> unknownFacts = new HashSet<String>();
-		ArrayList<RuleAnalysis> allRules = new ArrayList<RuleAnalysis>();
-		RuleParsing parser = new RuleParsing(deducedFacts, unknownFacts, allRules);
+		ArrayList<ArrayList<Lexema>> allRules = new ArrayList();
+		RuleFactory ruleFactory = new RuleFactory(deducedFacts, unknownFacts, allRules);
+		KnownFactsParser knownFactsParser = new KnownFactsParser(deducedFacts);
 
 		if (arg.length == 0) {
 			System.err.print("Введите имя файла.");
@@ -24,36 +25,49 @@ public class Main {
 		}
 		String filePathName = arg[0];
 
-		ParseFileStateEnum parsingState = ParseFileStateEnum.FACTS;
+		FilePositionState parsingState = FilePositionState.FACTS;
 		final String FILE_END_DELIMITER = String.join("",
 				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)))) {
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
-				parsingState = parsingState.nextState(strLine.equals(FILE_END_DELIMITER));
+				//вычисление состояния
 				switch (parsingState) {
 				case FACTS: 
-					parser.parseRule(strLine);
+					parsingState = strLine.equals(FILE_END_DELIMITER)?FilePositionState.DELIMITER:FilePositionState.FACTS;
 					break;
 				case KNOWN_FACTS: 
-					parser.parseKnownFacts(strLine);
+					parsingState = FilePositionState.ERROR;
 					break;
 				case DELIMITER:
+					parsingState = FilePositionState.KNOWN_FACTS;
+					break;
+				case ERROR:
+					System.err.print("Ошибка структуры входного файла данных.");
+					return;
+				default:
+					System.err.print("Ошибка структуры входного файла данных.");
+					return;
+				}
+				
+				switch (parsingState) {
+				case FACTS: 
+					ruleFactory.addRule(strLine); //парсинг и построение выражений
+					break;
+				case KNOWN_FACTS: 
+					knownFactsParser.parseKnownFacts(strLine); //парсинг с троки
+					parsingState = FilePositionState.ERROR;
 					break;
 				default:
 					break;
 				}
+				
 			}
-			br.close();
-
-			boolean knownFactsNotChanged;
-			do {
-				knownFactsNotChanged = true;
-				for (RuleAnalysis rule : allRules) {
-					knownFactsNotChanged = knownFactsNotChanged && rule.checkAllLineExpressionsDeduced();
-				}
-			} while (!knownFactsNotChanged);
-
+			br.close(); //конец парсинга файла
+			
+			KnownFactsFactory knownFactFactory = new KnownFactsFactory();
+			knownFactFactory.deduceKnownFacts(deducedFacts, unknownFacts, allRules);
+			
 			System.out.print(String.join(", ", deducedFacts));
 
 		} catch (IOException e) {
