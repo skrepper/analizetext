@@ -1,6 +1,6 @@
 package analizetextpackage;
 
-public enum OperationEnum { 
+public enum OperationToken { 
 	AND, 
 	OR,
 	EQ;

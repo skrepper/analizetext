@@ -1,8 +1,8 @@
 package analizetextpackage;
 
 public enum FilePositionState {
-	FACTS,
+	RULE,
 	DELIMITER,
-	KNOWN_FACTS,
-	ERROR;
+	KNOWN_FACTS
+	;
 }
