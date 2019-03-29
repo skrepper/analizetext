@@ -14,7 +14,7 @@ public class Main {
 			Model model = parser.parseFile();
 			model.calculate();
 			
-			System.out.print(String.join(", ", model.getDeducedFacts()));
+			System.out.print(String.join(", ", model.getApprovedFacts()));
 
 		} catch (Exception e) {
 			System.err.print(e.getMessage());

@@ -20,11 +20,6 @@ public class OperationLexema implements Lexema {
 		}
 	}
 
-	@Override
-	public boolean calculateLexema(Set<String> deducedFacts) {
-		return true; // операция всегда определена
-	}
-
 	public boolean getDefined() {
 		return true; // операция всегда определена
 	}

@@ -21,21 +21,17 @@ public class AndExpression implements Expression, Lexema {
 		this.operand = operand;
 	}
 
-	@Override
-	public boolean calculateLexema(Set<String> deducedFacts) {
-		boolean res = true;
-		for (Expression i:operand) {res = res && i.calculateExpression(deducedFacts);}
-		this.defined = res; 
-		return res;
-	}
 
 	@Override
 	public boolean getDefined() {
 		return defined;
 	}
 	@Override
-	public boolean calculateExpression(Set<String> deducedFacts) {
-		return calculateLexema(deducedFacts);
+	public boolean calculateExpression(Set<String> approvedFacts) {
+		boolean res = true;
+		for (Expression i:operand) {res = res && i.calculateExpression(approvedFacts);}
+		this.defined = res; 
+		return res;
 	}
 	
 

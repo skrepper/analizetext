@@ -47,7 +47,7 @@ public class Parser {
 						parsingState = FilePositionState.RULE;
 						strArr = strLine.split(OperationToken.EQ.getVal());
 						validateRuleLine(strArr, allRegExps);
-						allRules.add(makeRuleExpr(parseRule(strArr))); // парсинг и построение выражений
+						allRules.add(parseRule(strArr)); // парсинг и построение выражений
 					}
 					break;
 				case KNOWN_FACTS:
@@ -73,11 +73,13 @@ public class Parser {
 	
 	
 	public Rule parseRule(String[] strArr) {
-		Rule rule = new Rule(); 
-		rule.addLexema(new FactExpression(strArr[0].trim()));
-		rule.addLexema(new OperationLexema(OperationToken.EQ.getVal()));
-		rule.addLexema(new FactExpression(strArr[1].trim()));
-
+		
+		ArrayList<Lexema> lexems = new ArrayList<>();
+		String deducedFact;
+		lexems = new ArrayList<>();
+		lexems.add(new FactExpression(strArr[0].trim()));
+		deducedFact = strArr[1].trim();
+		
 		final String allOperationsRegularExpression = "(" + String.join("|",
 				EnumSet.allOf(OperationToken.class).stream().map(i -> i.getRegExp()).collect(Collectors.toList())) + ")";
 		String[] leftFacts = splitPreserveDelimiter(strArr[0].trim(), allOperationsRegularExpression);
@@ -93,7 +95,7 @@ public class Parser {
 				} else {
 					analisysRuleState = AnalisysRuleState.FIRST_OPERAND;
 					checkToErrorsFact(i.trim());
-					rule.setIndexLexema(++indexOfAdd, new FactExpression(i.trim()));
+					lexems.set(++indexOfAdd, new FactExpression(i.trim()));
 				}
 				break;
 			case FIRST_OPERAND:
@@ -101,7 +103,7 @@ public class Parser {
 					throw new RuntimeException("Невозможное состояние 1 - два операнда подряд после split.");
 				} else {
 					analisysRuleState = AnalisysRuleState.OPERATION;
-					rule.addIndexLexema(++indexOfAdd, new OperationLexema(i.trim()));
+					lexems.add(++indexOfAdd, new OperationLexema(i.trim()));
 				}
 				break;
 			case OPERATION:
@@ -110,7 +112,7 @@ public class Parser {
 				} else {
 					analisysRuleState = AnalisysRuleState.OPERAND;
 					checkToErrorsFact(i.trim());
-					rule.addIndexLexema(++indexOfAdd, new FactExpression(i.trim()));
+					lexems.add(++indexOfAdd, new FactExpression(i.trim()));
 				}
 				break;
 			case OPERAND:
@@ -118,7 +120,7 @@ public class Parser {
 					throw new RuntimeException("Невозможное состояние 2 - два операнда подряд после split.");
 				} else {
 					analisysRuleState = AnalisysRuleState.OPERATION;
-					rule.addIndexLexema(++indexOfAdd, new OperationLexema(i.trim()));
+					lexems.add(++indexOfAdd, new OperationLexema(i.trim()));
 				}
 				break;
 			default:
@@ -128,12 +130,12 @@ public class Parser {
 		if (analisysRuleState == AnalisysRuleState.OPERATION)
 			throw new RuntimeException("В левой части справа оператор.");
 		
-		return rule;
+		return makeRuleExpr(lexems, deducedFact);
 
 	}
 
-	public Rule makeRuleExpr(Rule rule) {
-		
+	public Rule makeRuleExpr(ArrayList<Lexema> lexems, String deducedFact) {
+
 		final Map<OperationToken, Integer> OperationEnumPriority = 
 				EnumSet.allOf(OperationToken.class).stream()
 				.collect(Collectors.toMap(enumVal -> enumVal, enumVal -> enumVal.getPriority()));
@@ -145,36 +147,36 @@ public class Parser {
 				int startIndex = -1; 
 				ArrayList<Expression> newExprArray = new ArrayList<>();
 				Set<Lexema> remove = new HashSet<Lexema>();
-				for (int j = 0; j < rule.getAllLexems().size() - 2; j++) {  
-					if ((rule.getIndexLexema(j) instanceof OperationLexema) 
-							&& OperationEnumPriority.get(((OperationLexema) rule.getIndexLexema(j)).getOperation()) == i) {  
+				for (int j = 0; j < lexems.size(); j++) {  
+					if ((lexems.get(j) instanceof OperationLexema) 
+							&& OperationEnumPriority.get(((OperationLexema) lexems.get(j)).getOperation()) == i) {  
 						foundOperation = true;
 						if (startIndex==-1) {
-							newExprArray.add((Expression) rule.getIndexLexema(j - 1));
-							remove.add(rule.getIndexLexema(j - 1));
+							newExprArray.add((Expression) lexems.get(j - 1));
+							remove.add(lexems.get(j - 1));
 							startIndex = j-1;
 						}
-						newExprArray.add((Expression) rule.getIndexLexema(j + 1));
-						remove.add(rule.getIndexLexema(j));
-						remove.add(rule.getIndexLexema(j + 1));
-						if (
-								(rule.getIndexLexema(j + 2) instanceof OperationLexema) && 
-								((OperationLexema) rule.getIndexLexema(j)).getOperation().equals(OperationToken.AND) &&
-								!((OperationLexema) rule.getIndexLexema(j + 2)).getOperation().equals(OperationToken.AND)
+						newExprArray.add((Expression) lexems.get(j + 1));
+						remove.add(lexems.get(j));
+						remove.add(lexems.get(j + 1));
+						if (((lexems.size()<=j+2) && ((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.AND)) ||
+								((lexems.size()>j+2) && (lexems.get(j + 2) instanceof OperationLexema) && 
+								((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.AND) &&
+								!((OperationLexema) lexems.get(j + 2)).getOperation().equals(OperationToken.AND))
 								) {
 							AndExpression newExpr = new AndExpression(newExprArray);
-							rule.removeAll(remove);
-							rule.addIndexLexema(startIndex, newExpr);
+							lexems.removeAll(remove);
+							lexems.add(startIndex, newExpr);
 							break;
 						}
-						if (
-								(rule.getIndexLexema(j + 2) instanceof OperationLexema) && 
-								((OperationLexema) rule.getIndexLexema(j)).getOperation().equals(OperationToken.OR) &&
-								!((OperationLexema) rule.getIndexLexema(j + 2)).getOperation().equals(OperationToken.OR)
+						if (((lexems.size()<=j+2)  && ((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.OR)) ||
+								((lexems.size()>j+2) && (lexems.get(j + 2) instanceof OperationLexema) && 
+								((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.OR) &&
+								!((OperationLexema) lexems.get(j + 2)).getOperation().equals(OperationToken.OR))
 								) {
 							OrExpression newExpr = new OrExpression(newExprArray);
-							rule.removeAll(remove);
-							rule.addIndexLexema(startIndex, newExpr);
+							lexems.removeAll(remove);
+							lexems.add(startIndex, newExpr);
 							break;
 						}
 
@@ -185,12 +187,11 @@ public class Parser {
 			}
 		}
 		} catch (Exception e) {
-			throw new RuntimeException("Неизвестная ошибка в makeRuleExpr.");
+			throw e;
 		}
 		
-		return rule;
+		return new Rule((Expression) lexems.get(0), deducedFact);
 	}
-
 	
 	/*
 	 * Функция split с разделителями

@@ -22,20 +22,15 @@ public class OrExpression implements Expression, Lexema {
 	}
 
 	@Override
-	public boolean calculateLexema(Set<String> deducedFacts) {
-		boolean res = false;
-		for (Expression i:operand) {res = res || i.calculateExpression(deducedFacts);}
-		this.defined = res; 
-		return res;
-	}
-
-	@Override
 	public boolean getDefined() {
 		return defined;
 	}
 	@Override
-	public boolean calculateExpression(Set<String> deducedFacts) {
-		return calculateLexema(deducedFacts);
+	public boolean calculateExpression(Set<String> approvedFacts) {
+		boolean res = false;
+		for (Expression i:operand) {res = res || i.calculateExpression(approvedFacts);}
+		this.defined = res; 
+		return res;
 	}
 	
 

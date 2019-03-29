@@ -5,31 +5,31 @@ import java.util.Set;
 
 public class Model {
 	
-	private ArrayList<Rule> allRules;
-	private Set<String> deducedFacts;
+	private ArrayList<Rule> rules;
+	private Set<String> approvedFacts;
 
-	public Model(ArrayList<Rule> allRules, Set<String> deducedFacts) {
-		this.allRules = allRules;
-		this.deducedFacts = deducedFacts; 
+	public Model(ArrayList<Rule> allRules, Set<String> approvedFacts) {
+		this.rules = allRules;
+		this.approvedFacts = approvedFacts; 
 	}
 
 	public void calculate() {
-		boolean knownFactsNotChanged;
+		boolean knownFactsAppended;
 		do {
-			knownFactsNotChanged = true;
-			for (Rule rule : allRules) {
-				knownFactsNotChanged = knownFactsNotChanged && rule.calculate(deducedFacts);
+			knownFactsAppended = false;
+			for (Rule rule : rules) {
+				knownFactsAppended = knownFactsAppended || !rule.calculate(approvedFacts);
 			}
-		} while (!knownFactsNotChanged);
+		} while (knownFactsAppended);
 	}
 	
 	
 	public ArrayList<Rule> getAllRules() {
-		return allRules;
+		return rules;
 	}
 
-	public Set<String> getDeducedFacts() {
-		return deducedFacts;
+	public Set<String> getApprovedFacts() {
+		return approvedFacts;
 	}
 
 }
