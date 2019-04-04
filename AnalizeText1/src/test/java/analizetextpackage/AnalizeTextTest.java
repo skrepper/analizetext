@@ -64,7 +64,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent4() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_4.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - неверная строка фактов."));
+		assertThat(errOut.toString(), equalTo("Пустое слово в выражении."));
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent11() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_11.txt" });
-		assertThat(errOut.toString(), equalTo("В строке фактов есть пустые переменные."));
+		assertThat(errOut.toString(), equalTo("Пустое слово в выражении."));
 	}
 	
 	@Test

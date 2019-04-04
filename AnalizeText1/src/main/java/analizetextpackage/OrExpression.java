@@ -5,32 +5,28 @@ import java.util.Set;
 
 public class OrExpression implements Expression, Lexema {
 
-	private ArrayList<Expression> operand;
-	private boolean defined = false;
+	private ArrayList<Expression> operands;
 
 	public ArrayList<Expression> getOperand() {
-		return operand;
+		return operands;
 	}
 
 	public void setOperand(ArrayList<Expression> operand) {
-		this.operand = operand;
+		this.operands = operand;
 	}
 
 	public OrExpression(ArrayList<Expression> operand) {
-		super();
-		this.operand = operand;
+		this.operands = operand;
 	}
 
 	@Override
-	public boolean getDefined() {
-		return defined;
-	}
-	@Override
-	public boolean calculateExpression(Set<String> approvedFacts) {
-		boolean res = false;
-		for (Expression i:operand) {res = res || i.calculateExpression(approvedFacts);}
-		this.defined = res; 
-		return res;
+	public boolean evaluate(Set<String> approvedFacts) {
+		for (Expression i:operands) {
+			if (i.evaluate(approvedFacts)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 

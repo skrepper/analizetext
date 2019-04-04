@@ -18,16 +18,11 @@ public class Model {
 		do {
 			knownFactsAppended = false;
 			for (Rule rule : rules) {
-				knownFactsAppended = knownFactsAppended || !rule.calculate(approvedFacts);
+				knownFactsAppended = knownFactsAppended || rule.update(approvedFacts);
 			}
 		} while (knownFactsAppended);
 	}
 	
-	
-	public ArrayList<Rule> getAllRules() {
-		return rules;
-	}
-
 	public Set<String> getApprovedFacts() {
 		return approvedFacts;
 	}

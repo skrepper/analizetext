@@ -4,25 +4,22 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class Rule {
-
-	public Rule(Expression expression, String deducedFact) {
+	public Expression expression;
+	public String resultedFact;
+	
+	public Rule(Expression expression, String resultedFact) {
 		this.expression = expression;
-		this.deducedFact = deducedFact;
+		this.resultedFact = resultedFact;
 	}
 
-	public Expression expression;
-	public String deducedFact;
-	
-	public boolean calculate(Set<String> approvedFacts) {
-		if (expression.getDefined()) {
-			return true;
-		} else {
-			if (expression.calculateExpression(approvedFacts)) {
-				approvedFacts.add(deducedFact);
-				return false;
-			} else {
-				return true;
-			}
-		}
+	// https://rules.sonarsource.com/java/tag/convention/RSPEC-2047 
+	public boolean update(Set<String> approvedFacts) {
+		if (approvedFacts.contains(resultedFact)) return false;
+
+		if (!expression.evaluate(approvedFacts))
+			return false;
+		
+		approvedFacts.add(resultedFact);
+		return true;
 	}
 }

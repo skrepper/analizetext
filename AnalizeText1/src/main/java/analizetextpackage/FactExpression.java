@@ -4,7 +4,6 @@ import java.util.Set;
 
 public class FactExpression implements Expression, Lexema {
 	private String factToken;
-	private boolean defined = false; 
 	
 	public FactExpression(String fact) {
 		this.setFact(fact);
@@ -15,19 +14,9 @@ public class FactExpression implements Expression, Lexema {
 		this.factToken = fact;
 	}
 	
-	public String getFact() {
-		return factToken; 
-	}
-
-
-	public boolean getDefined() {
-		return defined;
-	}
-	
 	@Override
-	public boolean calculateExpression(Set<String> approvedFacts) {
-		this.defined = approvedFacts.contains(factToken);
-		return this.defined;
+	public boolean evaluate(Set<String> approvedFacts) {
+		return approvedFacts.contains(factToken);
 	}
 
 }
