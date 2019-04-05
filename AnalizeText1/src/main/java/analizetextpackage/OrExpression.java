@@ -7,14 +7,6 @@ public class OrExpression implements Expression, Lexema {
 
 	private ArrayList<Expression> operands;
 
-	public ArrayList<Expression> getOperand() {
-		return operands;
-	}
-
-	public void setOperand(ArrayList<Expression> operand) {
-		this.operands = operand;
-	}
-
 	public OrExpression(ArrayList<Expression> operand) {
 		this.operands = operand;
 	}

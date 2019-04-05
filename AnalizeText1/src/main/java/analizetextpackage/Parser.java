@@ -44,23 +44,8 @@ public class Parser {
 						parsingState = FilePositionState.KNOWN_FACTS;
 						break;
 					}
-					ruleParts = strLine.split("->");
-					if (ruleParts.length < 2) {
-						throw new RuntimeException("Ошибка валидации файла - неверное построение функции.");
-					}
-					if (ruleParts.length > 2) {
-						throw new RuntimeException("Ошибка валидации файла - слишком много ->.");
-					}
-					if (ruleParts[1].trim().length() == 0) {
-						throw new RuntimeException("Ошибка валидации файла - в правой части пусто.");
-					}
-					if (ruleParts[0].trim().length() == 0) {
-						throw new RuntimeException("Ошибка валидации файла - в левой части пусто.");
-					}
-					if (Pattern.compile(operationsRegExp).matcher(ruleParts[1]).find()) {
-						throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
-					}
-					rules.add(new Rule(makeExpression(ruleParts[0].trim()), ruleParts[1].trim())); // парсинг и построение выражений
+					
+					rules.add(parseRule(strLine));
 					break;
 				case KNOWN_FACTS:
 					knownFacts = strLine.split(",", -1);
@@ -82,28 +67,50 @@ public class Parser {
 			throw new RuntimeException("Файл не найден");
 		}
 	}
-	
-	public Expression makeExpression(String leftPart) {
-		ArrayList<Lexema> lexems = new ArrayList<Lexema>(){{/*add(new FactExpression(leftPart));*/}};
-		String[] leftFacts = splitPreserveDelimiter(leftPart, "("+operationsRegExp+")");
 
-		int indexOfAdd = -1; // номер массива правила куда вставлять новые факты или операции
+	private Rule parseRule(String strLine) {
+		String[] ruleParts;
+		ruleParts = strLine.split("->");
+		if (ruleParts.length < 2) {
+			throw new RuntimeException("Ошибка валидации файла - неверное построение функции.");
+		}
+		if (ruleParts.length > 2) {
+			throw new RuntimeException("Ошибка валидации файла - слишком много ->.");
+		}
+		if (ruleParts[1].trim().length() == 0) {
+			throw new RuntimeException("Ошибка валидации файла - в правой части пусто.");
+		}
+		if (ruleParts[0].trim().length() == 0) {
+			throw new RuntimeException("Ошибка валидации файла - в левой части пусто.");
+		}
+		if (Pattern.compile(operationsRegExp).matcher(ruleParts[1]).find()) {
+			throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
+		}
+		
+		return new Rule(parseExpression(ruleParts[0].trim()), ruleParts[1].trim()); // парсинг и построение выражений
+	}
+	
+	public Expression parseExpression(String expressionString) {
+		ArrayList<Expression> lexems = new ArrayList<Expression>();
+		String[] tokens = splitPreserveDelimiter(expressionString, "("+operationsRegExp+")");
+
+		int nextElementIndex = -1; // номер массива правила куда вставлять новые факты или операции
 		AnalisysRuleState analisysRuleState = AnalisysRuleState.OPERAND;
-		for (String i : leftFacts) {
-			boolean isOperation = Pattern.compile("("+operationsRegExp+")").matcher(i).matches();
+		for (String token : tokens) {
+			boolean isOperation = Pattern.compile("("+operationsRegExp+")").matcher(token).matches();
 			switch (analisysRuleState) {
 			case OPERAND:
 				if (isOperation) 
 					throw new RuntimeException("В левой части выражения стоят 2 оператора подряд.");
 				analisysRuleState = AnalisysRuleState.OPERATION;
-				checkFact(i.trim());
-				lexems.add(++indexOfAdd, new FactExpression(i.trim()));
+				checkFact(token.trim());
+				lexems.add(++nextElementIndex, new FactExpression(token.trim()));
 				break;
 			case OPERATION:
 				if (!isOperation) 
 					throw new RuntimeException("Невозможное состояние 2 - два операнда подряд после split.");
 				analisysRuleState = AnalisysRuleState.OPERAND;
-				lexems.add(++indexOfAdd, new OperationLexema(i.trim()));
+				lexems.add(++nextElementIndex, new OperationLexema(token.trim()));
 				break;
 			default:
 				throw new RuntimeException("Невозможное состояние");
@@ -206,15 +213,11 @@ public class Parser {
 		RULE,
 		KNOWN_FACTS,
 		FINISH
-		;
 	}
 
 	public enum AnalisysRuleState {
-		FIRST_OPERAND,
 		OPERAND,
 		OPERATION
-		;
-		
 	}
 	
 }

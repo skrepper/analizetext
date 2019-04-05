@@ -13,7 +13,7 @@ public class Rule {
 	}
 
 	// https://rules.sonarsource.com/java/tag/convention/RSPEC-2047 
-	public boolean update(Set<String> approvedFacts) {
+	public boolean calculate(Set<String> approvedFacts) {
 		if (approvedFacts.contains(resultedFact)) return false;
 
 		if (!expression.evaluate(approvedFacts))

@@ -8,8 +8,8 @@ public class Model {
 	private ArrayList<Rule> rules;
 	private Set<String> approvedFacts;
 
-	public Model(ArrayList<Rule> allRules, Set<String> approvedFacts) {
-		this.rules = allRules;
+	public Model(ArrayList<Rule> rules, Set<String> approvedFacts) {
+		this.rules = rules;
 		this.approvedFacts = approvedFacts; 
 	}
 
@@ -18,7 +18,7 @@ public class Model {
 		do {
 			knownFactsAppended = false;
 			for (Rule rule : rules) {
-				knownFactsAppended = knownFactsAppended || rule.update(approvedFacts);
+				knownFactsAppended = knownFactsAppended || rule.calculate(approvedFacts);
 			}
 		} while (knownFactsAppended);
 	}
