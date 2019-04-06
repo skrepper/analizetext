@@ -6,11 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -23,7 +25,6 @@ public class Parser {
 	private String filePathName;
 	private ArrayList<Rule> rules = new ArrayList<>();
 	private Set<String> resultedFacts;
-	private final String operationsRegExp = "&&|\\|\\|"; 
 
 	public Parser(String[] arg) {
 		filePathName = arg[0];
@@ -83,7 +84,7 @@ public class Parser {
 		if (ruleParts[0].trim().length() == 0) {
 			throw new RuntimeException("Ошибка валидации файла - в левой части пусто.");
 		}
-		if (Pattern.compile(operationsRegExp).matcher(ruleParts[1]).find()) {
+		if (Pattern.compile("&&|\\|\\|").matcher(ruleParts[1]).find()) {
 			throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
 		}
 		
@@ -91,107 +92,32 @@ public class Parser {
 	}
 	
 	public Expression parseExpression(String expressionString) {
-		ArrayList<Expression> lexems = new ArrayList<Expression>();
-		String[] tokens = splitPreserveDelimiter(expressionString, "("+operationsRegExp+")");
-
-		int nextElementIndex = -1; // номер массива правила куда вставлять новые факты или операции
-		AnalisysRuleState analisysRuleState = AnalisysRuleState.OPERAND;
-		for (String token : tokens) {
-			boolean isOperation = Pattern.compile("("+operationsRegExp+")").matcher(token).matches();
-			switch (analisysRuleState) {
-			case OPERAND:
-				if (isOperation) 
-					throw new RuntimeException("В левой части выражения стоят 2 оператора подряд.");
-				analisysRuleState = AnalisysRuleState.OPERATION;
-				checkFact(token.trim());
-				lexems.add(++nextElementIndex, new FactExpression(token.trim()));
-				break;
-			case OPERATION:
-				if (!isOperation) 
-					throw new RuntimeException("Невозможное состояние 2 - два операнда подряд после split.");
-				analisysRuleState = AnalisysRuleState.OPERAND;
-				lexems.add(++nextElementIndex, new OperationLexema(token.trim()));
-				break;
-			default:
-				throw new RuntimeException("Невозможное состояние");
-			}
-		}
-
-		if (analisysRuleState == AnalisysRuleState.OPERAND)
-			throw new RuntimeException("В левой части справа оператор.");
-
-		final Map<OperationToken, Integer> operationPriority = 
-				new HashMap<OperationToken, Integer>(){{
-					put(OperationToken.AND, 45); 
-					put(OperationToken.OR, 25); 
-				}};
-		for (Integer i : operationPriority.values().stream().sorted(Comparator.reverseOrder()).distinct()
-				.collect(Collectors.toList())) {
-			boolean foundOperation = true;
-			while (foundOperation) { 
-				int startIndex = -1; 
-				ArrayList<Expression> newExprArray = new ArrayList<>();
-				Set<Lexema> remove = new HashSet<Lexema>();
-				for (int j = 0; j < lexems.size(); j++) {  
-					if ((lexems.get(j) instanceof OperationLexema) 
-							&& operationPriority.get(((OperationLexema) lexems.get(j)).getOperation()) == i) {  
-						foundOperation = true;
-						if (startIndex==-1) {
-							newExprArray.add((Expression) lexems.get(j - 1));
-							remove.add(lexems.get(j - 1));
-							startIndex = j-1;
-						}
-						newExprArray.add((Expression) lexems.get(j + 1));
-						remove.add(lexems.get(j));
-						remove.add(lexems.get(j + 1));
-						if (((lexems.size()<=j+2) && ((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.AND)) ||
-								((lexems.size()>j+2) && (lexems.get(j + 2) instanceof OperationLexema) && 
-								((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.AND) &&
-								!((OperationLexema) lexems.get(j + 2)).getOperation().equals(OperationToken.AND))
-								) {
-							AndExpression newExpr = new AndExpression(newExprArray);
-							lexems.removeAll(remove);
-							lexems.add(startIndex, newExpr);
-							break;
-						}
-						if (((lexems.size()<=j+2)  && ((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.OR)) ||
-								((lexems.size()>j+2) && (lexems.get(j + 2) instanceof OperationLexema) && 
-								((OperationLexema) lexems.get(j)).getOperation().equals(OperationToken.OR) &&
-								!((OperationLexema) lexems.get(j + 2)).getOperation().equals(OperationToken.OR))
-								) {
-							OrExpression newExpr = new OrExpression(newExprArray);
-							lexems.removeAll(remove);
-							lexems.add(startIndex, newExpr);
-							break;
-						}
-
-					} else {
-						foundOperation = false;
-					}
-				}
-			}
-		}
-		return (Expression) lexems.get(0);
+		if (Pattern.matches(".*\\|\\|.*", expressionString)) 
+			return getOrExpr(expressionString);
+		if (Pattern.matches(".*&&.*", expressionString))  
+			return getAndExpr(expressionString);
+		return getFactExpr(expressionString);
+	}
+	
+	public Expression getOrExpr(String str) {
+		ArrayList<String> arrStr = new ArrayList<String>(Arrays.asList(str.split("\\|\\|")));
+		List<Expression> listFE = arrStr.stream().map(st -> parseExpression(st)).collect(Collectors.toList());
+		ArrayList<Expression> arrExpr = new ArrayList<>();
+		arrExpr.addAll(listFE);
+		return new OrExpression(arrExpr);
 	}
 
+	public Expression getAndExpr(String str) {
+		ArrayList<String> arrStr = new ArrayList<String>(Arrays.asList(str.split("&&")));
+		List<Expression> listFE = arrStr.stream().map(st -> parseExpression(st)).collect(Collectors.toList());
+		ArrayList<Expression> arrExpr = new ArrayList<>();
+		arrExpr.addAll(listFE);
+		return new AndExpression(arrExpr);
+	}
 	
-	/*
-	 * Функция split с разделителями
-	 */
-
-	public String[] splitPreserveDelimiter(String data, String regexp) {
-		LinkedList<String> splitted = new LinkedList<String>();
-		int last_match = 0;
-		Matcher m = Pattern.compile(regexp).matcher(data);
-		while (m.find()) {
-			if (last_match < m.start())
-				splitted.add(data.substring(last_match, m.start()));
-			splitted.add(m.group());
-			last_match = m.end();
-		}
-		if (last_match < data.length())
-			splitted.add(data.substring(last_match));
-		return splitted.toArray(new String[splitted.size()]);
+	public Expression getFactExpr(String str) {
+		checkFact(str);
+		return new FactExpression(str);
 	}
 
 	public void checkFact(String factToken) {
@@ -213,11 +139,6 @@ public class Parser {
 		RULE,
 		KNOWN_FACTS,
 		FINISH
-	}
-
-	public enum AnalisysRuleState {
-		OPERAND,
-		OPERATION
 	}
 	
 }

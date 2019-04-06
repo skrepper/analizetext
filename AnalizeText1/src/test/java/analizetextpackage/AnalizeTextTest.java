@@ -102,7 +102,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent10() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_10.txt" });
-		assertThat(errOut.toString(), equalTo("В левой части выражения стоят 2 оператора подряд."));
+		assertThat(errOut.toString(), equalTo("Пустое слово в выражении."));
 	}
 	
 	@Test
