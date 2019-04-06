@@ -2,7 +2,7 @@ package analizetextpackage;
 
 import java.util.Set;
 
-public class FactExpression implements Expression, Lexema {
+public class FactExpression implements Expression {
 	private String fact;
 	
 	public FactExpression(String fact) {

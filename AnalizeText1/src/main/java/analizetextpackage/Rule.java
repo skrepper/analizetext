@@ -12,7 +12,6 @@ public class Rule {
 		this.resultedFact = resultedFact;
 	}
 
-	// https://rules.sonarsource.com/java/tag/convention/RSPEC-2047 
 	public boolean calculate(Set<String> approvedFacts) {
 		if (approvedFacts.contains(resultedFact)) return false;
 

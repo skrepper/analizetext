@@ -3,7 +3,7 @@ package analizetextpackage;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class AndExpression implements Expression, Lexema {
+public class AndExpression implements Expression {
 	
 	private ArrayList<Expression> operands;
 
