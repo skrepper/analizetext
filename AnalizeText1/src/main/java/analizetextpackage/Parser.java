@@ -7,15 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,7 +26,7 @@ public class Parser {
 	}
 
 	public Model parseFile() throws FileNotFoundException, IOException {
-		String[] ruleParts, knownFacts;
+		String[] knownFacts;
 		final String FILE_END_DELIMITER = String.join("",
 				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
 		FilePositionState parsingState = FilePositionState.RULE;
