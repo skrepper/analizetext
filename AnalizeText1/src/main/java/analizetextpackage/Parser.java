@@ -67,22 +67,23 @@ public class Parser {
 		String[] ruleParts;
 		ruleParts = strLine.split("->");
 		if (ruleParts.length < 2) {
-			throw new RuntimeException("Ошибка валидации файла - неверное построение функции.");
+			throw new RuntimeException("Неверное построение правила.");
 		}
 		if (ruleParts.length > 2) {
-			throw new RuntimeException("Ошибка валидации файла - слишком много ->.");
+			throw new RuntimeException("Слишком много '->' в правиле.");
 		}
-		if (ruleParts[1].trim().length() == 0) {
-			throw new RuntimeException("Ошибка валидации файла - в правой части пусто.");
+		String resultingFact = ruleParts[1].trim(); 
+		if (resultingFact.length() == 0) {
+			throw new RuntimeException("Правая часть правила отсутствует.");
 		}
 		if (ruleParts[0].trim().length() == 0) {
-			throw new RuntimeException("Ошибка валидации файла - в левой части пусто.");
+			throw new RuntimeException("Левая часть правила отсутствует.");
 		}
-		if (Pattern.compile("&&|\\|\\|").matcher(ruleParts[1]).find()) {
-			throw new RuntimeException("Ошибка валидации файла - в правой части операторы.");
+		if (Pattern.compile("&&|\\|\\|").matcher(resultingFact).find()) {
+			throw new RuntimeException("Ошибка: в правой части правила операторы.");
 		}
-		
-		return new Rule(parseExpression(ruleParts[0].trim()), ruleParts[1].trim()); // парсинг и построение выражений
+
+		return new Rule(parseExpression(ruleParts[0].trim()), resultingFact); // парсинг и построение выражений
 	}
 	
 	public Expression parseExpression(String expressionString) {
@@ -94,7 +95,7 @@ public class Parser {
 	}
 	
 	public Expression getOrExpr(String str) {
-		ArrayList<String> arrStr = new ArrayList<String>(Arrays.asList(str.split("\\|\\|")));
+		List<String> arrStr = Arrays.asList(str.split("\\|\\|"));
 		List<Expression> listFE = arrStr.stream().map(st -> parseExpression(st)).collect(Collectors.toList());
 		ArrayList<Expression> arrExpr = new ArrayList<>();
 		arrExpr.addAll(listFE);

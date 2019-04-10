@@ -52,13 +52,13 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent2() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_2.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - в правой части операторы."));
+		assertThat(errOut.toString(), equalTo("Ошибка: в правой части правила операторы."));
 	}
 
 	@Test
 	public void testContent3() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_3.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - в правой части операторы."));
+		assertThat(errOut.toString(), equalTo("Ошибка: в правой части правила операторы."));
 	}
 
 	@Test
@@ -76,13 +76,13 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent6() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_6.txt" }); 
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - в правой части пусто."));
+		assertThat(errOut.toString(), equalTo("Правая часть правила отсутствует."));
 	}
 
 	@Test
 	public void testContent7() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_7.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - неверное построение функции."));
+		assertThat(errOut.toString(), equalTo("Неверное построение правила."));
 	}
 
 	@Test
@@ -131,7 +131,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent13() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_13.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - в левой части пусто."));
+		assertThat(errOut.toString(), equalTo("Левая часть правила отсутствует."));
 	}
 	
 	@Test
