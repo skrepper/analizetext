@@ -10,8 +10,8 @@ public class Main {
 		}
 
 		try {
-			Parser parser = new Parser(arg);
-			Model model = parser.parseFile();
+			Parser parser = new Parser();
+			Model model = parser.parseFile(arg[0]);
 			model.calculate();
 			
 			System.out.print(String.join(", ", model.getApprovedFacts()));

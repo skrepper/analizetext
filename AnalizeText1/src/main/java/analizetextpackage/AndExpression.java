@@ -1,13 +1,14 @@
 package analizetextpackage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 public class AndExpression implements Expression {
 	
-	private ArrayList<Expression> operands;
+	private Collection<Expression> operands;
 
-	public AndExpression(ArrayList<Expression> operand) {
+	public AndExpression(Collection<Expression> operand) {
 		this.operands = operand;
 	}
 

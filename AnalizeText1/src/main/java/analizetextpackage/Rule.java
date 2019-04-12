@@ -4,20 +4,19 @@ import java.util.Set;
 
 public class Rule {
 	public Expression expression;
-	public String resultedFact;
+	public String resultingFact;
 	
-	public Rule(Expression expression, String resultedFact) {
+	public Rule(Expression expression, String resultingFact) {
 		this.expression = expression;
-		this.resultedFact = resultedFact;
+		this.resultingFact = resultingFact;
 	}
 
-	public boolean calculate(Set<String> approvedFacts) {
-		if (approvedFacts.contains(resultedFact)) return false;
+	public void calculate(Set<String> approvedFacts) {
+		if (approvedFacts.contains(resultingFact)) return;
 
 		if (!expression.evaluate(approvedFacts))
-			return false;
+			return;
 		
-		approvedFacts.add(resultedFact);
-		return true;
+		approvedFacts.add(resultingFact);
 	}
 }

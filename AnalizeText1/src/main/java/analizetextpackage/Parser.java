@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,18 +18,16 @@ import java.util.stream.IntStream;
 public class Parser {
 
 	private String filePathName;
-	private ArrayList<Rule> rules = new ArrayList<>();
-	private Set<String> resultedFacts;
 
-	public Parser(String[] arg) {
-		filePathName = arg[0];
-		resultedFacts = new HashSet<String>(); 
+	public Parser() {
 	}
 
-	public Model parseFile() throws FileNotFoundException, IOException {
+	public Model parseFile(String filePathName) throws FileNotFoundException, IOException {
+		Collection<Rule> rules = new ArrayList<>();
+		Set<String> resultingFacts = new HashSet<String>(); 
 		String[] knownFacts;
-		final String FILE_END_DELIMITER = String.join("",
-				IntStream.range(0, 64).mapToObj(i -> "-").collect(Collectors.toList()));
+		this.filePathName = filePathName;
+		final String FILE_END_DELIMITER = "----------------------------------------------------------------"; //64
 		FilePositionState parsingState = FilePositionState.RULE;
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)))) {
 			String strLine;
@@ -46,8 +45,8 @@ public class Parser {
 					knownFacts = strLine.split(",", -1);
 					for (String i : knownFacts) {
 						String s = i.trim();
-						checkFact(s);
-						resultedFacts.add(s);
+						validateFact(s);
+						resultingFacts.add(s);
 					}
 					parsingState = FilePositionState.FINISH;
 					break;
@@ -56,37 +55,37 @@ public class Parser {
 					throw new RuntimeException("Ошибка структуры входного файла данных.");
 				}
 			}
-			br.close();
-			return new Model(rules, resultedFacts);
+			return new Model(rules, resultingFacts);
 		} catch (IOException e) {
-			throw new RuntimeException("Файл не найден");
+			throw new RuntimeException("Ошибка чтения файла. " + e.getMessage(), e);
 		}
 	}
 
 	private Rule parseRule(String strLine) {
 		String[] ruleParts;
-		ruleParts = strLine.split("->");
+		ruleParts = strLine.split("->", -1);
 		if (ruleParts.length < 2) {
-			throw new RuntimeException("Неверное построение правила.");
+			throw new RuntimeException("Неверный синтаксис правила.");
 		}
 		if (ruleParts.length > 2) {
 			throw new RuntimeException("Слишком много '->' в правиле.");
 		}
 		String resultingFact = ruleParts[1].trim(); 
+		validateFact(resultingFact);
 		if (resultingFact.length() == 0) {
-			throw new RuntimeException("Правая часть правила отсутствует.");
+			throw new RuntimeException("Неверный синтаксис правила.");
 		}
 		if (ruleParts[0].trim().length() == 0) {
-			throw new RuntimeException("Левая часть правила отсутствует.");
+			throw new RuntimeException("Неверный синтаксис правила.");
 		}
 		if (Pattern.compile("&&|\\|\\|").matcher(resultingFact).find()) {
-			throw new RuntimeException("Ошибка: в правой части правила операторы.");
+			throw new RuntimeException("В результатирующем факте встретился оператор.");
 		}
 
 		return new Rule(parseExpression(ruleParts[0].trim()), resultingFact); // парсинг и построение выражений
 	}
 	
-	public Expression parseExpression(String expressionString) {
+	private Expression parseExpression(String expressionString) {
 		if (Pattern.matches(".*\\|\\|.*", expressionString)) 
 			return getOrExpr(expressionString);
 		if (Pattern.matches(".*&&.*", expressionString))  
@@ -94,7 +93,7 @@ public class Parser {
 		return getFactExpr(expressionString);
 	}
 	
-	public Expression getOrExpr(String str) {
+	private Expression getOrExpr(String str) {
 		List<String> arrStr = Arrays.asList(str.split("\\|\\|"));
 		List<Expression> listFE = arrStr.stream().map(st -> parseExpression(st)).collect(Collectors.toList());
 		ArrayList<Expression> arrExpr = new ArrayList<>();
@@ -102,7 +101,7 @@ public class Parser {
 		return new OrExpression(arrExpr);
 	}
 
-	public Expression getAndExpr(String str) {
+	private Expression getAndExpr(String str) {
 		ArrayList<String> arrStr = new ArrayList<String>(Arrays.asList(str.split("&&")));
 		List<Expression> listFE = arrStr.stream().map(st -> parseExpression(st)).collect(Collectors.toList());
 		ArrayList<Expression> arrExpr = new ArrayList<>();
@@ -110,27 +109,31 @@ public class Parser {
 		return new AndExpression(arrExpr);
 	}
 	
-	public Expression getFactExpr(String str) {
-		checkFact(str);
+	private Expression getFactExpr(String str) {
+		str = str.trim();
+		validateFact(str);
 		return new FactExpression(str);
 	}
 
-	public void checkFact(String factToken) {
+	private void validateFact(String factToken) {
+		if (!Pattern.compile("^(_+)\\D+").matcher(factToken).find()) {
+			throw new RuntimeException("Неверное имя факта.");
+		}
 		if (Pattern.compile("(&|\\||>)").matcher(factToken).find()) {
-			throw new RuntimeException("Ошибка валидации файла - в словах встречаются спецсимволы.");
+			throw new RuntimeException("В фактах встречаются спецсимволы.");
 		}
 		if (Pattern.compile("^_\\d").matcher(factToken).find()|Pattern.compile("^\\d").matcher(factToken).find()) {
-			throw new RuntimeException("В имени переменных встречаются цифры вначале");
+			throw new RuntimeException("В фактах встречаются цифры вначале.");
 		}
 		if (factToken.length()==0) {
-			throw new RuntimeException("Пустое слово в выражении.");
+			throw new RuntimeException("Неверный синтаксис правила.");
 		}
 		if (Pattern.compile("\\s").matcher(factToken).find()) {
-			throw new RuntimeException("В имени переменных встречаются пробелы");
+			throw new RuntimeException("В фактах встречаются пробелы.");
 		}
 	}
 
-	public enum FilePositionState {
+	private enum FilePositionState {
 		RULE,
 		KNOWN_FACTS,
 		FINISH

@@ -52,63 +52,63 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent2() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_2.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка: в правой части правила операторы."));
+		assertThat(errOut.toString(), equalTo("В фактах встречаются спецсимволы."));
 	}
 
 	@Test
 	public void testContent3() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_3.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка: в правой части правила операторы."));
+		assertThat(errOut.toString(), equalTo("В фактах встречаются спецсимволы."));
 	}
 
 	@Test
 	public void testContent4() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_4.txt" });
-		assertThat(errOut.toString(), equalTo("Пустое слово в выражении."));
+		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
 	}
 
 	@Test
 	public void testContent5() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_5.txt" });
-		assertThat(errOut.toString(), equalTo("Ошибка валидации файла - в словах встречаются спецсимволы."));
+		assertThat(errOut.toString(), equalTo("В фактах встречаются спецсимволы."));
 	}
 
 	@Test
 	public void testContent6() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_6.txt" }); 
-		assertThat(errOut.toString(), equalTo("Правая часть правила отсутствует."));
+		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
 	}
 
 	@Test
 	public void testContent7() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_7.txt" });
-		assertThat(errOut.toString(), equalTo("Неверное построение правила."));
+		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
 	}
 
 	@Test
 	public void testContent8() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_8.txt" });
-		assertThat(errOut.toString(), equalTo("В имени переменных встречаются пробелы"));
+		assertThat(errOut.toString(), equalTo("В фактах встречаются пробелы."));
 	}
 	
 
 	@Test
 	public void testContent9() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_9.txt" });
-		assertThat(errOut.toString(), equalTo("В имени переменных встречаются пробелы"));
+		assertThat(errOut.toString(), equalTo("В фактах встречаются пробелы."));
 	}
 	
 
 	@Test
 	public void testContent10() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_10.txt" });
-		assertThat(errOut.toString(), equalTo("Пустое слово в выражении."));
+		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
 	}
 	
 	@Test
 	public void testContent11() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_11.txt" });
-		assertThat(errOut.toString(), equalTo("Пустое слово в выражении."));
+		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
 	}
 	
 	@Test
@@ -131,7 +131,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent13() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_13.txt" });
-		assertThat(errOut.toString(), equalTo("Левая часть правила отсутствует."));
+		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
 	}
 	
 	@Test
@@ -141,6 +141,24 @@ public class AnalizeTextTest {
 	}
 	
 	@Test
+	public void testContent15() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_15.txt" });
+		assertThat(errOut.toString(), equalTo("Слишком много '->' в правиле."));
+	}
+
+	@Test
+	public void testContent16() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_16.txt" });
+		assertThat(errOut.toString(), equalTo("В фактах встречаются цифры вначале."));
+	}
+
+	@Test
+	public void testContent17() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_17.txt" });
+		assertThat(errOut.toString(), equalTo("В фактах встречаются цифры вначале."));
+	}
+
+	@Test
 	public void testArgs1() throws IOException {
 		Main.main(new String[] {  });
 		assertThat(errOut.toString(), equalTo("Введите имя файла."));
@@ -149,7 +167,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testArgs2() throws IOException {
 		Main.main(new String[] { "wrong name" });
-		assertThat(errOut.toString(), equalTo("Файл не найден"));
+		assertThat(errOut.toString(), startsWith("Ошибка чтения файла."));
 	}
 	
 }

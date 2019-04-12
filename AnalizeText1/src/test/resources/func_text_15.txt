@@ -1,0 +1,4 @@
+tornado||snow -> water->
+summer||snow -> tornado
+----------------------------------------------------------------
+summer, autumn, rain

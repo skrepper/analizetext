@@ -1,13 +1,14 @@
 package analizetextpackage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 public class OrExpression implements Expression {
 
-	private ArrayList<Expression> operands;
+	private Collection<Expression> operands;
 
-	public OrExpression(ArrayList<Expression> operand) {
+	public OrExpression(Collection<Expression> operand) {
 		this.operands = operand;
 	}
 
