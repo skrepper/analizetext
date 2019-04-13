@@ -116,21 +116,12 @@ public class Parser {
 	}
 
 	private void validateFact(String factToken) {
-		if (!Pattern.compile("^(_+)\\D+").matcher(factToken).find()) {
-			throw new RuntimeException("Неверное имя факта.");
-		}
-		if (Pattern.compile("(&|\\||>)").matcher(factToken).find()) {
-			throw new RuntimeException("В фактах встречаются спецсимволы.");
-		}
-		if (Pattern.compile("^_\\d").matcher(factToken).find()|Pattern.compile("^\\d").matcher(factToken).find()) {
-			throw new RuntimeException("В фактах встречаются цифры вначале.");
-		}
-		if (factToken.length()==0) {
-			throw new RuntimeException("Неверный синтаксис правила.");
-		}
-		if (Pattern.compile("\\s").matcher(factToken).find()) {
-			throw new RuntimeException("В фактах встречаются пробелы.");
-		}
+		if (!Pattern.compile("^(?!_+\\d)(?!.*\\W)\\D+").matcher(factToken).find()) {
+			throw new RuntimeException("Неверное имя факта. '"+factToken+"'");
+		} 
+		/*else {
+			System.out.println("yes fact " + factToken);
+		}*/
 	}
 
 	private enum FilePositionState {
