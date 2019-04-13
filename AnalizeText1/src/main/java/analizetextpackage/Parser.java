@@ -118,7 +118,7 @@ public class Parser {
 	private void validateFact(String factToken) {
 		if (!Pattern.compile("^(?!_+\\d)(?!.*\\W)\\D+").matcher(factToken).find()) {
 			throw new RuntimeException("Неверное имя факта. '"+factToken+"'");
-		} 
+		}  
 		/*else {
 			System.out.println("yes fact " + factToken);
 		}*/
