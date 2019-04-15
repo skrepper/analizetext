@@ -52,63 +52,63 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent2() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_2.txt" });
-		assertThat(errOut.toString(), equalTo("В фактах встречаются спецсимволы."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
 	public void testContent3() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_3.txt" });
-		assertThat(errOut.toString(), equalTo("В фактах встречаются спецсимволы."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
 	public void testContent4() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_4.txt" });
-		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
 	public void testContent5() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_5.txt" });
-		assertThat(errOut.toString(), equalTo("В фактах встречаются спецсимволы."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
 	public void testContent6() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_6.txt" }); 
-		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
 	public void testContent7() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_7.txt" });
-		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
+		assertThat(errOut.toString(), startsWith("Ошибка синтаксиса правила"));
 	}
 
 	@Test
 	public void testContent8() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_8.txt" });
-		assertThat(errOut.toString(), equalTo("В фактах встречаются пробелы."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 	
 
 	@Test
 	public void testContent9() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_9.txt" });
-		assertThat(errOut.toString(), equalTo("В фактах встречаются пробелы."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 	
 
 	@Test
 	public void testContent10() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_10.txt" });
-		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 	
 	@Test
 	public void testContent11() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_11.txt" });
-		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 	
 	@Test
@@ -131,7 +131,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent13() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_13.txt" });
-		assertThat(errOut.toString(), equalTo("Неверный синтаксис правила."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 	
 	@Test
@@ -143,19 +143,36 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent15() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_15.txt" });
-		assertThat(errOut.toString(), equalTo("Слишком много '->' в правиле."));
+		assertThat(errOut.toString(), startsWith("Ошибка синтаксиса правила"));
 	}
 
 	@Test
 	public void testContent16() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_16.txt" });
-		assertThat(errOut.toString(), equalTo("В фактах встречаются цифры вначале."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
 	public void testContent17() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_17.txt" });
-		assertThat(errOut.toString(), equalTo("В фактах встречаются цифры вначале."));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+	}
+
+	@Test
+	public void testContent18() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_18.txt" });
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+	}
+
+	@Test
+	public void testContent19() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_19.txt" });
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+	}
+	@Test
+	public void testContent20() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_20.txt" });
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test

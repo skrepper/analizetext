@@ -12,7 +12,8 @@ public class Rule {
 	}
 
 	public void calculate(Set<String> approvedFacts) {
-		if (approvedFacts.contains(resultingFact)) return;
+		if (approvedFacts.contains(resultingFact))
+			return;
 
 		if (!expression.evaluate(approvedFacts))
 			return;

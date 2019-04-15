@@ -21,7 +21,7 @@ public class Model {
 			for (Rule rule : rules) {
 				rule.calculate(approvedFacts);
 			}
-		} while (approvedFactsSize!=approvedFacts.size());
+		} while (approvedFactsSize != approvedFacts.size());
 	}
 	
 	public Set<String> getApprovedFacts() {
