@@ -16,7 +16,6 @@ public class Parser {
 	public Model parseFile(String filePathName) throws FileNotFoundException, IOException {
 		Collection<Rule> rules = new ArrayList<>();
 		Set<String> resultingFacts = new HashSet<String>(); 
-		String[] knownFacts;
 		final String FILE_END_DELIMITER = "----------------------------------------------------------------"; //64
 		FilePositionState parsingState = FilePositionState.RULE;
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(filePathName)))) {
@@ -32,12 +31,7 @@ public class Parser {
 					rules.add(parseRule(strLine));
 					break;
 				case KNOWN_FACTS:
-					knownFacts = strLine.split(",", -1);
-					for (String i : knownFacts) {
-						String s = i.trim();
-						validateFact(s);
-						resultingFacts.add(s);
-					}
+					parseKnownFacts(resultingFacts, strLine);
 					parsingState = FilePositionState.FINISH;
 					break;
 				case FINISH:
@@ -48,6 +42,16 @@ public class Parser {
 			return new Model(rules, resultingFacts);
 		} catch (IOException e) {
 			throw new RuntimeException("Ошибка чтения файла. " + e.getMessage(), e);
+		}
+	}
+
+	private void parseKnownFacts(Set<String> resultingFacts, String strLine) {
+		String[] knownFacts;
+		knownFacts = strLine.split(",", -1);
+		for (String i : knownFacts) {
+			String s = i.trim();
+			validateFact(s);
+			resultingFacts.add(s);
 		}
 	}
 
@@ -65,25 +69,27 @@ public class Parser {
 	private Expression parseExpression(String expressionString) {
 		ArrayList<Expression> arrExpr = new ArrayList<>();
 		String arrStr[] = expressionString.split("\\|\\|", -1);
-		for (int i=0; i < arrStr.length; i++) arrExpr.add(getAndExpr(arrStr[i]));
+		if (arrStr.length==1) return parseFactExpr(arrStr[0]);
+		for (int i=0; i < arrStr.length; i++) arrExpr.add(parseAndExpr(arrStr[i]));
 		return new OrExpression(arrExpr);
 	}
 
-	private Expression getAndExpr(String expressionString) {
+	private Expression parseAndExpr(String expressionString) {
 		ArrayList<Expression> arrExpr = new ArrayList<>();
 		String arrStr[] = expressionString.split("&&", -1);
-		for (int i=0; i < arrStr.length; i++) arrExpr.add(getFactExpr(arrStr[i]));
+		if (arrStr.length==1) return parseFactExpr(arrStr[0]);
+		for (int i=0; i < arrStr.length; i++) arrExpr.add(parseFactExpr(arrStr[i]));
 		return new AndExpression(arrExpr);
 	}
 	
-	private Expression getFactExpr(String str) {
+	private Expression parseFactExpr(String str) {
 		str = str.trim();
 		validateFact(str);
 		return new FactExpression(str);
 	}
 
 	private void validateFact(String factToken) {
-		if (!Pattern.compile("^(?!_+\\d)(?!.*\\W)\\D+").matcher(factToken).find()) {
+		if (!Pattern.compile("^_*[a-zA-Z]+\\d*\\w*").matcher(factToken).matches()) {
 			throw new RuntimeException("Неверное имя факта. '"+factToken+"'");
 		}  
 		else {
