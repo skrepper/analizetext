@@ -89,7 +89,7 @@ public class Parser {
 	}
 
 	private void validateFact(String factToken) {
-		if (!Pattern.compile("^_*[a-zA-Z]+\\d*\\w*").matcher(factToken).matches()) {
+		if (!Pattern.compile("^_*[a-zA-Z]+\\w*").matcher(factToken).matches()) {
 			throw new RuntimeException("Неверное имя факта. '"+factToken+"'");
 		}  
 		else {

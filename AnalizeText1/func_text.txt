@@ -1,5 +1,5 @@
 summer -> autumn
-summer && winter -> rain
+summer && winter ||u -> rain
 summer || spring -> dump
 summer || rain -> snow
 summer && winter -> uragan
