@@ -5,9 +5,9 @@ import java.util.Set;
 
 public class AndExpression implements Expression {
 	
-	private Collection<Expression> operands;
+	private Collection<FactExpression> operands;
 
-	public AndExpression(Collection<Expression> operand) {
+	public AndExpression(Collection<FactExpression> operand) {
 		this.operands = operand;
 	}
 

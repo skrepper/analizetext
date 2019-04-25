@@ -82,7 +82,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent7() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_7.txt" });
-		assertThat(errOut.toString(), startsWith("Ошибка синтаксиса правила"));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
@@ -143,7 +143,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent15() throws IOException {
 		Main.main(new String[] { "target/test-classes/func_text_15.txt" });
-		assertThat(errOut.toString(), startsWith("Ошибка синтаксиса правила"));
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
 
 	@Test
