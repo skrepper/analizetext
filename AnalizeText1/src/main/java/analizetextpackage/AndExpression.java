@@ -3,11 +3,11 @@ package analizetextpackage;
 import java.util.Collection;
 import java.util.Set;
 
-public class AndExpression implements Expression {
+public class AndExpression implements Expression, Cloneable {
 	
-	private Collection<FactExpression> operands;
+	private Collection<Expression> operands;
 
-	public AndExpression(Collection<FactExpression> operand) {
+	public AndExpression(Collection<Expression> operand) {
 		this.operands = operand;
 	}
 
@@ -21,5 +21,9 @@ public class AndExpression implements Expression {
 		return true;
 	}
 	
+    @Override
+    public AndExpression clone() throws CloneNotSupportedException {
+        return (AndExpression) super.clone();
+    }
 
 }
