@@ -57,7 +57,6 @@ public class Parser {
 
 	private void parseKnownFacts(Set<String> resultingFacts, String strLine) {
 		String[] knownFacts;
-		
 		knownFacts = strLine.split(",", -1);
 		for (String i : knownFacts) {
 			String s = i.trim();
