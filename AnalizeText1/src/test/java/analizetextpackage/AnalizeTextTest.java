@@ -174,6 +174,24 @@ public class AnalizeTextTest {
 		Main.main(new String[] { "target/test-classes/func_text_20.txt" });
 		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
+	@Test 
+	public void testContent21() throws IOException {
+		Main.main(new String[] { "target/test-classes/func_text_21.txt" });
+		actualArray = testOut.toString().split(", ");
+		assertThat(Arrays.asList(actualArray), 
+				containsInAnyOrder(
+						Arrays.asList(  
+								equalTo("ocean"),   
+								equalTo("_ss1winter1"),   
+						        equalTo("__s1winter1"), 
+						        equalTo("_f2s"), 
+						        equalTo("winter1"),
+						        equalTo("summer"),
+						        equalTo("dirt"),
+						        equalTo("mmer"),
+				                equalTo("autumn"))));
+		assertThat(actualArray.length, equalTo(9)); 
+	}
 
 	@Test
 	public void testArgs1() throws IOException {

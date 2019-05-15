@@ -13,15 +13,15 @@ import java.util.regex.Pattern;
 
 public class Parser {
 
-	// символьные состояния
-	enum CharacterState {
-		Begin, Fact, UnderscoreFact, SpaceAfterFact, OperatorAnd1, OperatorAnd2, OperatorOr1, OperatorOr2, Equal1,
-		Equal2, ResultingFact, UnderscoreResultingFact, SpaceAfterResultingFact
-	};
+	// позиция в файле
+	private enum FilePositionState {
+		RULE, KNOWN_FACTS, FINISH
+	}
 
-	// словесные состояния
-	enum OperationState {
-		Begin, Fact, AndOperation, OrOperation, EqualOperation, ResultingFact
+	// символьные состояния
+	private enum CharacterState {
+		BeforeFact, Fact, LetterlessFact, BeforeOperation, OperationAnd, OperationOr, Equal,
+		BeforeResultingFact, ResultingFact, LetterlessResultingFact, SpaceAfterResultingFact
 	};
 
 	public Model parseFile(String filePathName) throws FileNotFoundException, IOException {
@@ -38,7 +38,7 @@ public class Parser {
 						parsingState = FilePositionState.KNOWN_FACTS;
 						break;
 					}
-					rules.add(parseRuleBySymbol(strLine));
+					rules.add(parseRule(strLine));
 					break;
 				case KNOWN_FACTS:
 					parseKnownFacts(resultingFacts, strLine);
@@ -65,43 +65,6 @@ public class Parser {
 		}
 	}
 
-	private Rule parseRule(String strLine) {
-		String[] ruleParts;
-		ruleParts = strLine.split("->", -1);
-		if (ruleParts.length != 2) {
-			throw new RuntimeException("Ошибка синтаксиса правила " + strLine);
-		}
-		String resultingFact = ruleParts[1].trim();
-		validateFact(resultingFact);
-		return new Rule(parseExpression(ruleParts[0].trim()), resultingFact); // парсинг и построение выражений
-	}
-
-	private Expression parseExpression(String expressionString) {
-		ArrayList<Expression> arrExpr = new ArrayList<>();
-		String arrStr[] = expressionString.split("\\|\\|", -1);
-		if (arrStr.length == 1)
-			return parseFactExpr(arrStr[0]);
-		for (int i = 0; i < arrStr.length; i++)
-			arrExpr.add(parseAndExpr(arrStr[i]));
-		return new OrExpression(arrExpr);
-	}
-
-	private Expression parseAndExpr(String expressionString) {
-		ArrayList<FactExpression> arrExpr = new ArrayList<>();
-		String arrStr[] = expressionString.split("&&", -1);
-		if (arrStr.length == 1)
-			return parseFactExpr(arrStr[0]);
-		for (int i = 0; i < arrStr.length; i++)
-			arrExpr.add(parseFactExpr(arrStr[i]));
-		return new AndExpression(arrExpr);
-	}
-
-	private FactExpression parseFactExpr(String str) {
-		str = str.trim();
-		validateFact(str);
-		return new FactExpression(str);
-	}
-
 	private void validateFact(String factToken) {
 		if (!Pattern.compile("^_*[a-zA-Z]+\\w*").matcher(factToken).matches()) {
 			throw new RuntimeException("Неверное имя факта. '" + factToken + "'");
@@ -110,13 +73,8 @@ public class Parser {
 		}
 	}
 
-	private enum FilePositionState {
-		RULE, KNOWN_FACTS, FINISH
-	}
-
-	private Rule parseRuleBySymbol(String strLine) {
-		CharacterState characterState = CharacterState.Begin;
-		OperationState operationState = OperationState.Begin;
+	private Rule parseRule(String strLine) {
+		CharacterState characterState = CharacterState.BeforeFact;
 		Expression resultExpression = null;
 		FactExpression factExpression = null;
 		Collection<FactExpression> andExpressions = new ArrayList<>();
@@ -124,200 +82,171 @@ public class Parser {
 		String fact = "";
 		String resultingFact = "";
 
-		for (char iat : strLine.toCharArray()) {
-//		for (int i = 0; i < strLine.length(); i++) {
-//			char iat = strLine.charAt(i);
-			// System.out.println("Operation state = " + operationState);
+		for (char iat : strLine.toCharArray()) { 
 			switch (characterState) {
-			case Begin:
+			case BeforeFact:
 				if (Character.isWhitespace(iat))
 					break;
 
 				if (iat == '_') {
-					characterState = CharacterState.UnderscoreFact;
-					fact = fact + iat;
+					fact = new StringBuilder().append(fact).append(iat).toString();
+					characterState = CharacterState.LetterlessFact;
 					break;
 				}
 				if (Character.isLetter(iat)) {
+					fact = new StringBuilder().append(fact).append(iat).toString();
 					characterState = CharacterState.Fact;
-					operationState = OperationState.Fact;
-					fact = fact + iat;
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. Впереди нечто " + strLine);
-			case UnderscoreFact:
-				if (Character.toString(iat).matches("[a-zA-Z]")) {
+			case LetterlessFact:
+				if (Character.isLetter(iat)) {
+					fact = new StringBuilder().append(fact).append(iat).toString();
 					characterState = CharacterState.Fact;
-					if (operationState == OperationState.Begin)
-						operationState = OperationState.Fact;
-					fact = fact + iat;
 					break;
 				}
 				if (iat == '_') {
-					fact = fact + iat;
+					fact = new StringBuilder().append(fact).append(iat).toString();
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. После UnderscoreFact нечто " + strLine);
 			case Fact:
-				if (iat == ' ') {
-					characterState = CharacterState.SpaceAfterFact;
+				if (Character.isWhitespace(iat)) {
 					factExpression = new FactExpression(fact);
 					fact = "";
+					characterState = CharacterState.BeforeOperation;
 					break;
 				}
 				if (iat == '&') {
-					characterState = CharacterState.OperatorAnd1;
 					factExpression = new FactExpression(fact);
 					fact = "";
+					characterState = CharacterState.OperationAnd;
 					break;
 				}
 				if (iat == '|') {
-					characterState = CharacterState.OperatorOr1;
 					factExpression = new FactExpression(fact);
 					fact = "";
+					characterState = CharacterState.OperationOr;
 					break;
 				}
 				if (iat == '-') {
-					characterState = CharacterState.Equal1;
 					factExpression = new FactExpression(fact);
 					fact = "";
+					characterState = CharacterState.Equal;
 					break;
 				}
-				if (Character.toString(iat).matches("[a-zA-Z0-9_]")) {
-					fact = fact + iat;
+				if (Character.isLetterOrDigit(iat) || iat == '_') {
+					fact = new StringBuilder().append(fact).append(iat).toString();
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. После факта нечто " + strLine);
-			case SpaceAfterFact:
-				if (iat == ' ')
+			case BeforeOperation:
+				if (Character.isWhitespace(iat))
 					break;
 				if (iat == '&') {
-					characterState = CharacterState.OperatorAnd1;
+					characterState = CharacterState.OperationAnd;
 					break;
 				}
 				if (iat == '|') {
-					characterState = CharacterState.OperatorOr1;
+					characterState = CharacterState.OperationOr;
 					break;
 				}
 				if (iat == '-') {
-					characterState = CharacterState.Equal1;
+					characterState = CharacterState.Equal;
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. После пробела после факта нечто " + strLine);
-			case Equal1:
+			case OperationAnd:
+				if (iat == '&') {
+					if (orExpressions.size()>0 && andExpressions.size()==0) {
+						andExpressions.add(factExpression);
+						orExpressions.add(new AndExpression(andExpressions));
+					}
+					andExpressions.add(factExpression);
+					characterState = CharacterState.BeforeFact;
+					break;
+				}
+				throw new RuntimeException("Неверное имя факта. После первого & нечто " + strLine);
+			case OperationOr:
+				if (iat == '|') {
+					if (andExpressions.size()>0) {
+						andExpressions.add(factExpression);
+						orExpressions.add(new AndExpression(andExpressions));
+						andExpressions = new ArrayList<>();
+					} else {
+						orExpressions.add(factExpression);
+					}
+					characterState = CharacterState.BeforeFact;
+					break;
+				}
+				throw new RuntimeException("Неверное имя факта. После первого | нечто " + strLine);
+			case Equal:
 				if (iat != '>')
 					throw new RuntimeException("Неверное имя факта. После дефиса нечто " + strLine);
-
-				if (operationState == OperationState.OrOperation)
-					orExpressions.add(factExpression);
-				else if (operationState == OperationState.AndOperation)
-					andExpressions.add(factExpression);
-				operationState = OperationState.EqualOperation;
-				characterState = CharacterState.Equal2;
-				break;
 				
-			case Equal2:
-				if (iat == ' ') {
+				if (andExpressions.size() > 0 && orExpressions.size() > 0) {
+					andExpressions.add(factExpression);
+					orExpressions.add(new AndExpression(andExpressions));
+					resultExpression = new OrExpression(orExpressions);
+				}
+
+				if (orExpressions.size() > 0 && andExpressions.size() == 0) {
+					orExpressions.add(factExpression);
+					resultExpression = new OrExpression(orExpressions);
+				}
+
+				if (orExpressions.size() == 0 && andExpressions.size() > 0) {
+					andExpressions.add(factExpression);
+					resultExpression = new AndExpression(andExpressions);
+				}
+
+				if (factExpression != null && andExpressions.size() == 0 && orExpressions.size() == 0) {
+					resultExpression = factExpression;
+				}
+				characterState = CharacterState.BeforeResultingFact;
+				break;
+			case BeforeResultingFact:
+				if (Character.isWhitespace(iat)) {
 					break;
 				}
 				if (iat == '_') {
-					characterState = CharacterState.UnderscoreResultingFact;
-					resultingFact = resultingFact + iat;
-					operationState = OperationState.ResultingFact;
+					resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
+					characterState = CharacterState.LetterlessResultingFact;
 					break;
 				}
-				if (Character.toString(iat).matches("[a-zA-Z]")) {
+				if (Character.isLetter(iat)) {
+					resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
 					characterState = CharacterState.ResultingFact;
-					operationState = OperationState.ResultingFact;
-					resultingFact = resultingFact + iat;
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. После > нечто " + strLine);
-			case UnderscoreResultingFact:
-				if (Character.toString(iat).matches("[a-zA-Z]")) {
+			case LetterlessResultingFact:
+				if (Character.isLetter(iat)) {
+					resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
 					characterState = CharacterState.ResultingFact;
-					resultingFact = resultingFact + iat;
 					break;
 				}
 				if (iat == '_') {
-					resultingFact = resultingFact + iat;
+					resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. После UnderscoreResultingFact нечто " + strLine);
 			case ResultingFact:
-				if (Character.toString(iat).matches("[a-zA-Z0-9_]")) {
-					resultingFact = resultingFact + iat;
+				if (Character.isLetterOrDigit(iat) || iat == '_') {  
+					resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
 					break;
 				}
-				if (iat == ' ') {
+				if (Character.isWhitespace(iat)) {
 					characterState = CharacterState.SpaceAfterResultingFact;
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. В результирующем факте нечто " + strLine);
 			case SpaceAfterResultingFact:
-				if (iat == ' ') {
+				if (Character.isWhitespace(iat)) {
 					break;
 				}
 				throw new RuntimeException(
 						"Неверное имя факта. После пробела после результирующего факта нечто " + strLine);
-			case OperatorAnd1:
-				if (iat == '&') {
-					characterState = CharacterState.OperatorAnd2;
-					if (operationState == OperationState.AndOperation)
-						((ArrayList<FactExpression>) andExpressions).add(factExpression);
-					if (operationState == OperationState.OrOperation) {
-						((ArrayList<FactExpression>) andExpressions).add(factExpression);
-					}
-					if (operationState == OperationState.Fact)
-						((ArrayList<FactExpression>) andExpressions).add(factExpression);
-					operationState = OperationState.AndOperation;
-					break;
-				}
-				throw new RuntimeException("Неверное имя факта. После первого & нечто " + strLine);
-			case OperatorOr1:
-				if (iat == '|') {
-					characterState = CharacterState.OperatorOr2;
-					if (operationState == OperationState.Fact)
-						((ArrayList<Expression>) orExpressions).add(factExpression);
-					if (operationState == OperationState.OrOperation)
-						((ArrayList<Expression>) orExpressions).add(factExpression);
-					if (operationState == OperationState.AndOperation) {
-						((ArrayList<FactExpression>) andExpressions).add(factExpression);
-						((ArrayList<Expression>) orExpressions).add(new AndExpression(andExpressions));
-						andExpressions = new ArrayList<>();
-					}
-					operationState = OperationState.OrOperation;
-					break;
-				}
-				throw new RuntimeException("Неверное имя факта. После первого | нечто " + strLine);
-			case OperatorAnd2:
-				if (iat == ' ')
-					break;
-				if (iat == '_') {
-					characterState = CharacterState.UnderscoreFact;
-					fact = fact + iat;
-					break;
-				}
-				if (Character.toString(iat).matches("[a-zA-Z]")) {
-					characterState = CharacterState.Fact;
-					fact = fact + iat;
-					break;
-				}
-				throw new RuntimeException("Неверное имя факта. После && нечто " + strLine);
-			case OperatorOr2:
-				if (iat == ' ')
-					break;
-				if (iat == '_') {
-					characterState = CharacterState.UnderscoreFact;
-					fact = fact + iat;
-					break;
-				}
-				if (Character.toString(iat).matches("[a-zA-Z]")) {
-					characterState = CharacterState.Fact;
-					fact = fact + iat;
-					break;
-				}
-				throw new RuntimeException("Неверное имя факта. После || нечто " + strLine);
 			default:
 				throw new RuntimeException("Ошибка автомата - мы попали в невозможное состояние " + strLine);
 			}
@@ -325,33 +254,7 @@ public class Parser {
 		if (resultingFact.length() == 0)
 			throw new RuntimeException("Неверное имя факта. Не было результирующего факта " + strLine);
 
-		if (orExpressions.size() > 0) {
-			resultExpression = new OrExpression(orExpressions);
-			return new Rule(resultExpression, resultingFact);
-		}
-
-		if (andExpressions.size() > 0) {
-			resultExpression = new AndExpression(andExpressions);
-			return new Rule(resultExpression, resultingFact);
-		}
-
-		if (factExpression != null) {
-			resultExpression = factExpression;
-			return new Rule(resultExpression, resultingFact);
-		}
-		throw new RuntimeException("It is impossible " + strLine);
-	}
-
-	public static Collection<FactExpression> cloneList(Collection<FactExpression> list) {
-		Collection<FactExpression> clone = new ArrayList<FactExpression>(list.size());
-		for (FactExpression item : list) {
-			try {
-				clone.add(item.clone());
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
-		}
-		return clone;
+		return new Rule(resultExpression, resultingFact);
 	}
 
 }
