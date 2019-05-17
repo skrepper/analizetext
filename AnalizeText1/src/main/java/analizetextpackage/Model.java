@@ -27,9 +27,4 @@ public class Model {
 		return approvedFacts;
 	}
 	
-	//only for tests
-/*	public Collection<Rule> getTestRules() {
-		return rules;
-	}*/
-
 }

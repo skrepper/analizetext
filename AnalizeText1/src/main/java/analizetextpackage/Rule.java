@@ -20,9 +20,4 @@ public class Rule {
 		
 		approvedFacts.add(resultingFact);
 	}
-	
-	//only for tests
-/*	public Expression testExpression() {
-		return expression;
-	}*/
 }

@@ -4,6 +4,9 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -206,13 +209,34 @@ public class AnalizeTextTest {
 		assertThat(errOut.toString(), startsWith("Ошибка чтения файла."));
 	}
 
-	//Rule parseRule(String strLine) 
-/*	@Test 
-	public void testRule() throws IOException {
+	@Test 
+	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException {
 		Parser parser = new Parser();
-		Model testModel = parser.parseFile("target/test-classes/func_text_21.txt");
-		ArrayList<Rule> rules = new ArrayList<>(testModel.getTestRules());
-		Expression resultExpression = rules.get(0).testExpression();
-	}*/
+		Class parserClass = parser.getClass(); 
+		Method method = parserClass.getDeclaredMethod("parseRule", String.class); 
+		method.setAccessible(true);
+		Object[] args = new Object[] { new String("A      ||B&&sssssss&&sssss&&ssss  -> dirt")}; 
+		Rule rule = (Rule) method.invoke(parser, args);
+
+		Class ruleClass = rule.getClass(); 
+		Field fieldExpression = ruleClass.getDeclaredField("expression");
+		fieldExpression.setAccessible(true);
+		OrExpression resultExpression = (OrExpression) fieldExpression.get(rule);
+		
+		Class expressionClass = resultExpression.getClass(); 
+		Field fieldOperands = expressionClass.getDeclaredField("operands");
+		fieldOperands.setAccessible(true);
+		ArrayList<Expression> operands = (ArrayList<Expression>) fieldOperands.get(resultExpression);
+		
+		assertThat(operands.size(), equalTo(2)); //первый уровень
+
+		AndExpression andExpression = (AndExpression) operands.get(1);
+		Class andExpressionClass = andExpression.getClass(); 
+		Field fieldAndOperands = andExpressionClass.getDeclaredField("operands");
+		fieldAndOperands.setAccessible(true);
+		ArrayList<Expression> andOperands = (ArrayList<Expression>) fieldAndOperands.get(andExpression);
+	
+		assertThat(andOperands.size(), equalTo(4)); //второй уровень (второй операнд)
+	}
 	
 }
