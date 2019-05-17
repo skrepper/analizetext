@@ -26,5 +26,10 @@ public class Model {
 	public Set<String> getApprovedFacts() {
 		return approvedFacts;
 	}
+	
+	//only for tests
+/*	public Collection<Rule> getTestRules() {
+		return rules;
+	}*/
 
 }

@@ -3,8 +3,8 @@ package analizetextpackage;
 import java.util.Set;
 
 public class Rule {
-	public Expression expression;
-	public String resultingFact;
+	private Expression expression;
+	private String resultingFact;
 	
 	public Rule(Expression expression, String resultingFact) {
 		this.expression = expression;
@@ -20,4 +20,9 @@ public class Rule {
 		
 		approvedFacts.add(resultingFact);
 	}
+	
+	//only for tests
+/*	public Expression testExpression() {
+		return expression;
+	}*/
 }

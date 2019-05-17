@@ -4,8 +4,9 @@ import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Collection;
 import java.io.*;
 
 import org.junit.After;
@@ -204,5 +205,14 @@ public class AnalizeTextTest {
 		Main.main(new String[] { "wrong name" });
 		assertThat(errOut.toString(), startsWith("Ошибка чтения файла."));
 	}
+
+	//Rule parseRule(String strLine) 
+/*	@Test 
+	public void testRule() throws IOException {
+		Parser parser = new Parser();
+		Model testModel = parser.parseFile("target/test-classes/func_text_21.txt");
+		ArrayList<Rule> rules = new ArrayList<>(testModel.getTestRules());
+		Expression resultExpression = rules.get(0).testExpression();
+	}*/
 	
 }
