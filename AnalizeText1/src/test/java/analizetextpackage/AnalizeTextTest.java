@@ -237,6 +237,7 @@ public class AnalizeTextTest {
 		ArrayList<Expression> andOperands = (ArrayList<Expression>) fieldAndOperands.get(andExpression);
 	
 		assertThat(andOperands.size(), equalTo(4)); //второй уровень (второй операнд)
+		
 	}
 	
 }

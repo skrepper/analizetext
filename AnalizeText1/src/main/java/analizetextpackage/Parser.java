@@ -158,12 +158,7 @@ public class Parser {
 				throw new RuntimeException("Неверное имя факта. После пробела после факта нечто " + strLine);
 			case OperationAnd:
 				if (iat == '&') {
-					if (orExpressions.size() > 0 && andExpressions.size() == 0) {
-						andExpressions.add(factExpression);
-						orExpressions.add(new AndExpression(andExpressions));
-					} else {
-						andExpressions.add(factExpression);
-					}
+					andExpressions.add(factExpression);
 					characterState = CharacterState.BeforeFact;
 					break;
 				}
@@ -187,7 +182,8 @@ public class Parser {
 
 				if (andExpressions.size() > 0 && orExpressions.size() > 0) {
 					andExpressions.add(factExpression);
-					resultExpression = new OrExpression(orExpressions);  //orExpression уже содержит andExpression
+					orExpressions.add(new AndExpression(andExpressions));
+					resultExpression = new OrExpression(orExpressions);  
 				}
 				else if (orExpressions.size() > 0 && andExpressions.size() == 0) {
 					orExpressions.add(factExpression);
