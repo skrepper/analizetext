@@ -24,6 +24,11 @@ public class Parser {
 		ResultingFact, LetterlessResultingFact, EndingSpace
 	};
 
+	private enum CharacterStateKnownFacts {
+		Begin, Fact, UnderscoreFact, SpaceAfterFact, Comma 
+	};
+	
+
 	public Model parseFile(String filePathName) throws FileNotFoundException, IOException {
 		Collection<Rule> rules = new ArrayList<>();
 		Set<String> resultingFacts = new HashSet<String>();
@@ -53,21 +58,6 @@ public class Parser {
 		} catch (IOException e) {
 			throw new RuntimeException("Ошибка чтения файла. " + e.getMessage(), e);
 		}
-	}
-
-	private void parseKnownFacts(Set<String> resultingFacts, String strLine) {
-		String[] knownFacts;
-		knownFacts = strLine.split(",", -1);
-		for (String i : knownFacts) {
-			String s = i.trim();
-			validateFact(s);
-			resultingFacts.add(s);
-		}
-	}
-
-	private void validateFact(String factToken) {
-		if (!Pattern.compile("^_*[a-zA-Z]+\\w*").matcher(factToken).matches()) 
-			throw new RuntimeException("Неверное имя факта. '" + factToken + "'");
 	}
 
 	private Rule parseRule(String strLine) {
@@ -243,5 +233,78 @@ public class Parser {
 
 		return new Rule(resultExpression, resultingFact);
 	}
-
+	
+	private void parseKnownFacts(Set<String> resultingFacts, String strLine) {
+		CharacterStateKnownFacts characterState = CharacterStateKnownFacts.Begin;
+		String fact = "";
+		for (int i = 0; i < strLine.length(); i++) {
+			Character iat = Character.valueOf(strLine.charAt(i));
+			switch (characterState) {
+			case Begin:
+				if (iat == ' ')
+					break;
+				fact = fact + iat;
+				if (iat == '_') {
+					characterState = CharacterStateKnownFacts.UnderscoreFact;
+					break;
+				}
+				if (Character.isLetter(iat)) {
+					characterState = CharacterStateKnownFacts.Fact;
+					break;
+				}
+				throw new RuntimeException("Неверное имя факта. Впереди нечто " + strLine);
+			case UnderscoreFact:
+				fact = fact + iat;
+				if (Character.isLetter(iat)) {
+					characterState = CharacterStateKnownFacts.Fact;
+					break;
+				}
+				if (iat == '_') 
+					break;
+				throw new RuntimeException("Неверное имя факта. После UnderscoreFact нечто " + strLine);
+			case Fact:
+				if (iat == ' ') {
+					characterState = CharacterStateKnownFacts.SpaceAfterFact;
+					resultingFacts.add(fact);
+					fact = "";
+					break;
+				}
+				if (iat == ',') {
+					characterState = CharacterStateKnownFacts.Comma;
+					resultingFacts.add(fact);
+					fact = "";
+					break;
+				}
+				if ((iat == '_') || Character.isLetterOrDigit(iat)) {
+					fact = fact + iat;
+					break;
+				}
+				throw new RuntimeException("Неверное имя факта. После факта нечто " + strLine);
+			case Comma:
+				if (iat == ' ')
+					break;
+				fact = fact + iat;
+				if (iat == '_') {
+					characterState = CharacterStateKnownFacts.UnderscoreFact;
+					break;
+				}
+				if (Character.isLetter(iat)) {
+					characterState = CharacterStateKnownFacts.Fact;
+					break;
+				}
+				throw new RuntimeException("Неверное имя факта. Впереди нечто " + strLine);
+			case SpaceAfterFact:
+				if (iat == ' ')
+					break;
+				throw new RuntimeException("Неверное имя факта. После пробела после факта нечто " + strLine);
+			default:
+				throw new RuntimeException("Ошибка автомата - мы попали в невозможное состояние " + strLine);
+			}
+		}
+        if (!fact.equals("")) {
+			resultingFacts.add(fact);
+			return;
+        }
+        throw new RuntimeException("Неверное имя факта. " + strLine);
+	}
 }
