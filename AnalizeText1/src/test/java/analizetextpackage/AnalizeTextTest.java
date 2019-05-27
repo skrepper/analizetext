@@ -200,7 +200,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testArgs1() throws IOException {
 		Main.main(new String[] {  });
-		assertThat(errOut.toString(), equalTo("Введите имя файла."));
+		assertThat(errOut.toString(), startsWith("Ошибка чтения файла."));
 	}
 	
 	@Test

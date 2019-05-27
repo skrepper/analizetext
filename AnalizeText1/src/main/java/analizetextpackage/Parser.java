@@ -159,23 +159,6 @@ public class Parser {
 				if (iat != '>')
 					throw new RuntimeException("Неверное имя факта. После дефиса нечто " + strLine);
 				
-/*				if (andExpressions.size() > 0 && orExpressions.size() > 0) {
-					andExpressions.add(factExpression);
-					orExpressions.add(new AndExpression(andExpressions));
-					resultExpression = new OrExpression(orExpressions);  
-				}
-				else if (orExpressions.size() > 0 && andExpressions.size() == 0) {
-					orExpressions.add(factExpression);
-					resultExpression = new OrExpression(orExpressions);
-				}
-				else if (orExpressions.size() == 0 && andExpressions.size() > 0) {
-					andExpressions.add(factExpression);
-					resultExpression = new AndExpression(andExpressions);
-				}
-				else if (factExpression != null && andExpressions.size() == 0 && orExpressions.size() == 0) {
-					resultExpression = factExpression;
-				}*/
-				
 				resultExpression = factExpression;
 				if (andExpressions.size() > 0) {
 					andExpressions.add(resultExpression);
