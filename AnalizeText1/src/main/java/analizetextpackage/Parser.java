@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 public class Parser {
 
@@ -25,7 +24,7 @@ public class Parser {
 	};
 
 	private enum CharacterStateKnownFacts {
-		Begin, Fact, UnderscoreFact, SpaceAfterFact, Comma 
+		BeforeFact, Fact, UnderscoreFact, SpaceAfterFact 
 	};
 	
 
@@ -67,7 +66,7 @@ public class Parser {
 		Collection<Expression> andExpressions = new ArrayList<>();
 		Collection<Expression> orExpressions = new ArrayList<>();
 		StringBuilder fact = new StringBuilder();
-		String resultingFact = "";
+		StringBuilder resultingFact = new StringBuilder();
 
 		for (char iat : strLine.toCharArray()) {
 			switch (characterState) {
@@ -75,45 +74,54 @@ public class Parser {
 				if (Character.isWhitespace(iat))
 					break;
 
-				fact = fact.append(iat);
 				if (iat == '_') {
+					fact = fact.append(iat);
 					characterState = CharacterState.LetterlessFact;
 					break;
 				}
 				if (Character.isLetter(iat)) {
+					fact = fact.append(iat);
 					characterState = CharacterState.Fact;
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. Впереди нечто " + strLine);
 			case LetterlessFact:
-				fact = fact.append(iat);
 				if (Character.isLetter(iat)) {
+					fact = fact.append(iat);
 					characterState = CharacterState.Fact;
 					break;
 				}
-				if (iat == '_') 
+				if (iat == '_') { 
+					fact = fact.append(iat);
 					break;
+				}
 				throw new RuntimeException("Неверное имя факта. После UnderscoreFact нечто " + strLine);
 			case Fact:
 				if (Character.isLetterOrDigit(iat) || iat == '_') {
 					fact = fact.append(iat);
 					break;
 				}
-				factExpression = new FactExpression(fact.toString());
-				fact.setLength(0);
 				if (Character.isWhitespace(iat)) {
+					factExpression = new FactExpression(fact.toString());
+					fact.setLength(0);
 					characterState = CharacterState.BeforeOperation;
 					break;
 				}
 				if (iat == '&') {
+					factExpression = new FactExpression(fact.toString());
+					fact.setLength(0);
 					characterState = CharacterState.OperationAnd;
 					break;
 				}
 				if (iat == '|') {
+					factExpression = new FactExpression(fact.toString());
+					fact.setLength(0);
 					characterState = CharacterState.OperationOr;
 					break;
 				}
 				if (iat == '-') {
+					factExpression = new FactExpression(fact.toString());
+					fact.setLength(0);
 					characterState = CharacterState.Equal;
 					break;
 				}
@@ -174,27 +182,31 @@ public class Parser {
 			case BeforeResultingFact:
 				if (Character.isWhitespace(iat)) 
 					break;
-				resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
 				if (iat == '_') {
+					resultingFact = resultingFact.append(iat);
 					characterState = CharacterState.LetterlessResultingFact;
 					break;
 				}
 				if (Character.isLetter(iat)) {
+					resultingFact = resultingFact.append(iat);
 					characterState = CharacterState.ResultingFact;
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. После > нечто " + strLine);
 			case LetterlessResultingFact:
-				resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
 				if (Character.isLetter(iat)) {
+					resultingFact = resultingFact.append(iat);
 					characterState = CharacterState.ResultingFact;
 					break;
 				}
-				if (iat == '_') break;
+				if (iat == '_') {
+					resultingFact = resultingFact.append(iat);
+					break;
+				}
 				throw new RuntimeException("Неверное имя факта. После UnderscoreResultingFact нечто " + strLine);
 			case ResultingFact:
 				if (Character.isLetterOrDigit(iat) || iat == '_') {
-					resultingFact = new StringBuilder().append(resultingFact).append(iat).toString();
+					resultingFact = resultingFact.append(iat);
 					break;
 				}
 				if (Character.isWhitespace(iat)) {
@@ -214,68 +226,58 @@ public class Parser {
 		if (resultingFact.length() == 0)
 			throw new RuntimeException("Неверное имя факта. Не было результирующего факта " + strLine);
 
-		return new Rule(resultExpression, resultingFact);
+		return new Rule(resultExpression, resultingFact.toString());
 	}
 	
 	private void parseKnownFacts(Set<String> resultingFacts, String strLine) {
-		CharacterStateKnownFacts characterState = CharacterStateKnownFacts.Begin;
-		String fact = "";
+		CharacterStateKnownFacts characterState = CharacterStateKnownFacts.BeforeFact;
+		StringBuilder fact = new StringBuilder();
 		for (int i = 0; i < strLine.length(); i++) {
-			Character iat = Character.valueOf(strLine.charAt(i));
+			char iat = strLine.charAt(i);
 			switch (characterState) {
-			case Begin:
+			case BeforeFact:
 				if (iat == ' ')
 					break;
-				fact = fact + iat;
 				if (iat == '_') {
+					fact = fact.append(iat);
 					characterState = CharacterStateKnownFacts.UnderscoreFact;
 					break;
 				}
 				if (Character.isLetter(iat)) {
+					fact = fact.append(iat);
 					characterState = CharacterStateKnownFacts.Fact;
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. Впереди нечто " + strLine);
 			case UnderscoreFact:
-				fact = fact + iat;
 				if (Character.isLetter(iat)) {
+					fact = fact.append(iat);
 					characterState = CharacterStateKnownFacts.Fact;
 					break;
 				}
-				if (iat == '_') 
+				if (iat == '_') { 
+					fact = fact.append(iat);
 					break;
+				}
 				throw new RuntimeException("Неверное имя факта. После UnderscoreFact нечто " + strLine);
 			case Fact:
 				if (iat == ' ') {
 					characterState = CharacterStateKnownFacts.SpaceAfterFact;
-					resultingFacts.add(fact);
-					fact = "";
+					resultingFacts.add(fact.toString());
+					fact.setLength(0);
 					break;
 				}
 				if (iat == ',') {
-					characterState = CharacterStateKnownFacts.Comma;
-					resultingFacts.add(fact);
-					fact = "";
+					characterState = CharacterStateKnownFacts.BeforeFact;
+					resultingFacts.add(fact.toString());
+					fact.setLength(0);
 					break;
 				}
 				if ((iat == '_') || Character.isLetterOrDigit(iat)) {
-					fact = fact + iat;
+					fact = fact.append(iat);
 					break;
 				}
 				throw new RuntimeException("Неверное имя факта. После факта нечто " + strLine);
-			case Comma:
-				if (iat == ' ')
-					break;
-				fact = fact + iat;
-				if (iat == '_') {
-					characterState = CharacterStateKnownFacts.UnderscoreFact;
-					break;
-				}
-				if (Character.isLetter(iat)) {
-					characterState = CharacterStateKnownFacts.Fact;
-					break;
-				}
-				throw new RuntimeException("Неверное имя факта. Впереди нечто " + strLine);
 			case SpaceAfterFact:
 				if (iat == ' ')
 					break;
@@ -284,10 +286,10 @@ public class Parser {
 				throw new RuntimeException("Ошибка автомата - мы попали в невозможное состояние " + strLine);
 			}
 		}
-        if (!fact.equals("")) {
-			resultingFacts.add(fact);
-			return;
-        }
-        throw new RuntimeException("Неверное имя факта. " + strLine);
-	}
+		
+        if (characterState != CharacterStateKnownFacts.Fact) 
+        	throw new RuntimeException("Неверное имя факта. " + strLine);
+        
+		resultingFacts.add(fact.toString());
+ 	}
 }

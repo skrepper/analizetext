@@ -16,16 +16,12 @@ public class Main {
 		CommandLineParser cliParser = new DefaultParser();
 		Options options = new Options();
 		Option fileOption = new Option("f", "file", true, "File of model");
+		fileOption.setRequired(true);
 		options.addOption(fileOption);
 
 		try {
-			try {
-				line = cliParser.parse(options, args);
-			} catch (ParseException exp) {
-				System.err.println("Ошибочная команда.  Причина: " + exp.getMessage());
-			}
-			if (!line.hasOption("file")) 
-				throw new RuntimeException("Ошибка чтения файла. ");
+			line = cliParser.parse(options, args);
+			
 			modelFileName = line.getOptionValue("file");
 			Parser parser = new Parser();
 			Model model = parser.parseFile(modelFileName.trim());
@@ -33,6 +29,8 @@ public class Main {
 
 			System.out.print(String.join(", ", model.getApprovedFacts()));
 
+		} catch (ParseException exp) {
+			System.err.println("Ошибочная команда.  Причина: " + exp.getMessage());
 		} catch (Exception e) {
 			System.err.print(e.getMessage());
 		}

@@ -200,23 +200,25 @@ public class AnalizeTextTest {
 	@Test
 	public void testArgs1() throws IOException {
 		Main.main(new String[] {  });
-		assertThat(errOut.toString(), startsWith("Ошибка чтения файла."));
+		assertThat(errOut.toString(), startsWith("Ошибка в названии файла."));
 	}
 	
 	@Test
 	public void testArgs2() throws IOException {
 		Main.main(new String[] { "wrong name" });
-		assertThat(errOut.toString(), startsWith("Ошибка чтения файла."));
+		assertThat(errOut.toString(), startsWith("Ошибка в названии файла."));
 	}
 
 	@Test 
 	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException {
-		Parser parser = new Parser();
-		Class parserClass = parser.getClass(); 
-		Method method = parserClass.getDeclaredMethod("parseRule", String.class); 
-		method.setAccessible(true);
-		Object[] args = new Object[] { new String("A      ||B&&sssssss&&sssss&&ssss  -> dirt")}; 
-		Rule rule = (Rule) method.invoke(parser, args);
+		Parser ruleParser = new Parser();
+		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt");
+
+		Class modelClass = testModel.getClass(); 
+		Field fieldRules = modelClass.getDeclaredField("rules");
+		fieldRules.setAccessible(true);
+		ArrayList<Rule> testRules = (ArrayList<Rule>) fieldRules.get(testModel);
+		Rule rule = testRules.get(0);
 
 		Class ruleClass = rule.getClass(); 
 		Field fieldExpression = ruleClass.getDeclaredField("expression");
@@ -240,4 +242,10 @@ public class AnalizeTextTest {
 		
 	}
 	
+	@Test
+	public void testContent22() throws IOException {
+		//простая проверка
+		Main.main(new String[] { "-f target/test-classes/func_text_22.txt" });
+		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+	}
 }
