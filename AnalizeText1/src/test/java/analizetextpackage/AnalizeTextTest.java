@@ -200,13 +200,13 @@ public class AnalizeTextTest {
 	@Test
 	public void testArgs1() throws IOException {
 		Main.main(new String[] {  });
-		assertThat(errOut.toString(), startsWith("Ошибка в названии файла."));
+		assertThat(errOut.toString(), startsWith("Неверное указание файла."));
 	}
 	
 	@Test
 	public void testArgs2() throws IOException {
 		Main.main(new String[] { "wrong name" });
-		assertThat(errOut.toString(), startsWith("Ошибка в названии файла."));
+		assertThat(errOut.toString(), startsWith("Неверное указание файла."));
 	}
 
 	@Test 
@@ -217,8 +217,8 @@ public class AnalizeTextTest {
 		Class modelClass = testModel.getClass(); 
 		Field fieldRules = modelClass.getDeclaredField("rules");
 		fieldRules.setAccessible(true);
-		ArrayList<Rule> testRules = (ArrayList<Rule>) fieldRules.get(testModel);
-		Rule rule = testRules.get(0);
+		Collection<Rule> testRules = (Collection<Rule>) fieldRules.get(testModel);
+		Rule rule = testRules.iterator().next();
 
 		Class ruleClass = rule.getClass(); 
 		Field fieldExpression = ruleClass.getDeclaredField("expression");
@@ -232,7 +232,7 @@ public class AnalizeTextTest {
 		
 		assertThat(operands.size(), equalTo(2)); //первый уровень
 
-		AndExpression andExpression = (AndExpression) operands.get(1);
+		AndExpression andExpression = (AndExpression) operands.get(1); //второй!
 		Class andExpressionClass = andExpression.getClass(); 
 		Field fieldAndOperands = andExpressionClass.getDeclaredField("operands");
 		fieldAndOperands.setAccessible(true);

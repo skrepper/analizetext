@@ -15,7 +15,7 @@ public class Main {
 		String modelFileName = null;
 		CommandLineParser cliParser = new DefaultParser();
 		Options options = new Options();
-		Option fileOption = new Option("f", "file", true, "File of model");
+		Option fileOption = new Option("f", "file", true, "Input file");
 		fileOption.setRequired(true);
 		options.addOption(fileOption);
 
@@ -30,7 +30,7 @@ public class Main {
 			System.out.print(String.join(", ", model.getApprovedFacts()));
 
 		} catch (ParseException exp) {
-			System.err.println("Ошибочная команда.  Причина: " + exp.getMessage());
+			System.err.println("Неверное указание файла.  Причина: " + exp.getMessage());
 		} catch (Exception e) {
 			System.err.print(e.getMessage());
 		}

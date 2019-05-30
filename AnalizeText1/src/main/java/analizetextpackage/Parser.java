@@ -287,9 +287,16 @@ public class Parser {
 			}
 		}
 		
-        if (characterState != CharacterStateKnownFacts.Fact) 
-        	throw new RuntimeException("Неверное имя факта. " + strLine);
+        if (characterState == CharacterStateKnownFacts.Fact)
+        {
+        	resultingFacts.add(fact.toString());
+        	return;
+        }
+
+        if (characterState == CharacterStateKnownFacts.SpaceAfterFact)
+        	return;
+        	
+        throw new RuntimeException("Неверное имя факта. " + strLine);
         
-		resultingFacts.add(fact.toString());
  	}
 }
