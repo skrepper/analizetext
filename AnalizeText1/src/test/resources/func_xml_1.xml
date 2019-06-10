@@ -1,0 +1,50 @@
+<model>
+  <rules>
+    <rule>
+      <factExpression>
+          spring
+      </factExpression>
+      <resultingFact>
+        rain
+      </resultingFact>
+    </rule>
+    <rule>
+      <andExpression>
+        <factExpression>
+          spring
+        </factExpression>
+        <factExpression>
+          winter
+        </factExpression>
+      </andExpression>
+      <resultingFact>
+        autumn
+      </resultingFact>
+    </rule>
+    <rule>
+      <orExpression>
+        <factExpression>
+          spring
+        </factExpression>
+        <factExpression>
+          winter
+        </factExpression>
+        <andExpression>
+          <factExpression>
+            summer
+          </factExpression>
+          <factExpression>
+            rain
+          </factExpression>
+        </andExpression>
+      </orExpression>
+      <resultingFact>
+        autumn
+      </resultingFact>
+    </rule>
+  </rules>
+  <knownFacts>
+    <knownFact fact="spring"/>
+    <knownFact fact="summer"/>
+  </knownFacts>
+</model>
