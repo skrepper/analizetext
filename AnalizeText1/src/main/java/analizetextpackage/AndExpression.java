@@ -3,9 +3,22 @@ package analizetextpackage;
 import java.util.Collection;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "andExpression")
 public class AndExpression implements Expression {
 	
+    @XmlElementWrapper
+    @XmlAnyElement(lax=true)
 	private Collection<Expression> operands;
+
+	public AndExpression() {
+	}
 
 	public AndExpression(Collection<Expression> operand) {
 		this.operands = operand;

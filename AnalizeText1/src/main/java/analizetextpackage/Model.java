@@ -4,12 +4,16 @@ import java.util.Collection;
 import java.util.Set;
 import javax.xml.bind.annotation.*;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "model")
 public class Model {
 	
-	@XmlElement(name = "rules")
-	private Collection<Rule> rules;
-	@XmlElement(name = "approvedFacts")
+    @XmlElementWrapper
+    @XmlAnyElement(lax=true)
+    private Collection<Rule> rules;
+    
+    @XmlElementWrapper
+    @XmlAnyElement(lax=true)
 	private Set<String> approvedFacts;
 
 	public Model() {

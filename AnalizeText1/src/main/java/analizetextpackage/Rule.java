@@ -4,15 +4,18 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.*;
 
-@XmlRootElement(name = "rule")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "rule1")
 public class Rule {
+	
 	@XmlElements({
-	    @XmlElement(type = AndExpression.class),
 	    @XmlElement(type = FactExpression.class),
+	    @XmlElement(type = AndExpression.class),
 	    @XmlElement(type = OrExpression.class)
 	})
 	private Expression expression;
-    @XmlElement(name = "resultingfact")
+    
+	@XmlElement(name = "resultingfact")
 	private String resultingFact;
 	
 	public Rule() {
