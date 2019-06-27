@@ -10,11 +10,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
+import javax.xml.bind.JAXBException;
+
 import java.io.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class AnalizeTextTest {
 
@@ -210,7 +214,7 @@ public class AnalizeTextTest {
 	}
 
 	@Test 
-	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException {
+	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException {
 		Parser ruleParser = new Parser();
 		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt");
 
