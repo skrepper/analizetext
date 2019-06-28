@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.validation.Schema;
@@ -82,7 +83,8 @@ public class Parser {
 	private Model getXMLModel(String filePathName) throws JAXBException, SAXException, IOException {
 
 		JAXBContext jc = JAXBContext.newInstance(
-        		Model.class, 
+        		Model.class,
+        		/*Expression.class,*/
         		Rule.class, 
         		FactExpression.class,
         		AndExpression.class ,
@@ -94,14 +96,17 @@ public class Parser {
                 unmarshaller.unmarshal(new FileReader(new File(filePathName) ));
 
         JAXBSource source = new JAXBSource(jc, model);
-        
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
         Schema schema = sf.newSchema(new File("src/main/resources/func_xml.xsd")); 
-
         Validator validator = schema.newValidator();
         validator.setErrorHandler(new MyErrorHandler());
         validator.validate(source);		
-		return model;
+
+/*        Marshaller marshaller = jc.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(model, System.out);*/
+        
+        return model;
 	}
 
     public class MyErrorHandler implements ErrorHandler {

@@ -8,13 +8,14 @@ import javax.xml.bind.annotation.*;
 @XmlRootElement(name = "model")
 public class Model {
 	
-    @XmlElementWrapper
-    @XmlAnyElement(lax=true)
+//    @XmlElementWrapper
+//    @XmlAnyElement(lax=true)
+    @XmlElement(name="Rule")
     private Collection<Rule> rules;
     
     @XmlElementWrapper
     @XmlAnyElement(lax=true)
-	private Set<String> approvedFacts;
+    private Set<String> approvedFacts;
 
 	public Model() {
 	}

@@ -17,16 +17,22 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class XmlTest {
      
     @Test
-    public void test() throws JAXBException, SAXException, IOException {
+    public void test() throws JAXBException, SAXException, IOException, ReflectiveOperationException, RuntimeException {
         JAXBContext jc = JAXBContext.newInstance(
         		Model.class/*, 
         		Rule.class, 
@@ -48,9 +54,7 @@ public class XmlTest {
         validator.setErrorHandler(new MyErrorHandler());
         validator.validate(source);
         
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(result, System.out);
+        
         Assert.assertEquals(1, 1);
     }
     
@@ -81,3 +85,9 @@ public class XmlTest {
 
 
 }
+
+
+
+/*Marshaller marshaller = jc.createMarshaller();
+marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+marshaller.marshal(result, System.out);*/
