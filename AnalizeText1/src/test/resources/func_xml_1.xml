@@ -1,7 +1,9 @@
 <model>
   <rules>
     <rule>
-      <factExpression>spring</factExpression>
+      <factExpression>
+      	spring
+      </factExpression>
       <resultingFact>
         rain
       </resultingFact>

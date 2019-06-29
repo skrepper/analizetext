@@ -6,15 +6,21 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlElements;
+
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "orExpression")
 public class OrExpression implements Expression {
 
-    @XmlElementWrapper
-    @XmlAnyElement(lax=true)
+	@XmlElements({
+	    @XmlElement(name="andExpression", type = AndExpression.class),
+	    @XmlElement(name="factExpression", type = FactExpression.class)
+	})	
 	private Collection<Expression> operands;
 
 	public OrExpression() {

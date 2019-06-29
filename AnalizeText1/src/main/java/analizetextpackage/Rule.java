@@ -5,17 +5,16 @@ import java.util.Set;
 import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "rule1")
+@XmlRootElement(name = "rule")
 public class Rule {
-	
+
 	@XmlElements({
-	    @XmlElement(type = FactExpression.class),
-	    @XmlElement(type = AndExpression.class),
-	    @XmlElement(type = OrExpression.class)
-	})
+    @XmlElement(name="andExpression", type = AndExpression.class),
+    @XmlElement(name="orExpression", type = OrExpression.class),
+    @XmlElement(name="factExpression", type = FactExpression.class)
+	})	
 	private Expression expression;
     
-	@XmlElement(name = "resultingfact")
 	private String resultingFact;
 	
 	public Rule() {
@@ -36,3 +35,6 @@ public class Rule {
 		approvedFacts.add(resultingFact);
 	}
 }
+
+
+
