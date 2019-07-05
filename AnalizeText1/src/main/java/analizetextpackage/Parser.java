@@ -94,12 +94,12 @@ public class Parser {
         Model model = (Model)
                 unmarshaller.unmarshal(new FileReader(new File(filePathName) ));
 
-/*        JAXBSource source = new JAXBSource(jc, model);
+        JAXBSource source = new JAXBSource(jc, model);
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
-        Schema schema = sf.newSchema(new File("src/main/resources/func_xml.xsd")); 
+        Schema schema = sf.newSchema(new File("target/test-classes/func_xml.xsd")); 
         Validator validator = schema.newValidator();
         validator.setErrorHandler(new MyErrorHandler());
-        validator.validate(source);	*/	
+        validator.validate(source);		
 
 /*        Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

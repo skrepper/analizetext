@@ -3,22 +3,33 @@ package analizetextpackage;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.util.JAXBSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import java.io.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import analizetextpackage.XmlTest.MyErrorHandler;
 
 public class AnalizeTextTest {
 
@@ -252,4 +263,90 @@ public class AnalizeTextTest {
 		Main.main(new String[] { "-f target/test-classes/func_text_22.txt" });
 		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
 	}
+
+
+	@Test 
+	public void testRuleXML() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException {
+		Parser ruleParser = new Parser();
+        JAXBContext jc = JAXBContext.newInstance(
+        		Model.class, 
+        		Rule.class, 
+        		FactExpression.class,
+        		AndExpression.class ,
+        		OrExpression.class
+        		);
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+ 
+        Model testModel = (Model)
+                unmarshaller.unmarshal(new FileReader(new File("target/test-classes/func_xml_1.xml") ));
+
+
+        JAXBSource source = new JAXBSource(jc, testModel);
+
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
+        Schema schema = sf.newSchema(new File("target/test-classes/func_xml.xsd")); 
+
+        Validator validator = schema.newValidator();
+        validator.setErrorHandler(new MyErrorHandler());
+        validator.validate(source);
+
+		Class modelClass = testModel.getClass(); 
+		Field fieldRules = modelClass.getDeclaredField("rules");
+		fieldRules.setAccessible(true);
+		Collection<Rule> testRules = (Collection<Rule>) fieldRules.get(testModel);
+		Iterator<Rule> testRulesIterator = testRules.iterator();
+		testRulesIterator.next();
+		testRulesIterator.next();
+		Rule rule = testRulesIterator.next();
+
+		Class ruleClass = rule.getClass(); 
+		Field fieldExpression = ruleClass.getDeclaredField("expression");
+		fieldExpression.setAccessible(true);
+		OrExpression resultExpression = (OrExpression) fieldExpression.get(rule);
+		
+		Class expressionClass = resultExpression.getClass(); 
+		Field fieldOperands = expressionClass.getDeclaredField("operands");
+		fieldOperands.setAccessible(true);
+		ArrayList<Expression> operands = (ArrayList<Expression>) fieldOperands.get(resultExpression);
+		
+		assertThat(operands.size(), equalTo(3)); //первый уровень
+
+		AndExpression andExpression = (AndExpression) operands.get(2); 
+		Class andExpressionClass = andExpression.getClass(); 
+		Field fieldAndOperands = andExpressionClass.getDeclaredField("operands");
+		fieldAndOperands.setAccessible(true);
+		ArrayList<Expression> andOperands = (ArrayList<Expression>) fieldAndOperands.get(andExpression);
+	
+		assertThat(andOperands.size(), equalTo(2)); //второй уровень (второй операнд)
+		
+	}
+
+
+	
+    private class MyErrorHandler implements ErrorHandler {
+   	 
+		@Override
+        public void warning(SAXParseException exception) throws SAXException {
+            System.out.println("\nWARNING");
+            exception.printStackTrace();
+        }
+     
+		@Override
+        public void error(SAXParseException exception) throws SAXException {
+            System.out.println("\nERROR");
+            exception.printStackTrace();
+        }
+     
+		@Override
+        public void fatalError(SAXParseException exception) throws SAXException {
+            System.out.println("\nFATAL ERROR");
+            exception.printStackTrace();
+        }
+
+     
+    }
+
+
 }
+
+

@@ -1,21 +1,15 @@
 <model>
   <rules>
     <rule>
-      <factExpression>
-      	spring
-      </factExpression>
-      <resultingFact>
-        rain
-      </resultingFact>
+      <factExpression>spring</factExpression>
+      <resultingFact>rain</resultingFact>
     </rule>
     <rule>
       <andExpression>
         <factExpression>spring</factExpression>
         <factExpression>winter</factExpression>
       </andExpression>
-      <resultingFact>
-        autumn
-      </resultingFact>
+      <resultingFact>autumn</resultingFact>
     </rule>
     <rule>
       <orExpression>
@@ -26,13 +20,11 @@
           <factExpression>rain</factExpression>
         </andExpression>
       </orExpression>
-      <resultingFact>
-        autumn
-      </resultingFact>
+      <resultingFact>autumn</resultingFact>
     </rule>
   </rules>
   <approvedFacts>
-    <approvedFact fact="spring"/>
-    <approvedFact fact="summer"/>
+    <approvedFact>spring</approvedFact>
+    <approvedFact>summer</approvedFact>
   </approvedFacts>
 </model>
