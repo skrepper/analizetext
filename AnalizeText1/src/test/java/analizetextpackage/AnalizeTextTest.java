@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -225,7 +226,7 @@ public class AnalizeTextTest {
 	}
 
 	@Test 
-	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException {
+	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException, XMLStreamException {
 		Parser ruleParser = new Parser();
 		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt", false);
 

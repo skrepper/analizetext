@@ -1,4 +1,7 @@
-<model>
+<?xml version="1.0"?>
+<model 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="func_xml_1.xsd">
   <rules>
     <rule>
       <factExpression>spring</factExpression>

@@ -1,6 +1,7 @@
 package analizetextpackage;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,7 +10,12 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -20,7 +26,13 @@ import org.xml.sax.SAXParseException;
 
 public class Parsexmlfile {
 
-	public Model parseFile(String filePathName) throws FileNotFoundException, IOException, JAXBException, SAXException {
+	public Model parseFile(String filePathName) throws FileNotFoundException, IOException, JAXBException, SAXException, XMLStreamException {
+
+		XMLInputFactory xif = XMLInputFactory.newInstance();
+		FileInputStream fis = new FileInputStream(filePathName);
+		XMLStreamReader xsr = xif.createXMLStreamReader(fis);
+		xsr.nextTag();
+		String schemaLocation = xsr.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "noNamespaceSchemaLocation");
 		
 		JAXBContext jc = JAXBContext.newInstance(
         		Model.class,
@@ -30,13 +42,15 @@ public class Parsexmlfile {
         		OrExpression.class
         		);
         Unmarshaller unmarshaller = jc.createUnmarshaller();
+        
+        unmarshaller.setEventHandler(new MyValidationEventHandler());
  
         Model model = (Model)
-                unmarshaller.unmarshal(new FileReader(new File(filePathName) ));
+                unmarshaller.unmarshal(new FileReader(new File(filePathName)));
 
         JAXBSource source = new JAXBSource(jc, model);
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
-        Schema schema = sf.newSchema(new File("target/test-classes/func_xml.xsd")); 
+        Schema schema = sf.newSchema(new File("target/test-classes/" + schemaLocation)); 
         Validator validator = schema.newValidator();
         validator.setErrorHandler(new MyErrorHandler());
         validator.validate(source);		
@@ -48,7 +62,16 @@ public class Parsexmlfile {
         return model;
 	}
 
-    public class MyErrorHandler implements ErrorHandler {
+    private class MyValidationEventHandler implements ValidationEventHandler {
+
+		@Override
+		public boolean handleEvent(ValidationEvent event) {
+            System.out.println("\nWARNING");
+			return false;
+		}
+    }
+
+    private class MyErrorHandler implements ErrorHandler {
    	 
 		@Override
         public void warning(SAXParseException exception) throws SAXException {
