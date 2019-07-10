@@ -2,7 +2,7 @@
   <rules>
     <rule>
       <factExpression>spring</factExpression>
-      <resultingFact>rain</resultingFact>
+      <resultingFact>rain1</resultingFact>
     </rule>
     <rule>
       <andExpression>
@@ -13,7 +13,7 @@
     </rule>
     <rule>
       <orExpression>
-        <factExpression>spring</factExpression>
+        <factExpression>spring1</factExpression>
         <factExpression>winter</factExpression>
         <andExpression>
           <factExpression>summer</factExpression>

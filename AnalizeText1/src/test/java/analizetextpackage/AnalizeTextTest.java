@@ -227,7 +227,7 @@ public class AnalizeTextTest {
 	@Test 
 	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException {
 		Parser ruleParser = new Parser();
-		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt");
+		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt", false);
 
 		Class modelClass = testModel.getClass(); 
 		Field fieldRules = modelClass.getDeclaredField("rules");

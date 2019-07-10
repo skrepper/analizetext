@@ -34,7 +34,7 @@ public class XmlTest2 {
     @Test
     public void test() throws JAXBException, SAXException, IOException, ReflectiveOperationException, RuntimeException {
 		Parser ruleParser = new Parser();
-		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt");
+		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt", true);
 
         JAXBContext jc = JAXBContext.newInstance(
         		Model.class, 

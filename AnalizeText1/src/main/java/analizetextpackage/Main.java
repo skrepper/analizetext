@@ -13,18 +13,23 @@ public class Main {
 
 		CommandLine line = null;
 		String modelFileName = null;
+		boolean xmlFile = false;
 		CommandLineParser cliParser = new DefaultParser();
 		Options options = new Options();
+		Option xmlOption = new Option("xml", "xml", false, "Input file");
 		Option fileOption = new Option("f", "file", true, "Input file");
 		fileOption.setRequired(true);
+		xmlOption.setRequired(false);
 		options.addOption(fileOption);
+		options.addOption(xmlOption);
 
 		try {
 			line = cliParser.parse(options, args);
 			
 			modelFileName = line.getOptionValue("file");
+			xmlFile = line.hasOption("xml");
 			Parser parser = new Parser();
-			Model model = parser.parseFile(modelFileName.trim());
+			Model model = parser.parseFile(modelFileName.trim(), xmlFile);
 			model.calculate();
 
 			System.out.print(String.join(", ", model.getApprovedFacts()));
