@@ -13,11 +13,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "andExpression", namespace="xsi:http://www.w3.org/2001/XMLSchema-instance")
+@XmlRootElement(name = "andExpression")
 public class AndExpression implements Expression {
 	
 	@XmlElements({
-	    @XmlElement(name="factExpression", type = FactExpression.class, namespace="xsi:http://www.w3.org/2001/XMLSchema-instance")
+	    @XmlElement(name="factExpression", type = FactExpression.class)
 	})	
 	private Collection<Expression> operands;
 

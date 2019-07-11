@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "factExpression", namespace="xsi:http://www.w3.org/2001/XMLSchema-instance")
+@XmlRootElement(name = "factExpression")
 public class FactExpression implements Expression {
 
 	@XmlValue

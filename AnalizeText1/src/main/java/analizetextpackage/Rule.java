@@ -5,13 +5,13 @@ import java.util.Set;
 import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "rule", namespace="xsi:http://www.w3.org/2001/XMLSchema-instance")
+@XmlRootElement(name = "rule")
 public class Rule {
 
 	@XmlElements({
-    @XmlElement(name="andExpression", type = AndExpression.class, namespace="xsi:http://www.w3.org/2001/XMLSchema-instance"),
-    @XmlElement(name="orExpression", type = OrExpression.class, namespace="xsi:http://www.w3.org/2001/XMLSchema-instance"),
-    @XmlElement(name="factExpression", type = FactExpression.class, namespace="xsi:http://www.w3.org/2001/XMLSchema-instance")
+    @XmlElement(name="andExpression", type = AndExpression.class),
+    @XmlElement(name="orExpression", type = OrExpression.class),
+    @XmlElement(name="factExpression", type = FactExpression.class)
 	})	
 	private Expression expression;
     

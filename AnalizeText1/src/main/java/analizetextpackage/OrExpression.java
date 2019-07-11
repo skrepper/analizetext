@@ -14,12 +14,12 @@ import javax.xml.bind.annotation.XmlElements;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "orExpression", namespace="xsi:http://www.w3.org/2001/XMLSchema-instance")
+@XmlRootElement(name = "orExpression")
 public class OrExpression implements Expression {
 
 	@XmlElements({
-	    @XmlElement(name="andExpression", type = AndExpression.class, namespace="xsi:http://www.w3.org/2001/XMLSchema-instance"),
-	    @XmlElement(name="factExpression", type = FactExpression.class, namespace="xsi:http://www.w3.org/2001/XMLSchema-instance")
+	    @XmlElement(name="andExpression", type = AndExpression.class),
+	    @XmlElement(name="factExpression", type = FactExpression.class)
 	})	
 	private Collection<Expression> operands;
 

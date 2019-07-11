@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <model 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:noNamespaceSchemaLocation="func_xml_1.xsd">
+xsi:noNamespaceSchemaLocation="func_xml.xsd">
   <rules>
     <rule>
       <factExpression>spring</factExpression>
-      <resultingFact>rain1</resultingFact>
+      <resultingFact>rain111111</resultingFact>
     </rule>
     <rule>
       <andExpression>

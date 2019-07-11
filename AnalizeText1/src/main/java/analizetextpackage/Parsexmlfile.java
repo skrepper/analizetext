@@ -55,10 +55,6 @@ public class Parsexmlfile {
         validator.setErrorHandler(new MyErrorHandler());
         validator.validate(source);		
 
-/*        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(model, System.out);*/
-        
         return model;
 	}
 
@@ -92,4 +88,9 @@ public class Parsexmlfile {
         }
     }
 }
+
+
+/*        Marshaller marshaller = jc.createMarshaller();
+marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+marshaller.marshal(model, System.out);*/
 
