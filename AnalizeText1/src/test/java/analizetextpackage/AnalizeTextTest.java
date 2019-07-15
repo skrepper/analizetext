@@ -72,63 +72,63 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent2() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_2.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после результирующего факта нечто summer -> winter || flower"));
 	}
 
 	@Test
 	public void testContent3() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_3.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после результирующего факта нечто summer -> winter || rock"));
 	}
 
 	@Test
 	public void testContent4() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_4.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. "));
 	}
 
 	@Test
 	public void testContent5() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_5.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После первого | нечто sum|mer -> winter"));
 	}
 
 	@Test
 	public void testContent6() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_6.txt" }); 
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Не было результирующего факта summer || rain -> "));
 	}
 
 	@Test
 	public void testContent7() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_7.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто -----------------------------------"));
 	}
 
 	@Test
 	public void testContent8() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_8.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после результирующего факта нечто summer -> wi nter1"));
 	}
 	
 
 	@Test
 	public void testContent9() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_9.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после факта нечто summer, autumn, rain, n ot_in_upper_text"));
 	}
 	
 
 	@Test
 	public void testContent10() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_10.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто _ыы4su||||mmer -> winter1"));
 	}
 	
 	@Test
 	public void testContent11() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_11.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто ,summer, autumn, rain, _f2not_in_upper_text, mmer"));
 	}
 	
 	@Test
@@ -151,7 +151,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent13() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_13.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто -> winter2"));
 	}
 	
 	@Test
@@ -163,36 +163,36 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent15() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_15.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. В результирующем факте нечто tornado||snow -> water->"));
 	}
 
 	@Test
 	public void testContent16() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_16.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После > нечто tornado||snow ->1water"));
 	}
 
 	@Test
 	public void testContent17() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_17.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто summer, autumn, 1rain"));
 	}
 
 	@Test
 	public void testContent18() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_18.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто  -> dddddd"));
 	}
 
 	@Test
 	public void testContent19() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_19.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто ssss||sssss|| -> dddddd"));
 	}
 	@Test
 	public void testContent20() throws IOException {
 		Main.main(new String[] { "-f target/test-classes/func_text_20.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто ssss&&sssss&& -> dddddd"));
 	}
 	@Test 
 	public void testContent21() throws IOException {
@@ -216,13 +216,13 @@ public class AnalizeTextTest {
 	@Test
 	public void testArgs1() throws IOException {
 		Main.main(new String[] {  });
-		assertThat(errOut.toString(), startsWith("Неверное указание файла."));
+		assertThat(errOut.toString(), equalTo("Неверное указание файла.  Причина: Missing required option: f\r\n"));
 	}
 	
 	@Test
 	public void testArgs2() throws IOException {
 		Main.main(new String[] { "wrong name" });
-		assertThat(errOut.toString(), startsWith("Неверное указание файла."));
+		assertThat(errOut.toString(), equalTo("Неверное указание файла.  Причина: Missing required option: f\r\n"));
 	}
 
 	@Test 
@@ -262,7 +262,7 @@ public class AnalizeTextTest {
 	public void testContent22() throws IOException {
 		//простая проверка
 		Main.main(new String[] { "-f target/test-classes/func_text_22.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. summer, autumn, rain, _"));
 	}
 
 

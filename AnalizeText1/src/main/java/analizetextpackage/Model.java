@@ -5,15 +5,15 @@ import java.util.Set;
 import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlRootElement(name = "model")
+@XmlRootElement(name = "model", namespace="http://Cyden")
 public class Model {
 	
-	@XmlElementWrapper(name="rules")
-	@XmlElement(name="rule")
+	@XmlElementWrapper(name="rules", namespace="http://Cyden")
+	@XmlElement(name="rule", namespace="http://Cyden")
     private Collection<Rule> rules;
     
-	@XmlElementWrapper(name="approvedFacts")
-	@XmlElement(name="approvedFact")
+	@XmlElementWrapper(name="approvedFacts", namespace="http://Cyden")
+	@XmlElement(name="approvedFact", namespace="http://Cyden")
     private Set<String> approvedFacts;
 
 	public Model() {

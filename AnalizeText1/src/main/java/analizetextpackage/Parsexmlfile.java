@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
@@ -32,25 +33,25 @@ public class Parsexmlfile {
 		FileInputStream fis = new FileInputStream(filePathName);
 		XMLStreamReader xsr = xif.createXMLStreamReader(fis);
 		xsr.nextTag();
-		String schemaLocation = xsr.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "noNamespaceSchemaLocation");
+		String schemaLocation = xsr.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation");
+		schemaLocation = schemaLocation.substring(schemaLocation.lastIndexOf(" ")).trim();
 		
 		JAXBContext jc = JAXBContext.newInstance(
-        		Model.class,
+        		Model.class,  
         		Rule.class, 
         		FactExpression.class,
         		AndExpression.class ,
-        		OrExpression.class
+        		OrExpression.class 
         		);
         Unmarshaller unmarshaller = jc.createUnmarshaller();
         
         unmarshaller.setEventHandler(new MyValidationEventHandler());
  
-        Model model = (Model)
-                unmarshaller.unmarshal(new FileReader(new File(filePathName)));
+        Model model = (Model)  unmarshaller.unmarshal(new FileReader(new File(filePathName)));
 
         JAXBSource source = new JAXBSource(jc, model);
         SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
-        Schema schema = sf.newSchema(new File("target/test-classes/" + schemaLocation)); 
+        Schema schema = sf.newSchema(Thread.currentThread().getContextClassLoader().getResource("func_xml.xsd"));
         Validator validator = schema.newValidator();
         validator.setErrorHandler(new MyErrorHandler());
         validator.validate(source);		
@@ -62,7 +63,7 @@ public class Parsexmlfile {
 
 		@Override
 		public boolean handleEvent(ValidationEvent event) {
-            System.out.println("\nWARNING");
+            System.out.println("\nWARNING in UNMarshall");
 			return false;
 		}
     }
