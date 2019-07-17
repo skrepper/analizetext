@@ -34,8 +34,9 @@ public class XmlTest2 {
      
     @Test
     public void test() throws JAXBException, SAXException, IOException, ReflectiveOperationException, RuntimeException, XMLStreamException {
-		Parser ruleParser = new Parser();
-		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt", true);
+		ParserFactory ruleParserFactory = new ParserFactory();
+		FileParser fileParser = ruleParserFactory.createParser("txt");
+		Model testModel = fileParser.parseFile("target/test-classes/testRule.txt");
 
         JAXBContext jc = JAXBContext.newInstance(
         		Model.class, 

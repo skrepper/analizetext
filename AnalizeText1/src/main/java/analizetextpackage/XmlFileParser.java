@@ -25,7 +25,7 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class Parsexmlfile {
+public class XmlFileParser implements FileParser{
 
 	public Model parseFile(String filePathName) throws FileNotFoundException, IOException, JAXBException, SAXException, XMLStreamException {
 

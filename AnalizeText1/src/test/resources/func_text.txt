@@ -4,11 +4,9 @@ summer || spring -> dump
 summer || rain -> snow
 summer && winter -> uragan
 dump || rain -> mud
-summer &&&& rain -> snow
-summer & rain -> snow
-summer &&& rain -> snow
-summer ||| rain -> |cosmos
-----------------------------
+summer && rain -> snow
+summer && rain -> snow
+summer && rain -> snow
+summer || rain -> cosmos
+----------------------------------------------------------------
 summer, autumn, rain, not_in_upper_text
-
-
