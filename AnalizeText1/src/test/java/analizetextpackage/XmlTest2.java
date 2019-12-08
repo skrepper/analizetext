@@ -13,6 +13,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.util.JAXBSource;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
@@ -32,9 +33,10 @@ import java.util.Collection;
 public class XmlTest2 {
      
     @Test
-    public void test() throws JAXBException, SAXException, IOException, ReflectiveOperationException, RuntimeException {
-		Parser ruleParser = new Parser();
-		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt");
+    public void test() throws JAXBException, SAXException, IOException, ReflectiveOperationException, RuntimeException, XMLStreamException {
+		ParserFactory ruleParserFactory = new ParserFactory();
+		FileParser fileParser = ruleParserFactory.createParser("txt");
+		Model testModel = fileParser.parseFile("target/test-classes/testRule.txt");
 
         JAXBContext jc = JAXBContext.newInstance(
         		Model.class, 
