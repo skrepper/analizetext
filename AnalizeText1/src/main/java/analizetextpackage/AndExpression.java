@@ -3,6 +3,7 @@ package analizetextpackage;
 import java.util.Collection;
 import java.util.Set;
 
+<<<<<<< HEAD
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -23,6 +24,11 @@ public class AndExpression implements Expression {
 
 	public AndExpression() {
 	}
+=======
+public class AndExpression implements Expression, Cloneable {
+	
+	private Collection<Expression> operands;
+>>>>>>> master
 
 	public AndExpression(Collection<Expression> operand) {
 		this.operands = operand;
@@ -38,5 +44,9 @@ public class AndExpression implements Expression {
 		return true;
 	}
 	
+    @Override
+    public AndExpression clone() throws CloneNotSupportedException {
+        return (AndExpression) super.clone();
+    }
 
 }

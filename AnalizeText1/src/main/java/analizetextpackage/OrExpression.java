@@ -39,6 +39,10 @@ public class OrExpression implements Expression {
 		}
 		return false;
 	}
-	
+
+    @Override
+    public OrExpression clone() throws CloneNotSupportedException {
+        return (OrExpression) super.clone();
+    }
 
 }
