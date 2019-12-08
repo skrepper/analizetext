@@ -1,0 +1,12 @@
+sssss||summer -> ocean
+summer -> winter1
+ssss-> winterflower
+summer -> winter1
+summer -> winter1
+summer -> __s1winter1
+summer -> _ss1winter1
+	summer -> _ss1winter1
+summer -> winter1
+rain||summer&&autumn->dirt
+----------------------------------------------------------------
+summer, autumn, _f2s, mmer

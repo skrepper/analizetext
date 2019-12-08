@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+<xsd:element name="model" type="ModelType"/>
+
+<xsd:complexType name="ModelType">
+  <xsd:sequence>
+    <xsd:element name="rules" type="RulesType"/>
+    <xsd:element name="approvedFacts" type="ApprovedFactsType"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="RulesType">
+  <xsd:sequence>
+    <xsd:element name="rule" maxOccurs="unbounded" type="RuleType"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ApprovedFactsType">
+  <xsd:sequence>
+    <xsd:element name="approvedFact" minOccurs="1" maxOccurs="unbounded" type="ApprovedFactType"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+
+<!-- Запрет на содержимое: https://www.w3schools.com/xml/schema_complex_empty.asp -->
+<xsd:complexType name="ApprovedFactType">
+  <xsd:attribute name="fact" use="required">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string">
+        <xsd:pattern value="[_]*[a-zA-Z]+[\w]*"/>
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="RuleType">
+      <xsd:sequence>
+        <xsd:choice>
+          <xsd:element name="factExpression" maxOccurs="1" type="factExpressionType"/>
+          <xsd:element name="andExpression" maxOccurs="1" type="andExpressionType"/>
+          <xsd:element name="orExpression" maxOccurs="1" type="orExpressionType"/>
+        </xsd:choice>  
+        <xsd:element name="resultingFact" maxOccurs="1" type="xsd:string"/>
+      </xsd:sequence>  
+</xsd:complexType>
+
+
+<xsd:simpleType name="factExpressionType">
+    <xsd:restriction base="xsd:string">
+        <xsd:pattern value="[_]*[a-zA-Z]+[\w]*"/>
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="andExpressionType">
+      <xsd:sequence maxOccurs="unbounded">
+          <xsd:element name="factExpression" type="factExpressionType" />
+      </xsd:sequence>  
+</xsd:complexType>
+
+<xsd:complexType name="orExpressionType">
+      <xsd:sequence>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="factExpression" type="factExpressionType" />
+          <xsd:element name="andExpression" type="andExpressionType" />
+        </xsd:choice>        
+      </xsd:sequence>  
+</xsd:complexType>
+
+</xsd:schema>

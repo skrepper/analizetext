@@ -2,13 +2,24 @@ package analizetextpackage;
 
 import java.util.Collection;
 import java.util.Set;
+import javax.xml.bind.annotation.*;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "model")
 public class Model {
 	
-	private Collection<Rule> rules;
-	private Set<String> approvedFacts;
+	@XmlElementWrapper(name="rules")
+	@XmlElement(name="rule")
+    private Collection<Rule> rules;
+    
+	@XmlElementWrapper(name="approvedFacts")
+	@XmlElement(name="approvedFact")
+    private Set<String> approvedFacts;
 
-	public Model(Collection<Rule> rules, Set<String> approvedFacts) {
+	public Model() {
+	}
+	
+ 	public Model(Collection<Rule> rules, Set<String> approvedFacts) {
 		this.rules = rules;
 		this.approvedFacts = approvedFacts; 
 	}
@@ -26,5 +37,7 @@ public class Model {
 	public Set<String> getApprovedFacts() {
 		return approvedFacts;
 	}
-
+	
 }
+
+
