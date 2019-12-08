@@ -1,38 +1,31 @@
-<model>
+<?xml version="1.0"?>
+<model xmlns="http://Cyden" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://Cyden func_xml.xsd">
   <rules>
     <rule>
-      <factExpression>
-      	spring
-      </factExpression>
-      <resultingFact>
-        rain
-      </resultingFact>
+      <fact fact="spring"></fact>
+      <resultingFact fact="rain111111"></resultingFact>
     </rule>
     <rule>
-      <andExpression>
-        <factExpression>spring</factExpression>
-        <factExpression>winter</factExpression>
-      </andExpression>
-      <resultingFact>
-        autumn
-      </resultingFact>
+      <and>
+        <fact fact="spring"/>
+        <fact fact="winter"/>
+      </and>
+      <resultingFact fact="autumn"/>
     </rule>
     <rule>
-      <orExpression>
-        <factExpression>spring</factExpression>
-        <factExpression>winter</factExpression>
-        <andExpression>
-          <factExpression>summer</factExpression>
-          <factExpression>rain</factExpression>
-        </andExpression>
-      </orExpression>
-      <resultingFact>
-        autumn
-      </resultingFact>
+      <or>
+        <fact fact="spring1" />
+        <fact fact="winter" />
+        <and>
+          <fact fact="summer"/>
+          <fact fact="rain" />
+        </and>
+      </or>
+      <resultingFact fact="autumn"/>
     </rule>
   </rules>
   <approvedFacts>
-    <approvedFact fact="spring"/>
-    <approvedFact fact="summer"/>
+    <approvedFact>spring</approvedFact>
+    <approvedFact>summer</approvedFact>
   </approvedFacts>
 </model>

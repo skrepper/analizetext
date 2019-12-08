@@ -3,22 +3,34 @@ package analizetextpackage;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.util.JAXBSource;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import java.io.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
+import analizetextpackage.XmlTest.MyErrorHandler;
 
 public class AnalizeTextTest {
 
@@ -45,7 +57,7 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent1() throws IOException {
 		//простая проверка
-		Main.main(new String[] { "-f target/test-classes/func_text_1.txt" });
+		Main.main(new String[] { "-f target/test-classes/func_text_1.txt", "-t txt" });
 		actualArray = testOut.toString().split(", ");
 		assertThat(Arrays.asList(actualArray), 
 				containsInAnyOrder(
@@ -59,70 +71,70 @@ public class AnalizeTextTest {
 
 	@Test
 	public void testContent2() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_2.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_2.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после результирующего факта нечто summer -> winter || flower"));
 	}
 
 	@Test
 	public void testContent3() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_3.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_3.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после результирующего факта нечто summer -> winter || rock"));
 	}
 
 	@Test
 	public void testContent4() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_4.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_4.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. "));
 	}
 
 	@Test
 	public void testContent5() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_5.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_5.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После первого | нечто sum|mer -> winter"));
 	}
 
 	@Test
 	public void testContent6() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_6.txt" }); 
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_6.txt", "-t txt" }); 
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Не было результирующего факта summer || rain -> "));
 	}
 
 	@Test
 	public void testContent7() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_7.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_7.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто -----------------------------------"));
 	}
 
 	@Test
 	public void testContent8() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_8.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_8.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после результирующего факта нечто summer -> wi nter1"));
 	}
 	
 
 	@Test
 	public void testContent9() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_9.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_9.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После пробела после факта нечто summer, autumn, rain, n ot_in_upper_text"));
 	}
 	
 
 	@Test
 	public void testContent10() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_10.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_10.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто _ыы4su||||mmer -> winter1"));
 	}
 	
 	@Test
 	public void testContent11() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_11.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_11.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто ,summer, autumn, rain, _f2not_in_upper_text, mmer"));
 	}
 	
 	@Test
 	public void testContent12() throws IOException {
 		//проверка на повторное построение выражений
-		Main.main(new String[] { "-f target/test-classes/func_text_12.txt" });
+		Main.main(new String[] { "-f target/test-classes/func_text_12.txt", "-t txt" });
 		actualArray = testOut.toString().split(", ");
 		assertThat(Arrays.asList(actualArray), 
 				containsInAnyOrder(
@@ -138,53 +150,53 @@ public class AnalizeTextTest {
 	
 	@Test
 	public void testContent13() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_13.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_13.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто -> winter2"));
 	}
 	
 	@Test
 	public void testContent14() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_14.txt" });
+		Main.main(new String[] { "-f target/test-classes/func_text_14.txt", "-t txt" });
 		assertThat(errOut.toString(), equalTo("Ошибка структуры входного файла данных."));
 	}
 	
 	@Test
 	public void testContent15() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_15.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_15.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. В результирующем факте нечто tornado||snow -> water->"));
 	}
 
 	@Test
 	public void testContent16() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_16.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_16.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. После > нечто tornado||snow ->1water"));
 	}
 
 	@Test
 	public void testContent17() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_17.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_17.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто summer, autumn, 1rain"));
 	}
 
 	@Test
 	public void testContent18() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_18.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_18.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто  -> dddddd"));
 	}
 
 	@Test
 	public void testContent19() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_19.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_19.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто ssss||sssss|| -> dddddd"));
 	}
 	@Test
 	public void testContent20() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_20.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_20.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. Впереди нечто ssss&&sssss&& -> dddddd"));
 	}
 	@Test 
 	public void testContent21() throws IOException {
-		Main.main(new String[] { "-f target/test-classes/func_text_21.txt" });
+		Main.main(new String[] { "-f target/test-classes/func_text_21.txt", "-t txt" });
 		actualArray = testOut.toString().split(", ");
 		assertThat(Arrays.asList(actualArray), 
 				containsInAnyOrder(
@@ -204,19 +216,20 @@ public class AnalizeTextTest {
 	@Test
 	public void testArgs1() throws IOException {
 		Main.main(new String[] {  });
-		assertThat(errOut.toString(), startsWith("Неверное указание файла."));
+		assertThat(errOut.toString(), equalTo("Неверное указание файла.  Причина: Missing required option: f\r\n"));
 	}
 	
 	@Test
 	public void testArgs2() throws IOException {
 		Main.main(new String[] { "wrong name" });
-		assertThat(errOut.toString(), startsWith("Неверное указание файла."));
+		assertThat(errOut.toString(), equalTo("Неверное указание файла.  Причина: Missing required option: f\r\n"));
 	}
 
 	@Test 
-	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException {
-		Parser ruleParser = new Parser();
-		Model testModel = ruleParser.parseFile("target/test-classes/testRule.txt");
+	public void testRule() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException, XMLStreamException {
+		ParserFactory ruleParserFactoty = new ParserFactory();
+		FileParser fileParser = ruleParserFactoty.createParser("txt");
+		Model testModel = fileParser.parseFile("target/test-classes/testRule.txt");
 
 		Class modelClass = testModel.getClass(); 
 		Field fieldRules = modelClass.getDeclaredField("rules");
@@ -249,7 +262,93 @@ public class AnalizeTextTest {
 	@Test
 	public void testContent22() throws IOException {
 		//простая проверка
-		Main.main(new String[] { "-f target/test-classes/func_text_22.txt" });
-		assertThat(errOut.toString(), startsWith("Неверное имя факта."));
+		Main.main(new String[] { "-f target/test-classes/func_text_22.txt", "-t txt" });
+		assertThat(errOut.toString(), equalTo("Неверное имя факта. summer, autumn, rain, _"));
 	}
+
+
+	@Test 
+	public void testRuleXML() throws IOException, ReflectiveOperationException, IllegalArgumentException, InvocationTargetException, JAXBException, SAXException {
+		ParserFactory ruleParser = new ParserFactory();
+        JAXBContext jc = JAXBContext.newInstance(
+        		Model.class, 
+        		Rule.class, 
+        		FactExpression.class,
+        		AndExpression.class ,
+        		OrExpression.class
+        		);
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+ 
+        Model testModel = (Model)
+                unmarshaller.unmarshal(new FileReader(new File("target/test-classes/func_xml_1.xml") ));
+
+
+        JAXBSource source = new JAXBSource(jc, testModel);
+
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
+        Schema schema = sf.newSchema(Thread.currentThread().getContextClassLoader().getResource("func_xml.xsd"));
+
+        Validator validator = schema.newValidator();
+        validator.setErrorHandler(new MyErrorHandler());
+        validator.validate(source);
+
+		Class modelClass = testModel.getClass(); 
+		Field fieldRules = modelClass.getDeclaredField("rules");
+		fieldRules.setAccessible(true);
+		Collection<Rule> testRules = (Collection<Rule>) fieldRules.get(testModel);
+		Iterator<Rule> testRulesIterator = testRules.iterator();
+		testRulesIterator.next();
+		testRulesIterator.next();
+		Rule rule = testRulesIterator.next();
+
+		Class ruleClass = rule.getClass(); 
+		Field fieldExpression = ruleClass.getDeclaredField("expression");
+		fieldExpression.setAccessible(true);
+		OrExpression resultExpression = (OrExpression) fieldExpression.get(rule);
+		
+		Class expressionClass = resultExpression.getClass(); 
+		Field fieldOperands = expressionClass.getDeclaredField("operands");
+		fieldOperands.setAccessible(true);
+		ArrayList<Expression> operands = (ArrayList<Expression>) fieldOperands.get(resultExpression);
+		
+		assertThat(operands.size(), equalTo(3)); //первый уровень
+
+		AndExpression andExpression = (AndExpression) operands.get(2); 
+		Class andExpressionClass = andExpression.getClass(); 
+		Field fieldAndOperands = andExpressionClass.getDeclaredField("operands");
+		fieldAndOperands.setAccessible(true);
+		ArrayList<Expression> andOperands = (ArrayList<Expression>) fieldAndOperands.get(andExpression);
+	
+		assertThat(andOperands.size(), equalTo(2)); //второй уровень (второй операнд)
+		
+	}
+
+
+	
+    private class MyErrorHandler implements ErrorHandler {
+   	 
+		@Override
+        public void warning(SAXParseException exception) throws SAXException {
+            System.out.println("\nWARNING");
+            exception.printStackTrace();
+        }
+     
+		@Override
+        public void error(SAXParseException exception) throws SAXException {
+            System.out.println("\nERROR");
+            exception.printStackTrace();
+        }
+     
+		@Override
+        public void fatalError(SAXParseException exception) throws SAXException {
+            System.out.println("\nFATAL ERROR");
+            exception.printStackTrace();
+        }
+
+     
+    }
+
+
 }
+
+

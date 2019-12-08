@@ -43,9 +43,20 @@ public class XmlTest {
         Unmarshaller unmarshaller = jc.createUnmarshaller();
  
         Model result = (Model)
-                unmarshaller.unmarshal(new FileReader(new File("src/test/resources/func_xml_1.xml") ));
+                unmarshaller.unmarshal(new FileReader(new File("target/test-classes/func_xml_1.xml") ));
 
-       
+
+        JAXBSource source = new JAXBSource(jc, result);
+
+        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
+        Schema schema = sf.newSchema(new File("target/test-classes/func_xml.xsd")); 
+
+        Validator validator = schema.newValidator();
+        validator.setErrorHandler(new MyErrorHandler());
+        validator.validate(source);
+
+        
+        
         Marshaller marshaller = jc.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(result, System.out);
@@ -82,12 +93,3 @@ public class XmlTest {
 }
 
 
-
-/*        JAXBSource source = new JAXBSource(jc, result);*/
-
-/*        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); 
-        Schema schema = sf.newSchema(new File("src/main/resources/func_xml.xsd"));*/ 
-
-/*        Validator validator = schema.newValidator();
-        validator.setErrorHandler(new MyErrorHandler());
-        validator.validate(source);*/
